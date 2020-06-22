@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+
+<!--관제시스템 페이지-->
+<script src="socket.io/socket.io.js"></script> 
+<script> 
+    var socket = io.connect('http://localhost:8000'); 
+    socket.on('news', function (data) { 	
+        console.log(data); 	
+        socket.emit('client login', { clientData : '클라이언트 접속' }); 
+    }); 	 
+</script>
+<html>
+    <head>
+        <title>hi</title>
+    </head>
+    <body>
+        <p>관제센터요</p><br>
+        <form action="/user/logout" method="get">
+            <input type="submit" value="로그아웃">
+        </form>
+        
+    </body>
+</html>

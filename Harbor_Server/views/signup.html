@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<!--회원가입 페이지-->
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+</head>
+<body>
+<h3>회원 가입</h3>
+<form action="/user/sign_up" method="post">
+    <table>
+        <tr>
+            <td>이름 : </td>
+            <td><input type="text" name="userid"></td>
+        </tr>
+        <tr>
+            <td>비번 : </td>
+            <td><input type="password" name="password"></td>
+        </tr>
+        <tr>
+            <td><label><input type="checkbox" name="isOperator" value="true">관제시스템용 ID 유무</label></td>
+        </tr>
+        <tr>
+            <td><input type="submit" value="회원가입"></td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>
