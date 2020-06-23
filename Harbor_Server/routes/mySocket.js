@@ -5,7 +5,6 @@ var router = express.Router();
 
 /* 소켓 통신 라우터 */
 router.get('/', function(req, res, next) {
-  console.log(req.session.isOperator);
   if(req.session.userid == undefined){
     res.redirect("/");
   }

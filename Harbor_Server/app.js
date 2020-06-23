@@ -23,6 +23,28 @@ app.use(express.urlencoded({ extended: false }));
 //app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//------------------------------------http서버생성-----------------------------------------
+var debug = require('debug')('harbor-server:server');
+var http = require('http');
+
+/**
+ * Get port from environment and store in Express.
+ */
+var port = normalizePort(process.env.PORT || '8000');
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+var server = http.createServer(app);
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
 
 //------------------------------------세션설정-----------------------------------------
 const session = require('express-session');
@@ -35,6 +57,25 @@ app.use(session({
   }
 }));
 app.locals.session = session;
+
+
+//------------------------------------소켓.io설정-----------------------------------------
+var io = require('socket.io')().attach(server);
+var socket_setup = require("./socket_setup");
+socket_setup.attach_event(io);
+app.locals.io = io;
+
+//------------------------------------db모델설정(sequelize)-----------------------------------------
+const models = require("./models/index.js");
+models.sequelize.sync().then( () => {
+  console.log(" DB 연결 성공");
+}).catch(err => {
+  console.log("연결 실패");
+  console.log(err);
+})
+
+
+//------------------------------------라우터설정-----------------------------------------
 
 app.use('/', indexRouter);
 app.use('/user', userRouter);
@@ -58,94 +99,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error.html');
 });
-
-//------------------------------------서버생성-----------------------------------------
-var debug = require('debug')('harbor-server:server');
-var http = require('http');
-
-/**
- * Get port from environment and store in Express.
- */
-var port = normalizePort(process.env.PORT || '8000');
-app.set('port', port);
-
-/**
- * Create HTTP server.
- */
-var server = http.createServer(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
-
-
-//------------------------------------소켓.io설정-----------------------------------------
-var io = require('socket.io')().attach(server);
-io.on('connection', function (socket) {  // 1
-  socket.emit('news', { serverData : "서버 작동" });
-  
-  socket.on('operator web login', function (data) { 
-    console.log(data);
-  });
-  socket.on('operator drone login', function (data) {
-    console.log(data);
-  });
-  socket.on('control web login', function (data) {
-    console.log(data);
-  });
-  socket.on('control drone login', function (data) {
-    console.log(data);
-  });
-
-  socket.on('operator web to server', function (data) {
-    console.log(data);
-  });
-  socket.on('operator drone to server', function (data) {
-    console.log(data);
-  });
-  socket.on('control web to server', function (data) {  
-    console.log(data);
-  });
-  socket.on('control drone to server', function (data) {  
-    console.log(data);
-  });
-
-  socket.emit('server to operator web', function (data) { 
-    console.log(data);
-  });
-  socket.emit('server to operator drone', function (data) { 
-    console.log(data);
-  });
-  socket.emit('server to control web', function (data) { 
-    console.log(data);
-  });
-  socket.emit('server to control drone', function (data) { 
-    console.log(data);
-  });
-
-  
-
-  socket.on('disconnect', function(){
-    console.log('접속이 종료되었습니다.');
-  });
-
-});
-app.locals.io = io;
-
-
-//------------------------------------db모델설정-----------------------------------------
-const models = require("./models/index.js");
-models.sequelize.sync().then( () => {
-  console.log(" DB 연결 성공");
-}).catch(err => {
-  console.log("연결 실패");
-  console.log(err);
-})
-
-
 
 //------------------------------------아래는 함수들-----------------------------------------
 
