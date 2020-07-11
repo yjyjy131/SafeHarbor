@@ -7,6 +7,8 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var userRouter = require('./routes/user');
 var mySocketRouter = require('./routes/mySocket');
+var logRouter = require('./routes/log');
+var mainRouter = require('./routes/main');
 
 var app = express();
 
@@ -80,6 +82,8 @@ models.sequelize.sync().then( () => {
 app.use('/', indexRouter);
 app.use('/user', userRouter);
 app.use('/mySocket', mySocketRouter);
+app.use('/log', logRouter);
+app.use('/main', mainRouter);
 
 
 //------------------------------------에러핸들링-----------------------------------------
