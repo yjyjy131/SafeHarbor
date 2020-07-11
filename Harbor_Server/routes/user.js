@@ -33,24 +33,13 @@ router.post("/sign_up", async function(req,res,next){
   })
 })
 
-
-// 로그인 GET
-router.get('/login', function(req, res, next) {
-  let session = req.session;
-
-  res.render("index.html", {
-      session : session
-  });
-});
-
 // 로그인 POST
 router.post("/login", async function (req, res, next) {
   let body = req.body;
   if (body.isGuest) {
-    req.session.userid = body.userid;
-    req.session.isOperator = body.isOperator;
     req.session.isGuest = body.isGuest;
-    req.redirect('/main');
+    req.redirect('/');
+    return;
   }
 
   else {
@@ -59,6 +48,12 @@ router.post("/login", async function (req, res, next) {
         userid: body.userid
       }
     });
+
+    if(result == undefined){
+      console.log("계정 없음");
+      res.redirect("/");
+      return;
+    }
 
     let dbPassword = result.dataValues.password;
     let inputPassword = body.password;
@@ -70,7 +65,7 @@ router.post("/login", async function (req, res, next) {
       req.session.userid = body.userid;
       req.session.isOperator = body.isOperator;
       req.session.isGuest = body.isGuest;
-      res.redirect('/main');
+      res.redirect('/');
     }
     else {
       console.log("비밀번호 불일치");
@@ -78,15 +73,6 @@ router.post("/login", async function (req, res, next) {
     }
   }
 });
-
-//게스트로그인시
-router.get("/guestLogin", async function(req, res ,next){
-  res.redirect("/");
-})
-
-router.get("/guestSystem", async function(req, res ,next){
-  res.redirect('/mySocket/guestSystem');
-})
 
 // 로그아웃
 router.get("/logout", function(req,res,next){
