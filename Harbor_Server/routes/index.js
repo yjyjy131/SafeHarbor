@@ -23,7 +23,6 @@ router.get('/', function (req, res, next) {
   connection.end();
   */
 
-  //전달 변수 : session.isOperator, session.isGuest
   res.render('index.html', {
         session : req.session
   });
