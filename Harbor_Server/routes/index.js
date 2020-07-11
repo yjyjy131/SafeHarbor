@@ -23,7 +23,7 @@ router.get('/', function (req, res, next) {
   connection.end();
   */
 
-  res.render('index.html', {
+  res.render('mainMenu.html', {
         session : req.session
   });
 });
