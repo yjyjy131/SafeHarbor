@@ -1,0 +1,177 @@
+#main {
+	background-color: #242943;
+	height: 30em;
+	display: flex;
+	flex-grow: 1;
+	flex-basis: 1;
+	flex-basis: auto;
+}
+
+/* header 기준 main content style */
+header.major {
+    width: max-content;
+    margin-bottom: 2em;
+
+}
+	header.major > :after {
+            content: '';
+            background-color: #ffffff;
+            display: block;
+            height: 2px;
+            margin: 0.325em 0 0.5em 0;
+            width: 100%;
+		}
+		
+    header.major > :first-child {
+        margin-bottom: 0;
+        width: calc(100% + 0.5em);
+    }
+
+
+/* username password 위치 */
+form {
+    height: 20em;
+    width: 20em;
+    margin: 8em 0 0 12em;
+    margin-bottom: 0;
+    /*border: solid 1px rgba(212, 212, 255, 0.1);*/
+    border-radius: 6px;
+    background-color: white;
+}
+
+    form > .fields {
+        padding: 2em 1em 0 1.5em;
+        }
+
+    form > .fields > .field {
+        padding: 0 1.5em 1.2em 0.8em;
+    }
+
+        form > .fields > .field.half {
+            padding-bottom: -5em;
+            width: 18em;
+            color: #000000;
+        }
+
+
+    #logindiv {
+        width: 50em;
+    }
+
+    #loginSide {
+        width: 20em;
+        height: 10em;
+        margin: 7em 10em 0 10em ;
+    }
+
+    .boxType {
+        border: 1px solid #e1e4e8;
+        border-radius: 6px;
+    }
+    
+    #loginTitle {
+        font-size: 4em;
+    }
+
+    #loginPara {
+        width: 35em;
+    }
+
+label {
+color: black;
+display: block;
+font-size: 0.8em;
+font-weight: 600;
+letter-spacing: 0.2em;
+margin: 0 0 1em 0;
+text-transform: uppercase;
+}
+
+input[type="text"],
+input[type="password"],
+
+textarea {
+appearance: none;
+border-radius: 0;
+color: inherit;
+display: block;
+outline: 0;
+padding: 0 0 0 0.5em;
+width: 15em;
+border: solid 1px rgba(212, 212, 255, 0.1);
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+select:focus,
+textarea:focus {
+    width: 101%;
+    border-radius: 6px;
+
+    border-color: #b7f5ff;
+    box-shadow: 0 0 0 2px #b7f5ff;
+}
+
+input[type="text"],
+input[type="password"],
+select {
+height: 2.75em;
+}
+
+
+/* flexContainer 위치 설정 */
+ul {
+    list-style: disc;
+    margin: 0 0 2em 0;
+    padding-left: 1em;
+}
+
+    ul li {
+        padding-left: 0.5em;
+    }
+
+ul.actions {
+    display: flex;
+    cursor: default;
+    list-style: none;
+    align-items: center;
+    justify-content: center;
+    padding-top: 1em;
+    margin-left: -2em;
+}
+
+	
+/* Button 컬러 */
+
+input[type="submit"] {
+    appearance: none;
+    background-color: #24294370;
+    box-shadow: inset 0 0 0 2px #242943;
+    color: #000000;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 0.8em;
+    font-weight: 600;
+    height: 3.5em;
+    letter-spacing: 0.25em;
+    line-height: 3.5em;
+    padding: 0 1.75em;
+    text-align: center;
+    text-transform: uppercase;
+    border-radius: 6px;
+}
+
+    input[type="submit"].primary,
+    input[type="reset"].primary,
+    input[type="button"].primary,
+    button.primary,
+    .button.primary {
+        background-color: #ffffff;
+        box-shadow: none;
+        color: black;
+    }
+
+    input[type="submit"].primary:active,
+    input[type="submit"].primary:hover {
+        background-color: #9bf1ff;
+    }
