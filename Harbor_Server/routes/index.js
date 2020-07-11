@@ -3,22 +3,21 @@ var router = express.Router();
 
 
 ////html에 session.userid, session.isGuest, session.isOperator 세가지 변수를 같이 전달함
-
 /* GET home page. */
 router.get('/', function (req, res, next) {
   if (req.session.userid == undefined) {
-    if (req.session.isGuest) {
+    if (req.session.isGuest) { //게스트로 로그인
       res.render('mainmenu.html', {
         session: req.session
       });
     }
-    else {
+    else { //로그인페이지로 다시이동
       res.render('index.html', {
         session: req.session
       });
     }
   }
-  else {
+  else { //id를 가지고 로그인
     res.render('mainmenu.html', {
       session: req.session
     });
