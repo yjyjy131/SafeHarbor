@@ -15,11 +15,9 @@
             </form>
         <% } else { %>
 			<div id="wrapper">
-				<!-- Header -->
 					<header id="header">
 						<a href="index.html" class="logo"><strong>MALLANG</strong> <span> CAU </span></a>
 					</header>
-				<!-- Main -->
 					<div id="main">
 							<div class="content">
 								<div id="loginSide">
@@ -49,7 +47,7 @@
 							</div>
 						<div id="logindiv">
 							<div id="loginBox">
-							<form method="post" action="#">
+							<form method="post" action="user/login">
 								<div class="fields">
 									<div class="field half">
 										<div id="loginBox">
@@ -71,8 +69,8 @@
 									<li class="login" ><input type="submit" value="login" class="primary" /></li>
 									<li> &nbsp </li>
                                     <li class="login">
-                                        <form action="user/sign_up" method="get">
-                                        </form><input type="submit" value="register" class="primary" /></form>
+                                        <!-- <form action="user/sign_up" method="get"></form> -->
+										<input type="submit" value="register" class="primary" /></form>
                                     </li>
                                     <li><input type="hidden" name="isOperator" value="true"></li>
 								</ul>
@@ -82,7 +80,6 @@
 						</div>
                     </div>	
         <% } %>
-				<!-- Footer -->
 				<footer id="footer">
 					<div class="inner">
 						<ul class="copyright">
