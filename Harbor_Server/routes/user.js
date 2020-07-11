@@ -1,7 +1,6 @@
 const express = require('express');
 const crypto = require('crypto');
 const router = express.Router();
-const mysql = require("mysql");
 const models = require("../models");
 
 
@@ -45,31 +44,49 @@ router.get('/login', function(req, res, next) {
 });
 
 // 로그인 POST
-router.post("/login", async function(req,res,next){
+router.post("/login", async function (req, res, next) {
   let body = req.body;
+  if (body.isGuest) {
+    req.session.userid = body.userid;
+    req.session.isOperator = body.isOperator;
+    req.session.isGuest = body.isGuest;
+    req.redirect('/main');
+  }
 
-  let result = await models.user.findOne({
+  else {
+    let result = await models.user.findOne({
       where: {
-          userid : body.userid
+        userid: body.userid
       }
-  });
+    });
 
-  let dbPassword = result.dataValues.password;
-  let inputPassword = body.password;
-  let salt = result.dataValues.salt;
-  let hashPassword = crypto.createHash("sha512").update(inputPassword + salt).digest("hex");
-  if(dbPassword === hashPassword){
+    let dbPassword = result.dataValues.password;
+    let inputPassword = body.password;
+    let salt = result.dataValues.salt;
+    let hashPassword = crypto.createHash("sha512").update(inputPassword + salt).digest("hex");
+    if (dbPassword === hashPassword) {
       console.log("비밀번호 일치");
       // 세션 설정
       req.session.userid = body.userid;
       req.session.isOperator = body.isOperator;
-      res.redirect("/mySocket");
-  }
-  else{
+      req.session.isGuest = body.isGuest;
+      res.redirect('/main');
+    }
+    else {
       console.log("비밀번호 불일치");
       res.redirect("/");
+    }
   }
 });
+
+//게스트로그인시
+router.get("/guestLogin", async function(req, res ,next){
+  res.redirect("/");
+})
+
+router.get("/guestSystem", async function(req, res ,next){
+  res.redirect('/mySocket/guestSystem');
+})
 
 // 로그아웃
 router.get("/logout", function(req,res,next){
