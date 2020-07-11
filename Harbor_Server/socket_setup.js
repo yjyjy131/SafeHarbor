@@ -4,6 +4,7 @@
 const models = require("./models/index.js");
 
 var gpsDatas = { 'front' : null, 'back' : null, 'left' : null, 'right' : null, 'center' : null};
+var droneWeb = null;
 var io;
 
 module.exports.attach_event = function(_io){
@@ -11,8 +12,10 @@ module.exports.attach_event = function(_io){
     io.emit('news', { serverData : "서버 작동" });
     io.on('connection', function (socket) {  
 
+        //연결될 경우. 웹쪽은 data.userid 정보를 넣어서 같이 전달해야함
         socket.on('client connected', function (data) {
             socket.clientType = data.clientType;
+            socket.userid = data.userid;
             onClientConnected(socket);
             console.log(data);
         });
@@ -21,6 +24,7 @@ module.exports.attach_event = function(_io){
         //speed, angle, time
         socket.on('control stream', function (data) {
           console.log('control stream \n' + data);
+
           //서버에서 드론으로 조종정보 전달
           io.in('ctd').emit('control stream', data);
         });
@@ -30,14 +34,19 @@ module.exports.attach_event = function(_io){
         // gpsX, gpsY, time, speed, angle
         socket.on('drone data stream', function(data){
             console.log('drone data stream \n' + data);
-            models.control_log.create({
-                userid: data.userid,
-                speed: data.speed,
-                angle: data.angle,
-                gpsX: data.gpsX,
-                gpsY: data.gpsY,
-                time: data.time,
-              })
+            var userid;
+            if(droneWeb != null){
+                userid = droneWeb.userid;
+                models.control_log.create({
+                    userid: userid,
+                    speed: data.speed,
+                    angle: data.angle,
+                    gpsX: data.gpsX,
+                    gpsY: data.gpsY,
+                    time: data.time,
+                  });
+            }
+
             //서버에서 웹으로 드론정보 전달(조종시)
             io.in('ctw').emit('drone data stream', data);
         });        
@@ -47,6 +56,7 @@ module.exports.attach_event = function(_io){
         //비디오 데이터 (정하는중)
         socket.on('video stream', function (data) {
             console.log('video stream \n' + data);
+
             //서버에서 웹으로 비디오 전달 (미완성)
             io.in('opw').emit('video stream', data);
             //TODO
@@ -63,6 +73,7 @@ module.exports.attach_event = function(_io){
                 isFull = false;
             }
             if(isFull){
+
                 //서버에서 웹으로 gps정보 전달(관제시)
                 io.in('opw').emit("operator gps stream", gpsDatas);
                 for(key in gpsDatas){
@@ -74,6 +85,8 @@ module.exports.attach_event = function(_io){
 
         socket.on('disconnect', function (data) {
             console.log("disconnected");
+            if(socket.clientType == "ctw")
+                droneWeb = null;
         });
     });
 }
@@ -94,6 +107,8 @@ function onClientConnected(socket){
             });
         }
         socket.join(socket.clientType);
+        if(socket.clientType == "ctw")
+            droneWeb = socket;
     }
     else{
         socket.join(socket.clientType);
