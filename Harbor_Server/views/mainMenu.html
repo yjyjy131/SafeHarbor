@@ -3,7 +3,8 @@
 	<head>
 		<title>Forty by HTML5 UP</title>
 		<meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" tpye="text/css" href="/stylesheets/basic.css"/>
 		<link rel="stylesheet" type="text/css" href="/stylesheets/menuStyle.css"/>
         <link rel="stylesheet" type="text/css" href="/stylesheets/tiles.css"/>	
 	</head>
@@ -24,7 +25,9 @@
 						</ul>
 						<ul class="actions stacked">
 							<li><a href="#" class="button primary fit">Register</a></li>
-							<li><a href="#" class="button fit">Log In</a></li>
+							<form action="/user/logout" method="get">
+                                <li><a href="#" class="button fit">Log Out</a></li>
+                            </form>
 						</ul>
 					</nav>
 					<div id="menuContainer">
@@ -72,16 +75,15 @@
 					<footer id="footer">
 						<div class="inner">
 							<ul class="copyright">
+								<li>한이음 스마트해상물류</li>
 								<li>Mallng CAU </li>
 								<li>Web templet Design: <a href="https://html5up.net">HTML5 UP</a></li>
-								<li>Icon Design: <a href="https://www.flaticon.com/kr/authors/freepik">FreePik</a></li>
 							</ul>
 						</div>
 					</footer>
 			</div>
 			<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-			<script src="/js/jquery.scrollex.min.js"></script>
-			<script src="/js/browser.min.js"></script>
+			<script src="/js/jquery.func.min.js"></script>
 			<script src="/js/util.js"></script>
 			<script src="/js/main.js"></script>
 	</body>
