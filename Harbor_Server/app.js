@@ -88,6 +88,15 @@ app.use('/log', logRouter);
 
 //------------------------------------에러핸들링-----------------------------------------
 // catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  // set locals, only providing error in development
+  console.log("주소 " + req.url + " 를 찾을 수 없습니다.");
+  res.locals.message = "주소 " + req.url + " 를 찾을 수 없습니다.";
+  res.locals.error = {"status" : 404, "stack" : ""};
+  // render the error page
+  res.status(404);
+  res.render('error.html');
+});
 
 // error handler
 app.use(function(err, req, res, next) {
