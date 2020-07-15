@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Forty by HTML5 UP</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" tpye="text/css" href="/stylesheets/basic.css"/>
+		<link rel="stylesheet" type="text/css" href="/stylesheets/menuStyle.css"/>
+        <link rel="stylesheet" type="text/css" href="/stylesheets/logView.css"/>	
+    </head>
+    <!--로그 출력 페이지-->
+	<body class="is-preload">
+			<div id="wrapper">
+					<header id="header" class="alt">
+						<a href="mainMenu.html" class="logo"><strong>MALLANG</strong> <span> CAU </span></a>
+						<nav>
+							<a href="#menu">Menu</a>
+						</nav>
+					</header>
+					<nav id="menu">
+						<ul class="links">
+							<li><a href="mainMenu.html">Home</a></li>
+							<li><a href="droneSystem.html">droneSystem</a></li>
+							<li><a href="opSystem.html">opSystem</a></li>
+							<li><a href="logView.html">logView</a></li>
+						</ul>
+						<ul class="actions stacked">
+                            <li><a href="#" class="button primary fit">Register</a></li>
+                            <form action="/user/logout" method="get">
+                                <li><a href="#" class="button fit">Log Out</a></li>
+                            </form>
+						</ul>
+                    </nav>
+                    <div id="main">
+                        <select name="category" id="sortingCategory">
+                            <option value="">- Sorting Category -</option>
+                            <option value="1">All</option>
+                            <option value="1">Username</option>
+                            <option value="1">time</option>
+                        </select>
+                            <div class="table-wrapper">
+                                <table>
+                                    <thead id="tableHead">
+                                        <tr>
+                                            <th>time</th>
+                                            <th>gpsX</th>
+                                            <th>gpsY</th>
+                                            <th>speed</th>
+                                            <th>angle</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                                <table id="dataTable">
+                                   
+                                    <div id="tableScroll">
+                                    <tbody id="tableCreate">
+                                        <!-- ejs mysql 연동 -->
+                                        <!-- 테이블 동적생성 + th 고정 -->
+                                    </tbody>
+                                    </div>
+                                </table>
+                            </div>
+                    </div>					
+					<footer id="footer">
+						<div class="inner">
+							<ul class="copyright">
+								<li>한이음 스마트해상물류</li>
+							    <li>Mallng CAU </li>
+							    <li>Web templet Design: <a href="https://html5up.net">HTML5 UP</a></li>
+						    </ul>
+						</div>
+					</footer>
+			</div>
+			<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+			<script src="/js/jquery.func.min.js"></script>
+			<script src="/js/util.js"></script>
+            <script src="/js/main.js"></script>
+            <script src="/js/tableCreate.js"></script>
+    </body>
+</html>
