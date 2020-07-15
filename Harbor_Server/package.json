@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon app"
+    "start": "nodemon app",
+    "pmstart": "pm2-dev start app.js",
+    "before" : "npm i pm2 nodemon -g"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
