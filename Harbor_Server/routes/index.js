@@ -7,18 +7,18 @@ var router = express.Router();
 router.get('/', function (req, res, next) {
   if (req.session.userid == undefined) {
     if (req.session.isGuest) { //게스트로 로그인
-      res.render('mainmenu.html', {
+      res.render('mainMenu.html', {
         session: req.session
       });
     }
     else { //로그인페이지로 다시이동
-      res.render('guestSystem.html', {
+      res.render('index.html', { 
         session: req.session
       });
     }
   }
   else { //id를 가지고 로그인
-    res.render('mainmenu.html', {
+    res.render('mainMenu.html', {
       session: req.session
     });
   }
