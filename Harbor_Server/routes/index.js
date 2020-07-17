@@ -12,7 +12,7 @@ router.get('/', function (req, res, next) {
       });
     }
     else { //로그인페이지로 다시이동
-      res.render('index.html', { 
+      res.render('error.html', { 
         session: req.session
       });
     }
