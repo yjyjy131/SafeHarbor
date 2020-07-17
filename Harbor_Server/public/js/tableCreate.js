@@ -3,10 +3,9 @@
 var logTable = new Array();
 var html = "";
 
-// logTable말고... db 접근해서 html 값 push
-logTable.push({time:'1', gpsX:'1', gpsY:'13', speed:'4', angle:'2'});
+// logTable말고... db  
 for (i=0; i<20; i++)
-logTable.push({time:'127.12', gpsX:'129.84', gpsY:'89.23', speed:'84', angle:'12'});
+logTable.push({time: 'testIndex' + i, gpsX:'129.84', gpsY:'89.23', speed:'84', angle:'12'});
 
 for (key in logTable){
     html += '<tr>';
@@ -20,3 +19,4 @@ for (key in logTable){
 
 $("#tableCreate").empty();
 $("#tableCreate").append(html);
+$('#headerFixTable').fixheadertable({height: '200',minWidth:800,caption:'my header is fixed', zebra : true});

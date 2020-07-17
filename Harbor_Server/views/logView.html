@@ -39,9 +39,9 @@
                             <option value="1">time</option>
                         </select>
                             <div class="table-wrapper">
-                                <table>
-                                    <thead id="tableHead">
-                                        <tr>
+                                <table id="dataTable">
+                                    <thead>
+                                        <tr id="fixedHead">
                                             <th>time</th>
                                             <th>gpsX</th>
                                             <th>gpsY</th>
@@ -49,9 +49,6 @@
                                             <th>angle</th>
                                         </tr>
                                     </thead>
-                                </table>
-                                <table id="dataTable">
-                                   
                                     <div id="tableScroll">
                                     <tbody id="tableCreate">
                                         <!-- ejs mysql 연동 -->
