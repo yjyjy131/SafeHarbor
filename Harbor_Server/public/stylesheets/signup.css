@@ -1,0 +1,168 @@
+#main {
+	background-color: #242943;
+	height: 29em;
+	display: flex;
+	flex-grow: 1;
+	flex-basis: 1;
+    flex-basis: auto;
+    align-items: center;
+    flex-direction: column;
+}
+
+/* header 기준 main content style */
+header.major {
+    width: max-content;
+    margin-top: 1.2em;
+}
+	header.major > :after {
+            content: '';
+            background-color: #ffffff;
+            display: block;
+            height: 2px;
+            margin: 0.325em 0 0.5em 0;
+            width: 100%;
+		}
+		
+    header.major > :first-child {
+        margin-bottom: 0;
+        width: calc(100% + 0.5em);
+    }
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 20em;
+    width: 20em;
+    margin: -1em 0 0 0 ;
+    /*border: solid 1px rgba(212, 212, 255, 0.1);*/
+    border-radius: 6px;
+    background-color: #ffffff00;
+}
+
+    form > .fields {
+        padding: 1em 1em 0 1.5em;
+        }
+
+    form > .fields > .field {
+        padding: 0 1.5em 1.2em 0.8em;
+    }
+
+        form > .fields > .field.half {
+            padding-bottom: -5em;
+            width: 22em; /*input box width 조정*/
+            color: #000000;
+        }
+
+    .boxType {
+        border: 1px solid #e1e4e8;
+        border-radius: 6px;
+    }
+
+label {
+color: #ffffff;
+display: block;
+font-size: 0.8em;
+font-weight: 600;
+letter-spacing: 0.2em;
+margin: 0 0 0.3em 0 !important;
+text-transform: uppercase;
+}
+
+input[type="text"],
+input[type="password"],
+textarea {
+appearance: none;
+border-radius: 0;
+color: #ffffff;
+display: block;
+outline: 0;
+padding: 0 0 0 0.5em;
+width: 15em;
+border: solid 1px rgba(212, 212, 255, 0);
+background-color: rgba(255, 255, 255, 0);
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+select:focus,
+textarea:focus {
+    width: 101%;
+    border-radius: 6px;
+
+    border-color: #b7f5ff;
+    box-shadow: 0 0 0 2px #b7f5ff;
+}
+
+input[type="text"],
+input[type="password"],
+select {
+height: 2em;
+}
+
+/* flexContainer 위치 설정 */
+ul {
+    list-style: disc;
+    margin: 0 0 2em 0;
+    padding-left: 1em;
+}
+
+ul.actions {
+    display: flex;
+    cursor: default;
+    list-style: none;
+    align-items: center;
+    justify-content: center;
+    padding-top: 1em;
+    margin-left: -2em;
+}
+
+/* Button 컬러 */
+input[type="submit"] {
+    appearance: none;
+    background-color: #24294370;
+    box-shadow: inset 0 0 0 2px #242943;
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 0.8em;
+    font-weight: 600;
+    height: 3.5em;
+    letter-spacing: 0.25em;
+    line-height: 3.5em;
+    padding: 0em 7em;
+    text-align: center;
+    text-transform: uppercase;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+    input[type="submit"].primary,
+    input[type="button"].primary,
+    button.primary,
+    .button.primary {
+        background-color: #dfba06;
+        box-shadow: none;
+        color: #ffffff;
+    }
+
+    input[type="submit"].primary:active,
+    input[type="submit"].primary:hover {
+        background-color: #9bf1ff;
+    }
+
+   input:-webkit-autofill, input:-webkit-autofill:focus,
+   input:-webkit-autofill:hover, input:-webkit-autofill:active {
+       transition: background-color 5000s ease-in-out 0s;
+       -webkit-text-fill-color: #ffffff;
+   }
+
+  #opCheck {
+       margin: 0em 0 0 0.5em;
+       display: flex;
+       align-items: center;
+   }
+
+   #opCheck > label {
+       padding: 0.3em 0 0 0.2em;
+   }

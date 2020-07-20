@@ -1,23 +1,108 @@
-<!DOCTYPE html>
-
-<!--관제시스템 페이지-->
-<script src="socket.io/socket.io.js"></script> 
-<script> 
-    var socket = io.connect('http://localhost:8000'); 
-    socket.on('news', function (data) { 	
-        console.log(data); 	
-        socket.emit('client login', { clientData : '클라이언트 접속', clientType : 'opw'}); 
-    }); 	 
-</script>
+<!DOCTYPE HTML>
 <html>
-    <head>
-        <title>hi</title>
+	<head>
+		<title>Forty by HTML5 UP</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" tpye="text/css" href="/stylesheets/basic.css"/>
+		<link rel="stylesheet" type="text/css" href="/stylesheets/menuStyle.css"/>
+        <link rel="stylesheet" type="text/css" href="/stylesheets/opSystem.css"/>	
     </head>
-    <body>
-        <p>관제센터요</p><br>
-        <form action="/user/logout" method="get">
-            <input type="submit" value="로그아웃">
-        </form>
-        
+    <!-- 관제 센터 -->
+	<body class="is-preload">
+			<div id="wrapper">
+					<header id="header" class="alt">
+						<a href="mainMenu.html" class="logo"><strong>MALLANG</strong> <span> CAU </span></a>
+						<nav>
+							<a href="#menu">Menu</a>
+						</nav>
+					</header>
+					<nav id="menu">
+						<ul class="links">
+							<li><a href="mainMenu.html">Home</a></li>
+							<li><a href="droneSystem.html">droneSystem</a></li>
+							<li><a href="opSystem.html">opSystem</a></li>
+							<li><a href="logView.html">logView</a></li>
+						</ul>
+						<ul class="actions stacked">
+                            <li><a href="#" class="button primary fit">Register</a></li>
+                            <form action="/user/logout" method="get">
+                                <li><a href="#" class="button fit">Log Out</a></li>
+                            </form>
+						</ul>
+                    </nav>
+                    <div id="main">
+                        <div id="opSide">
+                            <div class="table-wrapper">
+                                <table class="alt" id="basicInfo">
+                                    <!-- 테이블 동적 생성 opTableCreate.js -->
+                                    <tr>
+                                        <td>속도</td>
+                                        <td>100</td>
+                                    </tr>
+                                    <tr>
+                                        <td>충돌위험</td>
+                                        <td>0</td>
+                                    </tr>
+                                </table>
+                                <table class="alt" id="gpsInfo">
+                                    <thead>
+                                        <tr>
+                                            <th> </th>
+                                            <th>lati</th>
+                                            <th>longi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>center</td>
+                                            <td>29.99</td>
+                                            <td>29.99</td>
+                                        </tr>
+                                        <tr>
+                                            <td>up</td>
+                                            <td>19.99</td>
+                                            <td>29.99</td>
+                                        </tr>
+                                        <tr>
+                                            <td>down</td>
+                                            <td>19.99</td>
+                                            <td>29.99</td>
+                                        </tr>
+                                        <tr>
+                                            <td>left</td>
+                                            <td>29.99</td>
+                                            <td>29.99</td>
+                                        </tr>
+                                        <tr>
+                                            <td>right</td>
+                                            <td>29.99</td>
+                                            <td>29.99</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="map">
+                        <!-- 구글맵 -->
+                         </div>
+                    </div>					
+					<footer id="footer">
+						<div class="inner">
+							<ul class="copyright">
+								<li>한이음 스마트해상물류</li>
+							    <li>Mallng CAU </li>
+							    <li>Web templet Design: <a href="https://html5up.net">HTML5 UP</a></li>
+						    </ul>
+						</div>
+					</footer>
+			</div>
+			<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+			<script src="/js/jquery.func.min.js"></script>
+			<script src="/js/util.js"></script>
+            <script src="/js/main.js"></script>
+            <script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDkQqVhUhen65ZiP-GjNX3RYFgZZ1__OQI&callback=initMap"></script>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+            <script src="/js/initMap.js"></script>
     </body>
 </html>

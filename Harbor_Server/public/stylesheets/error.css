@@ -1,0 +1,28 @@
+#main {
+	background-color: #242943;
+	height: 29em;
+	display: flex;
+	flex-grow: 1;
+	flex-basis: 1;
+    flex-basis: auto;
+    flex-direction: column;
+}
+
+#main > h1 {
+    margin: 0.1em 0 0 1em;
+}
+
+#errText {
+    overflow-y: scroll;
+    margin: 0.5em 1.5em 0 1.5em;
+}
+
+label {
+color: #ffffff;
+display: block;
+font-size: 0.8em;
+font-weight: 600;
+letter-spacing: 0.2em;
+margin: 0 0 0.3em 0 !important;
+text-transform: uppercase;
+}

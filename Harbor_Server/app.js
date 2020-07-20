@@ -6,7 +6,9 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var userRouter = require('./routes/user');
-var mySocketRouter = require('./routes/mySocket');
+//var mySocketRouter = require('./routes/mySocket');
+var logRouter = require('./routes/log');
+//var mainRouter = require('./routes/main');
 
 var app = express();
 
@@ -79,13 +81,21 @@ models.sequelize.sync().then( () => {
 
 app.use('/', indexRouter);
 app.use('/user', userRouter);
-app.use('/mySocket', mySocketRouter);
+//app.use('/mySocket', mySocketRouter);
+app.use('/log', logRouter);
+//app.use('/main', mainRouter);
 
 
 //------------------------------------에러핸들링-----------------------------------------
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+  // set locals, only providing error in development
+  console.log("주소 " + req.url + " 를 찾을 수 없습니다.");
+  res.locals.message = "주소 " + req.url + " 를 찾을 수 없습니다.";
+  res.locals.error = {"status" : 404, "stack" : ""};
+  // render the error page
+  res.status(404);
+  res.render('error.html');
 });
 
 // error handler
