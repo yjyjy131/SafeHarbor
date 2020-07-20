@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">harbor_app</string>
+    <string name="주행">주행</string>
+    <string name="gps">gps</string>
+    <string name="changeActivity">주행화면입니다</string>
+    <string name="north">북쪽</string>
+    <string name="west">서쪽</string>
+    <string name="east">동쪽</string>
+    <string name="south">남쪽</string>
+    <string name="stop">중지</string>
+    <string name="received">받은값:</string>
+</resources>
