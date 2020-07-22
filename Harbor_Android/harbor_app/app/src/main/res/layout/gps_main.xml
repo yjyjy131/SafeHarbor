@@ -54,11 +54,14 @@
             tools:ignore="NestedWeights"
             android:onClick="west"/>
 
-        <LinearLayout
+        <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            tools:ignore="UselessLeaf" />
+            tools:ignore="UselessLeaf"
+            android:text="@string/center"
+            android:textSize="30sp"
+            android:onClick="center"/>
 
         <Button
             android:layout_width="0dp"

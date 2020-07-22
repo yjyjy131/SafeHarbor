@@ -9,4 +9,7 @@
     <string name="south">남쪽</string>
     <string name="stop">중지</string>
     <string name="received">받은값:</string>
+    <string name="center">중앙</string>
+    <string name="nowtime">현재시각:</string>
+    <string name="timeformat">yyyy/MM/dd HH:mm:ss</string>
 </resources>

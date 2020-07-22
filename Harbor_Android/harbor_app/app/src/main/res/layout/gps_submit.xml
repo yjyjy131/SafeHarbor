@@ -13,5 +13,10 @@
         android:layout_height="100dp"
         android:text="@string/stop"
         android:textSize="40sp"/>
+    <TextView
+        android:layout_width="300dp"
+        android:layout_height="150dp"
+        android:id="@+id/dateNow"
+        android:textSize="30sp"/>
 
 </LinearLayout>

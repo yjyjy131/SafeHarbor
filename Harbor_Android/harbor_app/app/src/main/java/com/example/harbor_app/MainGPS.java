@@ -38,4 +38,9 @@ public class MainGPS extends AppCompatActivity {
         intent.putExtra("dir_phone", 3);
         startActivity(intent);
     }
+    public void center(View view) {
+        Intent intent = new Intent(getApplicationContext(), submit_GPS.class);
+        intent.putExtra("dir_phone", 4);
+        startActivity(intent);
+    }
 }
