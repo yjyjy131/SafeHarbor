@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void jbtn(View view) {
-        Intent intent = new Intent(getApplicationContext(), MainGPS.class);
+        Intent intent = new Intent(getApplicationContext(), MainDrive.class);
         startActivity(intent);
     }
 

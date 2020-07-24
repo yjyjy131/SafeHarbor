@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,13 +19,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.sql.Struct;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
 import android.widget.TextView;
-
 
 public class submit_GPS extends AppCompatActivity {
     //private String TAG = getString(R.string.received);
@@ -35,7 +36,6 @@ public class submit_GPS extends AppCompatActivity {
     // 현재시간을 date 변수에 저장한다.
 
     TextView dateNow;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,12 +46,11 @@ public class submit_GPS extends AppCompatActivity {
         final int dir_phone = intent.getIntExtra("dir_phone", 0);
         String time;
         dateNow = (TextView) findViewById(R.id.dateNow);
-           // TextView 에 현재 시간 문자열 할당
+        // TextView 에 현재 시간 문자열 할당
         //time = (String) findViewById(R.id.dateNow);
         try {
-            mSocket = IO.socket("http://121.165.248.106:8080");
+            mSocket = IO.socket("http://10.210.24.23:8080/");
             mSocket.connect();
-
             TimerTask tt = new TimerTask() {
                 //TimerTask 추상클래스를 선언하자마자 run()을 강제로 정의하도록 한다.
                 @SuppressLint({"SimpleDateFormat", "SetTextI18n"})
@@ -64,7 +63,7 @@ public class submit_GPS extends AppCompatActivity {
                     sdfNow = new SimpleDateFormat(getString(R.string.timeformat));
                     // String 변수에 값 저장
                     String formatDate = sdfNow.format(date);
-                    dateNow.setText(getString(R.string.nowtime)+"\n"+formatDate);
+                    dateNow.setText(getString(R.string.nowtime) + "\n" + formatDate);
                     /////////////////// 서버로 보내는 값 : gpsX, gpsY, location, time ////////////////////
                     JSONObject jsonObject = new JSONObject();
                     try {
@@ -92,17 +91,26 @@ public class submit_GPS extends AppCompatActivity {
                         jsonObject.put("gpsX", "135");
                         jsonObject.put("gpsY", "124");
                         jsonObject.put("location", location);
-                        jsonObject.put("time",formatDate);
+                        jsonObject.put("time", formatDate);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     mSocket.emit("operator gps stream", jsonObject);
+                    jsonObject=null;
                     //////////////////////////////////////////////////
                 }
 
             };
-            Timer timer = new Timer();
+            final Timer timer = new Timer();
             timer.schedule(tt, 0, 5000);
+            btn.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View view) {
+                    mSocket.disconnect();
+                    timer.cancel();
+                    Intent goIntent = new Intent(getApplicationContext(),MainActivity.class);
+                    startActivity(goIntent);
+                }
+            });
             //mSocket.on(Socket.EVENT_CONNECT, onConnect);
             mSocket.on("serverMessage", onMessageReceived);
         } catch (URISyntaxException e) {

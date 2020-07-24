@@ -12,4 +12,7 @@
     <string name="center">중앙</string>
     <string name="nowtime">현재시각:</string>
     <string name="timeformat">yyyy/MM/dd HH:mm:ss</string>
+    <string name="receivedData">받은조종정보</string>
+    <string name="speed">speed:</string>
+    <string name="angle">angle:</string>
 </resources>
