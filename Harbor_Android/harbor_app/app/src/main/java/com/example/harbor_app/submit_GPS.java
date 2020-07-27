@@ -3,6 +3,7 @@ package com.example.harbor_app;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.usb.UsbManager;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,21 +15,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
+import com.hoho.android.usbserial.driver.UsbSerialDriver;
+import com.hoho.android.usbserial.driver.UsbSerialPort;
+import com.hoho.android.usbserial.driver.UsbSerialProber;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.sql.Struct;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Date;
 import java.text.SimpleDateFormat;
-
 import android.widget.TextView;
 
 public class submit_GPS extends AppCompatActivity {
-    //private String TAG = getString(R.string.received);
+
     private Socket mSocket;
     Button btn;
     Intent intent;
@@ -36,6 +40,7 @@ public class submit_GPS extends AppCompatActivity {
     // 현재시간을 date 변수에 저장한다.
 
     TextView dateNow;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,7 +101,6 @@ public class submit_GPS extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     mSocket.emit("operator gps stream", jsonObject);
-                    jsonObject=null;
                     //////////////////////////////////////////////////
                 }
 
@@ -107,7 +111,7 @@ public class submit_GPS extends AppCompatActivity {
                 public void onClick(View view) {
                     mSocket.disconnect();
                     timer.cancel();
-                    Intent goIntent = new Intent(getApplicationContext(),MainActivity.class);
+                    Intent goIntent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(goIntent);
                 }
             });

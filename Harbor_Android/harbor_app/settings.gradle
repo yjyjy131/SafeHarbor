@@ -1,2 +1,4 @@
+include ':usbSerialForAndroid'
+include ':usbSerialExamples'
 include ':app'
 rootProject.name = "layout"
