@@ -26,7 +26,7 @@ router.get('/', function (req, res, next) {
 
 
 router.get('/log', function(req, res, next){
-  res.redirect("/log");
+    res.redirect("/log");
 });
 
 router.get('/droneSystem', function(req, res, next) {

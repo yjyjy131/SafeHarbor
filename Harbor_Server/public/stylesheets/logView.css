@@ -20,7 +20,7 @@
 /* drone-page table style */
 .table-wrapper {
     width: inherit;
-    height: inherit;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -34,6 +34,11 @@
     margin-top: 41em;
 }
     
+#logSelcBox {
+    color: black;
+    padding: 0.1em 1em 0.1em 1em;
+    margin: 0.7em 0em 0em 9em;
+}
 
 #tableScroll {
     width:100%;

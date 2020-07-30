@@ -32,16 +32,19 @@
 						</ul>
                     </nav>
                     <div id="main">
-                        <select name="category" id="sortingCategory">
-                            <option value="">- Sorting Category -</option>
-                            <option value="1">All</option>
+                        <form method="post">
+                        <select id="logSelcBox" name="category" onchange="logTableCreate()">|
+                            <option value="">-Sorting Category-</option>
+                            <option value="0">All</option>
                             <option value="1">Username</option>
-                            <option value="1">time</option>
+                            <option value="2">time</option>
                         </select>
+                        </form>
                             <div class="table-wrapper">
                                 <table id="dataTable">
                                     <thead>
                                         <tr id="fixedHead">
+                                            <th>username</th>
                                             <th>time</th>
                                             <th>gpsX</th>
                                             <th>gpsY</th>
@@ -50,10 +53,10 @@
                                         </tr>
                                     </thead>
                                     <div id="tableScroll">
-                                    <tbody id="tableCreate">
+                                        <tbody id="tableCreation">
                                         <!-- ejs mysql 연동 -->
                                         <!-- 테이블 동적생성 + th 고정 -->
-                                    </tbody>
+                                        </tbody>
                                     </div>
                                 </table>
                             </div>
@@ -68,10 +71,18 @@
 						</div>
 					</footer>
 			</div>
-			<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+            <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 			<script src="/js/jquery.func.min.js"></script>
 			<script src="/js/util.js"></script>
             <script src="/js/main.js"></script>
-            <script src="/js/tableCreate.js"></script>
+            <script src="/js/logTableCreate.js"></script>
+            <script>
+               $(document).ready(function(){
+                logTableCreate();
+                setInterval("logTableCreate()", 2000); 
+                });
+            </script>
+        
     </body>
 </html>
