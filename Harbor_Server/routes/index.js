@@ -26,12 +26,7 @@ router.get('/', function (req, res, next) {
 
 
 router.get('/log', function(req, res, next){
-<<<<<<< Updated upstream
-  res.render('logView.html');
-  //res.redirect("/log");
-=======
     res.redirect("/log");
->>>>>>> Stashed changes
 });
 
 router.get('/droneSystem', function(req, res, next) {
