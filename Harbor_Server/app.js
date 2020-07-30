@@ -161,4 +161,40 @@ function onListening() {
 }
 
 
+// 웹 Ajax - 통신 logView.html 부분 페이지 실시간 갱신 
+app.get('/api/get', function(req, res){
+  let datas = req.query.data;
+  console.log('받았다 = ' + datas);
+  var result = models.control_log;
+ 
+  if ( datas == 0) { // All
+    result.findAll({
+    }).then(result => {
+        res.send(result);
+    });
+  } else if ( datas == 1) { // UserName
+    result.findAll({
+      order: [
+        ['userid', 'ASC']
+    ]
+    }).then(result => {
+        res.send(result);
+    });
+  } else if ( datas == 2) { // Time
+    result.findAll({
+      order: [
+        ['userid', 'DESC']
+    ]
+    }).then(result => {
+        res.send(result);
+    });
+  } else { // default
+    var result = models.control_log.findAll({
+    }).then(result => {
+        res.send(result);
+    });
+  }
+})
+
+
 module.exports = app;

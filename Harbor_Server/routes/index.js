@@ -12,7 +12,7 @@ router.get('/', function (req, res, next) {
       });
     }
     else { //로그인페이지로 다시이동
-      res.render('opSystem.html', { 
+      res.render('index.html', { 
         session: req.session
       });
     }
@@ -26,7 +26,8 @@ router.get('/', function (req, res, next) {
 
 
 router.get('/log', function(req, res, next){
-  res.redirect("/log");
+  res.render('logView.html');
+  //res.redirect("/log");
 });
 
 router.get('/droneSystem', function(req, res, next) {
