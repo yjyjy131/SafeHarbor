@@ -30,12 +30,15 @@ router.get('/log', function(req, res, next){
 });
 
 router.get('/droneSystem', function(req, res, next) {
+  res.render('droneSystem.html');
+  /*
   if(req.session.userid == undefined){
     res.redirect("/");
   }
   else{
       res.render('droneSystem.html');
   }
+  */
 });
 
 router.get('/opSystem', function(req, res, next) {

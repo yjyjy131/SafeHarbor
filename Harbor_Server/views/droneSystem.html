@@ -6,10 +6,13 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" tpye="text/css" href="/stylesheets/basic.css"/>
 		<link rel="stylesheet" type="text/css" href="/stylesheets/menuStyle.css"/>
-        <link rel="stylesheet" type="text/css" href="/stylesheets/droneSystem.css"/>	
+        <link rel="stylesheet" type="text/css" href="/stylesheets/droneSystem.css"/>
     </head>
     <!-- 드론 조종 페이지 -->
-	<body class="is-preload">
+	<body class="is-preload" onkeydowon='on_key_down()'>
+        <div style="display:none">
+            <br>keycode <input type='text' id='keycode'/>
+        </div>
 			<div id="wrapper">
 					<header id="header" class="alt">
 						<a href="mainMenu.html" class="logo"><strong>MALLANG</strong> <span> CAU </span></a>
@@ -44,31 +47,31 @@
                                     <tbody>
                                         <!-- DB -->
                                         <tr>
-                                            <td>latitude</td>
+                                            <td id="userid">userId</td>
                                             <td>29.99</td>
                                         </tr>
                                         <tr>
-                                            <td>logitude</td>
+                                            <td id="gpsX">latitude</td>
+                                            <td>29.99</td>
+                                        </tr>
+                                        <tr>
+                                            <td id="gpsY">logitude</td>
                                             <td>19.99</td>
                                         </tr>
                                         <tr>
-                                            <td>Velocity</td>
+                                            <td id="speed">Velocity</td>
                                             <td>19.99</td>
                                         </tr>
                                         <tr>
                                             <td>contorller-angle</td>
-                                            <td>29.99</td>
+                                            <td id="angleKeyInput">29.99</td>
                                         </tr>
                                         <tr>
                                             <td>contorller-gear</td>
-                                            <td>29.99</td>
+                                            <td id="gearKeyInput">null 단</td>
                                         </tr>
                                         <tr>
                                             <td>etc1</td>
-                                            <td>29.99</td>
-                                        </tr>
-                                        <tr>
-                                            <td>etc2</td>
                                             <td>29.99</td>
                                         </tr>
                                     </tbody>
@@ -77,7 +80,10 @@
                         </div>
                         <div id="drnCamera">
                         <!-- 스트리밍 -->
+                        <img id="control_main" src="/images/controller.png"  />
+                        <img id="control_gear" src="/images/gearBall.png"  />
                         </div>
+                        
                     </div>					
 					<footer id="footer">
 						<div class="inner">
@@ -94,12 +100,6 @@
 			<script src="/js/util.js"></script>
             <script src="/js/main.js"></script>
             <script src="socket.io/socket.io.js"></script> 
-            <script> 
-            var socket = io.connect('http://localhost:8000'); 
-            socket.on('news', function (data) { 	
-                console.log(data); 	
-                socket.emit('client login', { clientData : '클라이언트 접속', clientType : 'opw'}); 
-            }); 	 
-        </script>
+            <script src="/js/droneSocket.js"></script> 
     </body>
 </html>

@@ -15,6 +15,7 @@
 #drnCamera{
     background-color: lightsteelblue;
     width:250em;
+    margin-right: 1.2em;
 }
 
 /* drone-page table style */
@@ -86,3 +87,13 @@ table {
         table.alt tfoot {
             border-top: 0;
         }
+
+    #control_main {
+        margin: 17em 0em 0em 16em;
+        height: 30%;
+    }
+
+    #control_gear {
+        margin: 0em 0em 0em 10em;
+        height: 20%;
+    }

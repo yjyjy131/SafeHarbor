@@ -23,8 +23,7 @@ module.exports.attach_event = function(_io){
         //웹에서 서버로 조종정보 전달(조종시)
         //speed, angle, time
         socket.on('control stream', function (data) {
-          console.log('control stream \n' + data);
-
+          console.log('control stream \n' + data.gear + ' ' + data.angle + ' ' + data.controlTime + '\n');
           //서버에서 드론으로 조종정보 전달
           io.in('ctd').emit('control stream', data);
         });
