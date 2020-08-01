@@ -6,11 +6,17 @@ public class DestinationFlag : MonoBehaviour
 {
     public Vector3 pos { get { return transform.position; } }
 
+    private void Awake()
+    {
+        gameObject.SetActive(false);
+    }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("player"))
+        if (other.CompareTag("Player"))
         {
+            Debug.Log("arrived");
             GameManager.Instance.OnArrived();
+            gameObject.SetActive(false);
         }
     }
 

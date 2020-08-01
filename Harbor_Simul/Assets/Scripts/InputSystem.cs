@@ -14,6 +14,11 @@ public class InputSystem : Singleton<InputSystem>
 
     private const float threshold = 100f;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        DontDestroyOnLoad(gameObject);
+    }
     private void Update()
     {
         speed = getControllerSpeedValue();
@@ -31,6 +36,7 @@ public class InputSystem : Singleton<InputSystem>
         {
             speed = 0;
         }
+        speed = Mathf.Clamp(speed, -1, 1);
 
         if (Input.GetKey(KeyCode.A))
         {
@@ -44,6 +50,7 @@ public class InputSystem : Singleton<InputSystem>
         {
             angle = 0;
         }
+        angle = Mathf.Clamp(angle, -1, 1);
 
         if (Math.Abs(getControllerAngleValue()) > threshold)
         {

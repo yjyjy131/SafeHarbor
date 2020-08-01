@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using DWP2.ShipController;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,16 +8,17 @@ public class GameManager : Singleton<GameManager>
     private float time = 0;
     private Ship player;
     private List<MovableEntity> entities = new List<MovableEntity>();
+    [SerializeField]
     private ArrivePanel arrivePanel;
     private List<MyRoute> routes = new List<MyRoute>();
     private MyRoute currentRoute;
+    private bool isStart = false;
 
     // Start is called before the first frame update
     protected override void Awake()
     {
         base.Awake();
         setInstance(this);
-        arrivePanel = GameObject.Find("Canvas").transform.Find("ArrivePanel").GetComponent<ArrivePanel>();
         foreach(MyRoute child in GameObject.Find("Routes").transform.GetComponentsInChildren<MyRoute>())
         {
             routes.Add(child);
@@ -27,17 +29,26 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    private void Start()
+    public void Start()
     {
-        
+        StartGame();
     }
 
     public void StartGame()
     {
         currentRoute = routes[(int)GlobalData.route];
         currentRoute.destination.active();
-        player = Instantiate(Resources.Load<GameObject>("Prefabs/Ship"), currentRoute.startPoint.pos, Quaternion.identity).GetComponent<Ship>();
+        player = Instantiate(Resources.Load<GameObject>("Prefabs/Ship"+(int)GlobalData.shipType), currentRoute.startPoint.pos, Quaternion.identity).GetComponent<Ship>();
+        player.startControl();
+        CamManager.Instance.mainCam = player.camPos;
+        CamManager.Instance.uiPos = player.uiPos;
+        DWP2.WaterObjectManager.Instance.Synchronize();
+        isStart = true;
         StartCoroutine("logCoroutine");
+    }
+
+    public void Update()
+    {
     }
 
     public void OnArrived()

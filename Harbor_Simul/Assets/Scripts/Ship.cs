@@ -1,15 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using DWP2.ShipController;
 public class Ship : MovableEntity
 {
-    private ShipControl shipControl;
+    private  AdvancedShipController shipControl;
+    private Rigidbody rigid;
+    [SerializeField]
+    public Transform camPos;
+    [SerializeField]
+    public RectTransform uiPos;
     // Start is called before the first frame update
     protected override void Awake()
     {
         base.Awake();
-        shipControl = gameObject.GetComponent<ShipControl>();
+        shipControl = gameObject.GetComponent<AdvancedShipController>();
+        rigid = gameObject.GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -20,11 +26,13 @@ public class Ship : MovableEntity
 
     public void stopControl()
     {
-        shipControl.stopControl();
+        rigid.constraints = RigidbodyConstraints.FreezeAll;
+        shipControl.Deactivate();
     }
 
     public void startControl()
     {
-        shipControl.startControl();
+        rigid.constraints = RigidbodyConstraints.None;
+        shipControl.Activate();
     }
 }

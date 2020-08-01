@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class MyRoute : MonoBehaviour
 {
-    public StartPoint startPoint { get; }
-    public DestinationFlag destination { get; }
+    public StartPoint startPoint;
+    public DestinationFlag destination;
 }

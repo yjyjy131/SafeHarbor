@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum ShipType{
+public enum ShipType
+{
     Container
 }
 public enum Route
@@ -10,22 +11,16 @@ public enum Route
     RouteA
 }
 
-public enum SelectPhase
-{
-    Start,
-    Ship,
-    Route,
-    End
-}
 
 public class MainMenu : Singleton<MainMenu>
 {
     [SerializeField]
     private List<SelectPanel> selectPanels;
+    [SerializeField]
+    private LogPanel logPanel;
     private int currentPanel = 0;
     private Vector3 currentButtonPos = Vector3.zero;
-    private SelectPhase currentPhase = SelectPhase.Start;
-
+    private bool buttonActive = true;
     protected override void Awake()
     {
         base.Awake();
@@ -33,53 +28,75 @@ public class MainMenu : Singleton<MainMenu>
 
     private void Start()
     {
-        currentPhase = SelectPhase.Ship;
     }
 
-    public void onShipSelected(ShipType shipType)
+    public void onGameStartSelected()
     {
-        GlobalData.shipType = shipType;
         selectPanels[currentPanel++].deActive();
         selectPanels[currentPanel].active();
-        currentPhase = SelectPhase.Route;
     }
 
-    public void onRouteSelected(Route route)
+    public void onLogSelected()
     {
-        GlobalData.route = route;
-        selectPanels[currentPanel].deActive();
-        currentPanel = 0;
-        currentPhase = SelectPhase.End;
-        GameManager.Instance.StartGame();
         deActive();
+
     }
 
-    public void moveLeft()
+    public void onShipSelected(int shipType)
+    {
+        GlobalData.shipType = (ShipType) shipType;
+        nextPanel();
+    }
+
+    public void onRouteSelected(int route)
+    {
+        if (!buttonActive) return;
+        GlobalData.route =(Route) route;
+        SceneManage.Instance.loadScene("MyScene");
+        buttonActive = false;
+    }
+
+    public void backButton()
     {
         selectPanels[currentPanel].moveLeft();
         currentButtonPos = selectPanels[currentPanel].getCurrentButtonPos();
     }
-    public void moveRight()
+    public void nextButton()
     {
         selectPanels[currentPanel].moveRight();
         currentButtonPos = selectPanels[currentPanel].getCurrentButtonPos();
     }
 
+    public void backPanel()
+    {
+        selectPanels[currentPanel].deActive();
+        currentPanel = (currentPanel-1) % selectPanels.Count;
+        selectPanels[currentPanel].active();
+    }
+    public void nextPanel()
+    {
+        selectPanels[currentPanel].deActive();
+        currentPanel = (currentPanel + 1) % selectPanels.Count;
+        selectPanels[currentPanel].active();
+    }
+
     public void reset()
     {
+        selectPanels[currentPanel].deActive();
         currentPanel = 0;
         currentButtonPos = Vector3.zero;
-        currentPhase = SelectPhase.Ship;
+        selectPanels[currentPanel].active();
         active();
     }
 
     public void active()
     {
-        gameObject.SetActive(true);
+        selectPanels[currentPanel].active();
+
     }
 
     public void deActive()
     {
-        gameObject.SetActive(false);
+        selectPanels[currentPanel].deActive();
     }
 }

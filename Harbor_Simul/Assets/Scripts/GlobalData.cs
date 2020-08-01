@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class GlobalData 
 {
-    public static ShipType shipType;
-    public static Route route;
+    public static ShipType shipType = ShipType.Container;
+    public static Route route = Route.RouteA;
     public static int entityNum = 0;
 }

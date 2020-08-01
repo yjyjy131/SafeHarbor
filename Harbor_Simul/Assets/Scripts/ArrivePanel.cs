@@ -17,11 +17,11 @@ public class ArrivePanel : MonoBehaviour
 
     public void onRestartSelected()
     {
-
+        SceneManage.Instance.loadScene("MyScene");
     }
 
     public void onMainMenuSelected()
     {
-
+        SceneManage.Instance.loadScene("MainScene");
     }
 }
