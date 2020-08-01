@@ -13,6 +13,7 @@ module.exports.attach_event = function(_io){
     io.on('connection', function (socket) {  
         //socket.emit('news', { serverData : "서버 작동" });
 
+        
         //연결될 경우. 웹쪽은 data.userid 정보를 넣어서 같이 전달해야함
         socket.on('client connected', function (data) {
             socket.clientType = data.clientType;
