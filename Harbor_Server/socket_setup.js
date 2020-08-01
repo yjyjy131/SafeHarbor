@@ -12,6 +12,9 @@ module.exports.attach_event = function(_io){
     io.emit('news', { serverData : "서버 작동" });
     io.on('connection', function (socket) {  
 
+        socket.emit('news', { serverData : "서버 작동" });
+
+
         //연결될 경우. 웹쪽은 data.userid 정보를 넣어서 같이 전달해야함
         socket.on('client connected', function (data) {
             socket.clientType = data.clientType;
@@ -19,11 +22,12 @@ module.exports.attach_event = function(_io){
             onClientConnected(socket);
             console.log(data);
         });
-        
+
+
         //웹에서 서버로 조종정보 전달(조종시)
         //speed, angle, time
         socket.on('control stream', function (data) {
-          console.log('control stream \n' + data.gear + ' ' + data.angle + ' ' + data.controlTime + '\n');
+          console.log('control stream :' + data.gear + ' ' + data.angle + ' ' + data.controlTime + '\n');
           //서버에서 드론으로 조종정보 전달
           io.in('ctd').emit('control stream', data);
         });
@@ -42,10 +46,10 @@ module.exports.attach_event = function(_io){
                     angle: data.angle,
                     gpsX: data.gpsX,
                     gpsY: data.gpsY,
-                    time: data.time,
+                    time: data.time
                   });
             }
-
+ 
             //서버에서 웹으로 드론정보 전달(조종시)
             io.in('ctw').emit('drone data stream', data);
         });        
@@ -113,7 +117,8 @@ function onClientConnected(socket){
         socket.join(socket.clientType);
     }
 
-    console.log(socket.clientType + " connected. cnt : " + counts[socket.clientType]);
+    //console.log(socket.clientType + " connected. cnt : " + counts[socket.clientType]);
+    console.log(socket.clientType + " connected. cnt : " + [socket.clientType]);
 }
 
 //module.exports.count = count;

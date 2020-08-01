@@ -1,1 +1,0 @@
- <img id="control_gear" src="/images/gearBall.png"  />
