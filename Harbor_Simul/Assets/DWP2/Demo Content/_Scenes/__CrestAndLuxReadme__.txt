@@ -1,0 +1,1 @@
+Before importing either Crest or Lux demo scene make sure that the corresponding asset has been imported beforehand or there will be a lot of missing scripts.
