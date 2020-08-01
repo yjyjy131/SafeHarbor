@@ -1,6 +1,5 @@
 // opSystem 소켓 통신
 // TODO: Ajax , db 거치지 않고 socket 으로 화면 깜빡임 없는 polyline 애니메이션 
-
 var socket = io.connect('http://localhost:8000'); 
 var areaRadius = 0;
 var shipCoordinates = new Array();
@@ -31,28 +30,28 @@ socket.on('news', function (data) {
 socket.emit('client connected', 
 { clientData : '클라이언트 접속', clientType : 'opw', userid : 'userid'}); 
 
-
-socket.on('operator gps stream', function (data) {
-   if (shipCoordinates.length != 0) 
+function initMap() {
+  var ulsan = {lat: 35.497021, lng: 129.391589};
+  var map = new google.maps.Map(
+    document.getElementById('map'), {zoom: 13, center: ulsan});
+  //var marker = new google.maps.Marker({position: ulsan, map: map});
+  
+  socket.on('operator gps stream', function (data) {
+    
+    if (shipCoordinates.length != 0) 
     {
-      for(key in shipCoordinates){
-        shipCoordinates[key] =null
-       }
+       for(key in shipCoordinates){
+         shipCoordinates[key] =null
+        }
     }
     shipCoordinates = coordinate_segment(data);
     areaRadius = calcRadius(data);
     setDataQuery(data);
+
+    circle.setMap(map);
+    shipArea.setMap(map);
 })
 
-
-function initMap() {
-  var ulsan = {lat: 35.497021, lng: 129.391589};
-  var map = new google.maps.Map(
-  document.getElementById('map'), {zoom: 13, center: ulsan});
-  //var marker = new google.maps.Marker({position: ulsan, map: map});
-
-  circle.setMap(map);
-  shipArea.setMap(map);
 } 
 
 // 위도 y 경도 x , 상1 우2 하3 좌4 순서 
