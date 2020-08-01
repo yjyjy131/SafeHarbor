@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 20
-  productGUID: f3c9861f30a718344854977d66e97424
+  productGUID: 92549f2edcddc5d448929d4f2d7e638c
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -13,11 +13,11 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
-  productName: Harbor_Simul
+  productName: New Unity Project
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
-  m_ShowUnitySplashScreen: 1
+  m_ShowUnitySplashScreen: 0
   m_ShowUnitySplashLogo: 1
   m_SplashScreenOverlayOpacity: 1
   m_SplashScreenAnimation: 1
@@ -46,7 +46,7 @@ PlayerSettings:
   defaultScreenHeight: 768
   defaultScreenWidthWeb: 960
   defaultScreenHeightWeb: 600
-  m_StereoRenderingPath: 0
+  m_StereoRenderingPath: 1
   m_ActiveColorSpace: 1
   m_MTRendering: 1
   m_StackTraceTypes: 010000000100000001000000010000000100000001000000
@@ -63,9 +63,9 @@ PlayerSettings:
   preserveFramebufferAlpha: 0
   disableDepthAndStencilBuffers: 0
   androidStartInFullscreen: 1
-  androidRenderOutsideSafeArea: 0
+  androidRenderOutsideSafeArea: 1
   androidUseSwappy: 0
-  androidBlitType: 1
+  androidBlitType: 0
   defaultIsNativeResolution: 1
   macRetinaSupport: 1
   runInBackground: 1
@@ -80,7 +80,7 @@ PlayerSettings:
   bakeCollisionMeshes: 0
   forceSingleInstance: 0
   useFlipModelSwapchain: 1
-  resizableWindow: 0
+  resizableWindow: 1
   useMacAppStoreValidation: 0
   macAppStoreCategory: public.app-category.games
   gpuSkinning: 1
@@ -105,7 +105,7 @@ PlayerSettings:
   xboxOneDisableEsram: 0
   xboxOnePresentImmediateThreshold: 0
   switchQueueCommandMemory: 0
-  switchQueueControlMemory: 0
+  switchQueueControlMemory: 16384
   switchQueueComputeMemory: 262144
   switchNVNShaderPoolsGranularity: 33554432
   switchNVNDefaultPoolsGranularity: 16777216
@@ -176,7 +176,7 @@ PlayerSettings:
   CreateWallpaper: 0
   APKExpansionFiles: 0
   keepLoadedShadersAlive: 0
-  StripUnusedMeshComponents: 0
+  StripUnusedMeshComponents: 1
   VertexChannelCompressionMask: 4054
   iPhoneSdkVersion: 988
   iOSTargetOSVersionString: 10.0
@@ -250,13 +250,13 @@ PlayerSettings:
   iOSRequireARKit: 0
   iOSAutomaticallyDetectAndAddCapabilities: 1
   appleEnableProMotion: 0
-  clonedFromGUID: 9870af204204ab84596f8a656f2f2ce6
-  templatePackageId: com.unity.template.universal@7.1.8
+  clonedFromGUID: a9ab45d651447274b98057940d1af953
+  templatePackageId: com.unity.template.3dextra@4.0.4
   templateDefaultScene: Assets/Scenes/SampleScene.unity
   AndroidTargetArchitectures: 1
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: 
+  AndroidKeystoreName: '{inproject}: '
   AndroidKeyaliasName: 
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 0
@@ -271,7 +271,7 @@ PlayerSettings:
     banner: {fileID: 0}
   androidGamepadSupportLevel: 0
   AndroidValidateAppBundleSize: 1
-  AndroidAppBundleSizeToValidate: 100
+  AndroidAppBundleSizeToValidate: 150
   m_BuildTargetIcons: []
   m_BuildTargetPlatformIcons: []
   m_BuildTargetBatching:
@@ -281,10 +281,10 @@ PlayerSettings:
   - m_BuildTarget: tvOS
     m_StaticBatching: 1
     m_DynamicBatching: 0
-  - m_BuildTarget: iPhone
+  - m_BuildTarget: Android
     m_StaticBatching: 1
     m_DynamicBatching: 0
-  - m_BuildTarget: Android
+  - m_BuildTarget: iPhone
     m_StaticBatching: 1
     m_DynamicBatching: 0
   - m_BuildTarget: WebGL
@@ -323,19 +323,27 @@ PlayerSettings:
   - m_BuildTarget: XboxOnePlayer
     m_GraphicsJobMode: 0
   m_BuildTargetGraphicsAPIs:
+  - m_BuildTarget: AndroidPlayer
+    m_APIs: 150000000b000000
+    m_Automatic: 0
   - m_BuildTarget: iOSSupport
     m_APIs: 10000000
     m_Automatic: 0
   - m_BuildTarget: AppleTVSupport
     m_APIs: 10000000
     m_Automatic: 0
-  - m_BuildTarget: AndroidPlayer
-    m_APIs: 150000000b000000
-    m_Automatic: 0
   - m_BuildTarget: WebGLSupport
     m_APIs: 0b000000
     m_Automatic: 0
-  m_BuildTargetVRSettings: []
+  - m_BuildTarget: MetroSupport
+    m_APIs: 02000000
+    m_Automatic: 1
+  m_BuildTargetVRSettings:
+  - m_BuildTarget: Standalone
+    m_Enabled: 1
+    m_Devices:
+    - OpenVR
+    - Oculus
   openGLRequireES31: 0
   openGLRequireES31AEP: 0
   openGLRequireES32: 0
@@ -344,9 +352,7 @@ PlayerSettings:
     Android: 1
     iPhone: 1
     tvOS: 1
-  m_BuildTargetGroupLightmapEncodingQuality:
-  - m_BuildTarget: Standalone
-    m_EncodingQuality: 1
+  m_BuildTargetGroupLightmapEncodingQuality: []
   m_BuildTargetGroupLightmapSettings: []
   playModeTestRunnerEnabled: 0
   runPlayModeTestAsEditModeTest: 0
@@ -576,7 +582,23 @@ PlayerSettings:
   webGLLinkerTarget: 1
   webGLThreadsSupport: 0
   webGLWasmStreaming: 0
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    1: UNITY_POST_PROCESSING_STACK_V2
+    4: UNITY_POST_PROCESSING_STACK_V2
+    7: UNITY_POST_PROCESSING_STACK_V2
+    13: UNITY_POST_PROCESSING_STACK_V2
+    14: UNITY_POST_PROCESSING_STACK_V2
+    17: UNITY_POST_PROCESSING_STACK_V2
+    18: UNITY_POST_PROCESSING_STACK_V2
+    19: UNITY_POST_PROCESSING_STACK_V2
+    21: UNITY_POST_PROCESSING_STACK_V2
+    23: UNITY_POST_PROCESSING_STACK_V2
+    24: UNITY_POST_PROCESSING_STACK_V2
+    25: UNITY_POST_PROCESSING_STACK_V2
+    26: UNITY_POST_PROCESSING_STACK_V2
+    27: UNITY_POST_PROCESSING_STACK_V2
+    28: UNITY_POST_PROCESSING_STACK_V2
+    29: UNITY_POST_PROCESSING_STACK_V2
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}
@@ -590,14 +612,14 @@ PlayerSettings:
   apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: Template_Lightweight
+  metroPackageName: Template_3D
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
-  metroApplicationDescription: Template_Lightweight
+  metroApplicationDescription: Template_3D
   wsaImages: {}
   metroTileShortName: 
   metroTileShowName: 0
