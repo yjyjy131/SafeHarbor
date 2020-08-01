@@ -47,26 +47,21 @@
                                     <tbody>
                                         <!-- DB 연동 동적 테이블 생성 -->
                                         <tr>
+                                            <td>userName</td>
+                                            <td id="userid">19.99</td>
+                                        </tr>
+                                        <tr>
                                             <td>latitude</td>
-                                            <td>29.99</td>
+                                            <td id="gpsX">29.99</td>
                                         </tr>
                                         <tr>
                                             <td>logitude</td>
-                                            <td>19.99</td>
+                                            <td id="gpsY">19.99</td>
                                         </tr>
                                         <tr>
                                             <td>Velocity</td>
-                                            <td>19.99</td>
+                                            <td id="speed">19.99</td>
                                         </tr>
-                                        <tr>
-                                            <td>etc1</td>
-                                            <td>19.99</td>
-                                        </tr>
-                                        <tr>
-                                            <td>etc2</td>
-                                            <td>19.99</td>
-                                        </tr>
-                                       
                                     </tbody>
                                 </table>
                             </div>
@@ -90,12 +85,6 @@
 			<script src="/js/util.js"></script>
             <script src="/js/main.js"></script>
             <script src="socket.io/socket.io.js"></script> 
-            <script> 
-            var socket = io.connect('http://localhost:8000'); 
-            socket.on('news', function (data) { 	
-                console.log(data); 	
-                socket.emit('client login', { clientData : '클라이언트 접속', clientType : 'opw'}); 
-            }); 	 
-        </script>
+            <script src="/js/guestSocekt.js"></script>
     </body>
 </html>

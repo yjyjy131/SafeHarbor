@@ -1,3 +1,4 @@
+// logView.html ajax table create
 function logTableCreate() {
     var sortSelect = document.getElementById("logSelcBox");
     var selectVal = sortSelect.options[sortSelect.selectedIndex].value;
@@ -6,15 +7,15 @@ function logTableCreate() {
     // All : 페이지 갱신없이 모든 로그 출력
     if (selectVal == 0){
         $("#tableCreation").html('');
-    $.ajax({
-        url:'/api/get',
-        dataType:'json',
-        type:'GET',
-        data: {"data" : "0"},
-        success: function(result){
-            successFunc(result);
-        }
-    });
+         $.ajax({
+            url:'/api/get',
+             dataType:'json',
+             type:'GET',
+             data: {"data" : "0"},
+              success: function(result){
+                successFunc(result);
+             } 
+        });
     }
 
     //UserName
