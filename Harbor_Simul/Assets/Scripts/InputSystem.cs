@@ -17,7 +17,6 @@ public class InputSystem : Singleton<InputSystem>
     protected override void Awake()
     {
         base.Awake();
-        DontDestroyOnLoad(gameObject);
     }
     private void Update()
     {

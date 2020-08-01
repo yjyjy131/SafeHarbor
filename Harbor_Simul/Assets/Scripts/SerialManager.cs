@@ -4,7 +4,7 @@ using UnityEngine;
 using System.IO.Ports;
 using System;
 
-public class SerialManager : MonoBehaviour
+public class SerialManager : Singleton<SerialManager>
 {
     public enum PortNumber
     {
@@ -19,8 +19,13 @@ public class SerialManager : MonoBehaviour
     private string output;
 
     // Start is called before the first frame update
-    void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+        if (SerialManager.instance != null && SerialManager.instance != this)
+            Destroy(gameObject);
+        instance = this;
+        DontDestroyOnLoad(gameObject);
         serial = new SerialPort(portNumber.ToString(), baudRate);
     }
 
