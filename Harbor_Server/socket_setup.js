@@ -11,9 +11,7 @@ module.exports.attach_event = function(_io){
     io = _io;
     io.emit('news', { serverData : "서버 작동" });
     io.on('connection', function (socket) {  
-
-        socket.emit('news', { serverData : "서버 작동" });
-
+        //socket.emit('news', { serverData : "서버 작동" });
 
         //연결될 경우. 웹쪽은 data.userid 정보를 넣어서 같이 전달해야함
         socket.on('client connected', function (data) {
@@ -64,6 +62,7 @@ module.exports.attach_event = function(_io){
             io.in('opw').emit('video stream', data);
             //TODO
         });
+
 
         //드론에서 서버로 gps정보 전달(관제시)
         // gpsX, gpsY, time, location(front, back, left, right, center)

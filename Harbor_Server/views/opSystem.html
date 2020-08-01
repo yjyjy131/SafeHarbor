@@ -38,11 +38,11 @@
                                     <!-- 테이블 동적 생성 opTableCreate.js -->
                                     <tr>
                                         <td>속도</td>
-                                        <td>100</td>
+                                        <td id="speed">100</td>
                                     </tr>
                                     <tr>
                                         <td>충돌위험</td>
-                                        <td>0</td>
+                                        <td id="danger">0</td>
                                     </tr>
                                 </table>
                                 <table class="alt" id="gpsInfo">
@@ -56,28 +56,28 @@
                                     <tbody>
                                         <tr>
                                             <td>center</td>
-                                            <td>29.99</td>
-                                            <td>29.99</td>
+                                            <td id="centerlat">29.99</td>
+                                            <td id="centerlong">29.99</td>
                                         </tr>
                                         <tr>
                                             <td>up</td>
-                                            <td>19.99</td>
-                                            <td>29.99</td>
+                                            <td id="frontlat">19.99</td>
+                                            <td id="frontlong">29.99</td>
                                         </tr>
                                         <tr>
                                             <td>down</td>
-                                            <td>19.99</td>
-                                            <td>29.99</td>
+                                            <td id="backlat">19.99</td>
+                                            <td id="backlong">29.99</td>
                                         </tr>
                                         <tr>
                                             <td>left</td>
-                                            <td>29.99</td>
-                                            <td>29.99</td>
+                                            <td id="leftlat">29.99</td>
+                                            <td id="leftlong">29.99</td>
                                         </tr>
                                         <tr>
                                             <td>right</td>
-                                            <td>29.99</td>
-                                            <td>29.99</td>
+                                            <td id="rightlat">29.99</td>
+                                            <td id="rightlong">29.99</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -103,6 +103,7 @@
             <script src="/js/main.js"></script>
             <script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDkQqVhUhen65ZiP-GjNX3RYFgZZ1__OQI&callback=initMap"></script>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+            <script src="socket.io/socket.io.js"></script> 
             <script src="/js/initMap.js"></script>
     </body>
 </html>

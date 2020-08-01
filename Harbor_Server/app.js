@@ -161,10 +161,9 @@ function onListening() {
 }
 
 
-// 웹 Ajax - 통신 logView.html 부분 페이지 실시간 갱신 
+//logView.html - Ajax 처리  
 app.get('/api/get', function(req, res){
   let datas = req.query.data;
-  console.log('받았다 = ' + datas);
   var result = models.control_log;
  
   if ( datas == 0) { // All

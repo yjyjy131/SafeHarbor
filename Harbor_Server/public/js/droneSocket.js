@@ -1,4 +1,5 @@
 // droneSystem.html 드론 조종 소켓 통신
+//TODO: 비디오 값 수신
 var socket = io.connect('http://localhost:8000'); 
 var gearVal = 0;
 var angleVal = 0;
@@ -11,16 +12,12 @@ socket.on('news', function (data) {
 socket.emit('client connected', 
 { clientData : '클라이언트 접속', clientType : 'ctw', userid : 'userid'}); 
 
-
 socket.on('drone data stream', function (data) {
-    console.log(data.userid);
     $('#userid').text(data.userid);
     $('#gpsX').text(data.gpsX);
     $('#gpsY').text(data.gpsY);
     $('#speed').text(data.speed);
 })
-
-//TODO: 비디오 값 수신
 
 //keyboard input event 
 document.addEventListener('keydown', function(event){
