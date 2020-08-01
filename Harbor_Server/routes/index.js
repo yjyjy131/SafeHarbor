@@ -26,10 +26,10 @@ router.get('/', function (req, res, next) {
 
 
 router.get('/log', function(req, res, next){
-  res.redirect("/log");
+    res.redirect("/log");
 });
 
-router.get('/droneSystem', function(req, res, next) {
+router.get('/droneSystem', function(req, res, next) {  
   if(req.session.userid == undefined){
     res.redirect("/");
   }
@@ -38,7 +38,7 @@ router.get('/droneSystem', function(req, res, next) {
   }
 });
 
-router.get('/opSystem', function(req, res, next) {
+router.get('/opSystem', function(req, res, next) { 
   if(req.session.userid == undefined){
     res.redirect("/");
   }
