@@ -1,0 +1,66 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.hoho.android.usbserial.examples" >
+4
+5    <uses-sdk
+6        android:minSdkVersion="17"
+6-->C:\harbor\main\Harbor_Android\harbor_app\usbSerialExamples\src\main\AndroidManifest.xml
+7        android:targetSdkVersion="28" />
+7-->C:\harbor\main\Harbor_Android\harbor_app\usbSerialExamples\src\main\AndroidManifest.xml
+8    <!-- mipmap/ic_launcher created with Android Studio -> New -> Image Asset using @color/colorPrimary and USB clip art -->
+9    <application
+9-->C:\harbor\main\Harbor_Android\harbor_app\usbSerialExamples\src\main\AndroidManifest.xml:7:5-32:19
+10        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+10-->[androidx.core:core:1.1.0] C:\Users\JoonHo\.gradle\caches\transforms-2\files-2.1\76f2b6439d16df60df3177021482ee5a\core-1.1.0\AndroidManifest.xml:24:18-86
+11        android:debuggable="true"
+12        android:icon="@mipmap/ic_launcher"
+12-->C:\harbor\main\Harbor_Android\harbor_app\usbSerialExamples\src\main\AndroidManifest.xml:8:9-43
+13        android:label="@string/app_name"
+13-->C:\harbor\main\Harbor_Android\harbor_app\usbSerialExamples\src\main\AndroidManifest.xml:9:9-41
+14        android:testOnly="true"
+15        android:theme="@style/AppTheme" >
+15-->C:\harbor\main\Harbor_Android\harbor_app\usbSerialExamples\src\main\AndroidManifest.xml:10:9-40
+16
+17        <!--
+18             for this simple app launchMode=singleTask and singleTop have same effect.
+19             If you would start another activity in the app, e.g. Android Settings
+20             then you should use singleTask, else a new MainActivity would be started
+21             when the settings activity is currently shown
+22        -->
+23        <activity
+23-->C:\harbor\main\Harbor_Android\harbor_app\usbSerialExamples\src\main\AndroidManifest.xml:16:9-31:20
+24            android:name="com.hoho.android.usbserial.examples.MainActivity"
+24-->C:\harbor\main\Harbor_Android\harbor_app\usbSerialExamples\src\main\AndroidManifest.xml:17:13-41
+25            android:label="@string/app_name"
+25-->C:\harbor\main\Harbor_Android\harbor_app\usbSerialExamples\src\main\AndroidManifest.xml:18:13-45
+26            android:launchMode="singleTask"
+26-->C:\harbor\main\Harbor_Android\harbor_app\usbSerialExamples\src\main\AndroidManifest.xml:19:13-44
+27            android:windowSoftInputMode="stateHidden|adjustResize" >
+27-->C:\harbor\main\Harbor_Android\harbor_app\usbSerialExamples\src\main\AndroidManifest.xml:20:13-67
+28            <intent-filter>
+28-->C:\harbor\main\Harbor_Android\harbor_app\usbSerialExamples\src\main\AndroidManifest.xml:21:13-24:29
+29                <action android:name="android.intent.action.MAIN" />
+29-->C:\harbor\main\Harbor_Android\harbor_app\usbSerialExamples\src\main\AndroidManifest.xml:22:17-69
+29-->C:\harbor\main\Harbor_Android\harbor_app\usbSerialExamples\src\main\AndroidManifest.xml:22:25-66
+30
+31                <category android:name="android.intent.category.LAUNCHER" />
+31-->C:\harbor\main\Harbor_Android\harbor_app\usbSerialExamples\src\main\AndroidManifest.xml:23:17-77
+31-->C:\harbor\main\Harbor_Android\harbor_app\usbSerialExamples\src\main\AndroidManifest.xml:23:27-74
+32            </intent-filter>
+33            <intent-filter>
+33-->C:\harbor\main\Harbor_Android\harbor_app\usbSerialExamples\src\main\AndroidManifest.xml:25:13-27:29
+34                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+34-->C:\harbor\main\Harbor_Android\harbor_app\usbSerialExamples\src\main\AndroidManifest.xml:26:17-90
+34-->C:\harbor\main\Harbor_Android\harbor_app\usbSerialExamples\src\main\AndroidManifest.xml:26:25-87
+35            </intent-filter>
+36
+37            <meta-data
+37-->C:\harbor\main\Harbor_Android\harbor_app\usbSerialExamples\src\main\AndroidManifest.xml:28:13-30:57
+38                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+38-->C:\harbor\main\Harbor_Android\harbor_app\usbSerialExamples\src\main\AndroidManifest.xml:29:17-79
+39                android:resource="@xml/device_filter" />
+39-->C:\harbor\main\Harbor_Android\harbor_app\usbSerialExamples\src\main\AndroidManifest.xml:30:17-54
+40        </activity>
+41    </application>
+42
+43</manifest>

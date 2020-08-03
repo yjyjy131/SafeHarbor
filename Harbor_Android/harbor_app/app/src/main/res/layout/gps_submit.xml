@@ -7,6 +7,12 @@
     android:gravity="center"
     android:orientation="vertical">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/check"
+        android:textSize="30sp"/>
+
     <Button
         android:id="@+id/stopbtn"
         android:layout_width="100dp"
@@ -18,5 +24,19 @@
         android:layout_height="150dp"
         android:id="@+id/dateNow"
         android:textSize="30sp"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/gpsLa"
+        android:textSize="30sp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/gpsLo"
+        android:textSize="30sp"/>
+
 
 </LinearLayout>

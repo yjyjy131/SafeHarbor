@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "applicationId": "com.hoho.android.usbserial.examples",
+  "variantType": "BASE_APK",
+  "elements": [
+    {
+      "outputType": {
+        "type": "PROCESSED_RES"
+      },
+      "apkData": {
+        "type": "MAIN",
+        "splits": [],
+        "versionCode": -1,
+        "outputFile": "usbSerialExamples-debug.apk",
+        "fullName": "debug",
+        "baseName": "debug",
+        "dirName": ""
+      },
+      "path": "resources-debug.ap_",
+      "properties": {
+        "packageId": "com.hoho.android.usbserial.examples",
+        "split": "",
+        "minSdkVersion": "17"
+      }
+    }
+  ]
+}
