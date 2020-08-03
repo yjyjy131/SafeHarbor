@@ -14,9 +14,9 @@ router.get('/sign_up', function(req, res, next) {
 router.post("/sign_up", async function(req,res,next){
   let body = req.body;
 
-  let inputPassword = body.password;
-  let salt = Math.round((new Date().valueOf() * Math.random())) + "";
-  let hashPassword = crypto.createHash("sha512").update(inputPassword + salt).digest("hex");
+  let inputPassword = body.password; 
+  let salt = Math.round((new Date().valueOf() * Math.random())) + ""; 
+  let hashPassword = crypto.createHash("sha512").update(inputPassword + salt).digest("hex"); 
 
   console.log(body.isOperator);
   models.user.create({
@@ -26,7 +26,7 @@ router.post("/sign_up", async function(req,res,next){
     salt: salt
   })
   .then( result => {
-    res.redirect("/");
+    res.redirect("/endSignup");
   })
   .catch( err => {
     console.log(err);
@@ -35,6 +35,8 @@ router.post("/sign_up", async function(req,res,next){
 
 // 로그인 POST
 router.post("/login", async function (req, res, next) {
+  console.log(req.password);
+
   let body = req.body;
   if (body.isGuest) {
     req.session.isGuest = body.isGuest;
