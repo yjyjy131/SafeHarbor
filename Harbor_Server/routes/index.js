@@ -39,15 +39,12 @@ router.get('/droneSystem', function(req, res, next) {
 });
 
 router.get('/opSystem', function(req, res, next) { 
-  res.render('opSystem.html');
-  /*
   if(req.session.userid == undefined){
     res.redirect("/");
   }
   else{
       res.render('opSystem.html');
   }
-  */
 });
 
 router.get('/guestSystem', function(req, res, next) {
