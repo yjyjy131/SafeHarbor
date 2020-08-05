@@ -1,17 +1,13 @@
 const models = require("../models");
 
 exports.getSignUp = function(req, res) {
-    console.log('받은 값은 '+ req.query.userid);
     var result = models.user;
     result.findAll({
       where: { userid: req.query.userid }
     }).then(result => {
-      console.log('결과는 ' + result[0].userid);
-      console.log('존재하는 아이디');
        res.send(false);
       
     }).catch(function (err) {
-      console.log('존재하지 않는 아이디');
       res.send(true);
     })
 }
