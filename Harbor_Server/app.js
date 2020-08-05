@@ -169,40 +169,10 @@ function onListening() {
   debug('Listening on ' + bind);
 }
 
-
-//logView.html - Ajax 처리  
-app.get('/api/get', function(req, res){
-  let datas = req.query.data;
-  var result = models.control_log;
- 
-  if ( datas == 0) { // All
-    result.findAll({
-    }).then(result => {
-        res.send(result);
-    });
-  } else if ( datas == 1) { // UserName
-    result.findAll({
-      order: [
-        ['userid', 'ASC']
-    ]
-    }).then(result => {
-        res.send(result);
-    });
-  } else if ( datas == 2) { // Time
-    result.findAll({
-      order: [
-        ['userid', 'DESC']
-    ]
-    }).then(result => {
-        res.send(result);
-    });
-  } else { // default
-    var result = models.control_log.findAll({
-    }).then(result => {
-        res.send(result);
-    });
-  }
-})
+// Ajax 처리
+var ajaxApi = require('./routes/ajax');
+app.get('/signUp', ajaxApi.getSignUp);
+app.get('/logviewCreate', ajaxApi.getLogDatas);
 
 
 module.exports = app;

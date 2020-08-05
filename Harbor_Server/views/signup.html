@@ -7,21 +7,25 @@
 		<link rel="stylesheet" type="text/css" href="/stylesheets/signup.css" />
 	</head>
     <body>      
-        <!-- 회원가입 페이지 -->
+		<!-- 회원가입 페이지 -->
 		<div id="wrapper">
 			<header id="header">
-				<a href="index.html" class="logo"><strong>MALLANG</strong> <span> CAU </span></a>
+				<a href="/" class="logo"><strong>MALLANG</strong> <span> CAU </span></a>
 					</header>
 					<div id="main">
 						<header class="major">
                             <h1>Create your account</h1>
                         </header>
-							<form  action="user/login" method="post">
+							<form name="loginForm" action="/user/sign_up" method="post" onsubmit="return allChecked()">
 								<div class="fields">
 									<div class="field half">
 										<label> Username</label>
 										<div class="boxType">
 										<input type="text" name="userid" class="primary"/>
+									</div>
+									<div id="idChkField">
+										<button type="button" name="idCheck" class="primary" id="idChkBox" onclick="idDoubleChk();"> 아이디 중복 체크 </button>
+										<p id="idChkInfo"> 아이디 중복 체크 입니다. </p>
 									</div>
 									</div>
 									<div class="field half">
@@ -33,21 +37,18 @@
                                     <div class="field half">
 										<label> Password Check </label>
 										<div class="boxType">
-										<input type="password" name="password" class="primary"/>
+										<input type="password" name="passwordCheck" class="primary"/>
 										</div>
 									</div>	
 									<div id="opCheck">
 										<label for="opSys">관제 시스템 사용여부</label>
-										<input type="checkbox" id="opSys" name="opSys" unchecked>
+										<input type="checkbox" id="opSys" name="isOperator" unchecked>
 									</div>
-								<div id="flexContainer">
-								<ul class="actions">
+									<div id="flexContainer">
+									<ul class="actions">
 									 <li>
-										<form action="user/sign_up" method="get">
-										<input type="submit" value="Create Account" class="primary"/>
-									    </form>
+										<input type="submit" value="Create Account" class="primary" id="createBtn"/>
                                     </li>
-                                    <li><input type="hidden" name="isOperator" value="true"></li>
 								</ul>
 								</div>
 							</form>
@@ -63,5 +64,7 @@
 					</div>
 				</footer>
 			</div>
+		<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+		<script src="/js/checkSignUp.js"></script>
 	</body>
 </html>

@@ -8,12 +8,7 @@
 	</head>
     <body>      
         <!--최초 로그인 페이지-->
-        <% if (session.userid) { %>
-            <h3> 로그인 성공 - 메인메뉴 </h3>
-            <form action="user/logout" method="get">
-                <input type="submit" value="logout">
-            </form>
-        <% } else { %>
+        
 			<div id="wrapper">
 					<header id="header">
 						<a href="index.html" class="logo"><strong>MALLANG</strong> <span> CAU </span></a>
@@ -45,10 +40,10 @@
 									</div>
 								</div>
 							</div>
+						<form action="/user/login" method="post">
 						<div id="logindiv">
 							<div id="loginBox">
-							<form method="post" action="user/login">
-								<div class="fields">
+								<div class="fields" style="padding: 1.8em">
 									<div class="field half">
 										<div id="loginBox">
 										<label> Username </label>
@@ -65,21 +60,24 @@
 									</div>		
 								</div>								
 								<div id="flexContainer">
-								<ul class="actions">
-									<li class="login" ><input type="submit" value="login" class="primary" /></li>
+								<ul class="actions">	
+									<li class="login" >
+										<input type="submit" value="login" class="primary" onclick="moveToMenu()" />
+									</li>		
 									<li> &nbsp </li>
                                     <li class="login">
-                                        <!-- <form action="user/sign_up" method="get"></form> -->
-										<input type="submit" value="register" class="primary" /></form>
+										<!-- <form action="user/sign_up" method="get"></form> -->					
+										<button type="button" id="registerBtn" class="primary" onClick="moveRegister()">
+										register
+										</button>
                                     </li>
-                                    <li><input type="hidden" name="isOperator" value="true"></li>
 								</ul>
 								</div>
-							</form>
 							</div>
 						</div>
+						</form>
                     </div>	
-        <% } %>
+     
 				<footer id="footer">
 					<div class="inner">
 						<ul class="copyright">
@@ -90,5 +88,15 @@
 					</div>
 				</footer>
 			</div>
+			
+			<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+			<script>
+				function moveRegister() {
+					console.log('실행');
+					console.log(location.href);
+					location.href = "user/sign_up";
+				}
+			</script>
+
 	</body>
 </html>

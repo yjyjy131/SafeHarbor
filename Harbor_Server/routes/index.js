@@ -7,6 +7,7 @@ var router = express.Router();
 router.get('/', function (req, res, next) {
   if (req.session.userid == undefined) {
     if (req.session.isGuest) { //게스트로 로그인
+      console.log('게스트 로그인 완료');
       res.render('mainMenu.html', {
         session: req.session
       });
@@ -25,8 +26,17 @@ router.get('/', function (req, res, next) {
 });
 
 
+router.get('/endSignup', function(req, res, next){
+  res.render('endSignup.html');
+})
+
 router.get('/log', function(req, res, next){
-    res.redirect("/log");
+    if(req.session.userid == undefined){
+      res.redirect("/");
+    }
+    else{
+        res.render('logView.html');
+    }
 });
 
 router.get('/droneSystem', function(req, res, next) {  
