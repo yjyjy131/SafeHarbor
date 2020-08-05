@@ -1,6 +1,4 @@
-const { format } = require("sequelize/types/lib/utils");
 
-// idInput passwordInput passChkInput opSysy
 function allChecked() {
     var form = document.loginForm;
 
@@ -31,7 +29,35 @@ function checkUserid(userid) {
         alert("아이디는 영문 대소문자와 숫자 4~12자리로 입력해야합니다.");
         return false;
     }
+
+    if(idDoubleChk(uesrid))
+        console.log('???');
+
     return true;
+}
+
+function idDoubleChk(userid) {
+    var form = document.loginForm;
+    $("#idChkBox").click(function(){
+        $.ajax({
+            url: '/signUp',
+            type: 'GET',
+            dataType: "json",
+            data: {"userid" : form.userid.value},
+            success: function(result){
+                if (result){
+                 $('#idChkInfo').text('아이디 생성 가능');
+                 $('#idChkInfo').css("color", "#ffffff");
+                 }
+
+                if(!result){
+                 $('#idChkInfo').text('이미 존재하는 아이디 입니다!');
+                 $('#idChkInfo').css("color", "#dfba06");
+                }
+            }
+        })
+        return false;
+    })
 }
 
 function checkPassword (password1, password2) {

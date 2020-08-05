@@ -21,19 +21,23 @@
 									<div class="field half">
 										<label> Username</label>
 										<div class="boxType">
-										<input type="text" name="userid" class="primary" id="idInput"/>
+										<input type="text" name="userid" class="primary"/>
+									</div>
+									<div id="idChkField">
+										<button type="button" name="idCheck" class="primary" id="idChkBox" onclick="idDoubleChk();"> 아이디 중복 체크 </button>
+										<p id="idChkInfo"> 아이디 중복 체크 입니다. </p>
 									</div>
 									</div>
 									<div class="field half">
 										<label> Password </label>
 										<div class="boxType">
-										<input type="password" name="password" class="primary" id="passInput"/>
+										<input type="password" name="password" class="primary"/>
 										</div>
                                     </div>		
                                     <div class="field half">
 										<label> Password Check </label>
 										<div class="boxType">
-										<input type="password" name="passwordCheck" class="primary" id="passChk"/>
+										<input type="password" name="passwordCheck" class="primary"/>
 										</div>
 									</div>	
 									<div id="opCheck">
@@ -43,7 +47,7 @@
 									<div id="flexContainer">
 									<ul class="actions">
 									 <li>
-										<input type="submit" value="Create Account" class="primary"/>
+										<input type="submit" value="Create Account" class="primary" id="createBtn"/>
                                     </li>
 								</ul>
 								</div>
@@ -60,6 +64,7 @@
 					</div>
 				</footer>
 			</div>
+		<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 		<script src="/js/checkSignUp.js"></script>
 	</body>
 </html>

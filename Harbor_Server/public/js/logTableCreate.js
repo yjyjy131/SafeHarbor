@@ -8,7 +8,7 @@ function logTableCreate() {
     if (selectVal == 0){
         $("#tableCreation").html('');
          $.ajax({
-            url:'/api/get',
+            url:'/logviewCreate',
              dataType:'json',
              type:'GET',
              data: {"data" : "0"},
@@ -22,7 +22,7 @@ function logTableCreate() {
     if (selectVal == 1){
         $("#tableCreation").html('');
         $.ajax({
-            url:'/api/get',
+            url:'/logviewCreate',
             dataType:'json',
             type:'GET',
             data: {"data" : "1"},
@@ -36,7 +36,7 @@ function logTableCreate() {
     if (selectVal ==2){
         $("#tableCreation").html('');
         $.ajax({
-            url:'/api/get',
+            url:'/logviewCreate',
             dataType:'json',
             type:'GET',
             data: {"data" : "2"},
