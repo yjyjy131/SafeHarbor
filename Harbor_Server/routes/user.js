@@ -2,8 +2,7 @@ const express = require('express');
 const crypto = require('crypto');
 const router = express.Router();
 const models = require("../models");
-
-
+const { DH_UNABLE_TO_CHECK_GENERATOR } = require('constants');
 
 /* id 설정관련 라우터 */
 
@@ -17,8 +16,7 @@ router.post("/sign_up", async function(req,res,next){
   let inputPassword = body.password; 
   let salt = Math.round((new Date().valueOf() * Math.random())) + ""; 
   let hashPassword = crypto.createHash("sha512").update(inputPassword + salt).digest("hex"); 
-
-  console.log(body.isOperator);
+ 
   models.user.create({
     userid: body.userid,
     isOperator: body.isOperator == undefined ? false : true,
@@ -78,10 +76,10 @@ router.post("/login", async function (req, res, next) {
 
 // 로그아웃
 router.get("/logout", function(req,res,next){
+  console.log('로그아웃 처리~');
   console.log(req.session);
   req.session.destroy();
   res.clearCookie('userid');
-
 
   res.redirect("/");
 })
