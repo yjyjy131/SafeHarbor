@@ -41,7 +41,6 @@ router.post("/login", async function (req, res, next) {
     req.redirect('/');
     return;
   }
-
   else {
     let result = await models.user.findOne({
       where: {

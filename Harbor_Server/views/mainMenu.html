@@ -26,12 +26,16 @@
                             <li><a href="/guestSystem">guestView</a></li>
 					</ul>
 					<ul class="actions stacked">
-						<li><a href="#" class="button primary fit">Register</a></li>
-						<form action="/user/logout" method="get">
-							<li><a type="submit" href="/user/logout" class="button fit">Log Out</a></li>
-						</form>
+						<% if(session.userid){ %>
+							<form action="/user/logout" method="get">
+								<li><a type="submit" href="/user/logout" class="button fit" id="logoutBtn">Log Out</a></li>
+							</form>
+						<%} else { %>
+							<li><a href="/user/sign_up" class="button primary fit" id="resgiterBtn">Register</a></li>
+						<% } %>
 					</ul>
 				</nav>
+				
 					<div id="menuContainer">
 					<div id="main">
 							<section id="one" class="tiles">
@@ -88,5 +92,8 @@
 			<script src="/js/jquery.func.min.js"></script>
 			<script src="/js/util.js"></script>
 			<script src="/js/main.js"></script>
+			<script>
+				
+			</script>
 	</body>
 </html>

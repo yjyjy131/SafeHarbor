@@ -19,8 +19,8 @@ router.get('/', function (req, res, next) {
     }
   }
   else { //id를 가지고 로그인
-    res.render('mainMenu.html', {
-      session: req.session
+    res.render('mainMenu.html', { 
+      session: req.session 
     });
   }
 });
@@ -54,11 +54,16 @@ router.get('/opSystem', function(req, res, next) {
   }
   else{
       res.render('opSystem.html');
-  }
+    }
 });
 
+
 router.get('/guestSystem', function(req, res, next) {
-  res.render('guestSystem.html');
+  res.render('guestSystem.html', { session : req.session});
+});
+
+router.get('/guestMenu', function(req, res, next) {
+  res.render('mainMenu.html');
 });
 
 
