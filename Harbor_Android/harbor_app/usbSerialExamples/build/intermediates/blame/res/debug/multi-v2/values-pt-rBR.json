@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\harbor\\main\\Harbor_Android\\harbor_app\\usbSerialExamples\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-pt-rBR\\values-pt-rBR.xml",
+            "outputFile": "C:\\Users\\JoonHo\\Documents\\main\\Harbor_Android\\harbor_app\\usbSerialExamples\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-pt-rBR\\values-pt-rBR.xml",
             "map": [
                 {
                     "source": "C:\\Users\\JoonHo\\.gradle\\caches\\transforms-2\\files-2.1\\f209091eb3926c649f0b3346884e478c\\appcompat-1.1.0\\res\\values-pt-rBR\\values-pt-rBR.xml",

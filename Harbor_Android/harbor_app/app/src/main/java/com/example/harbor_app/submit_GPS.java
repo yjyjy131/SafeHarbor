@@ -4,6 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -33,7 +37,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class submit_GPS extends AppCompatActivity implements LocationListener {
+public class submit_GPS extends AppCompatActivity implements LocationListener,SensorEventListener {
 
     private Socket mSocket;
     Button btn;
@@ -41,12 +45,26 @@ public class submit_GPS extends AppCompatActivity implements LocationListener {
     TextView dateNow;
     TextView checkText;
     int dir_phone;
+    //gps센서
     LocationManager locationManager;
     String gpsX;
     String gpsY;
     List<String> listProviders;
-    private TextView gpsLatitude, gpsLongitude;
+    TextView gpsLatitude, gpsLongitude;
     Location lastKnownLocation;
+    //방향센서
+    SensorManager mSensorManager;
+    Sensor mAccelerometer;
+    Sensor mMagnetometer;
+    private float[] mLastAccelerometer = new float[3];
+    private float[] mLastMagnetometer = new float[3];
+    private boolean mLastAccelerometerSet = false;
+    private boolean mLastMagnetometerSet = false;
+    private float[] mR = new float[9];
+    private float[] mOrientation = new float[3];
+    float mCurrentDegree = 0f;
+    String rotate;
+
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -60,6 +78,11 @@ public class submit_GPS extends AppCompatActivity implements LocationListener {
         gpsLatitude = findViewById(R.id.gpsLa);
         gpsLongitude = findViewById(R.id.gpsLo);
         checkText = findViewById(R.id.check);
+        //가속도센서 on
+        mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mMagnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
 
         // TextView 에 현재 시간 문자열 할당
         //권한 체크
@@ -72,17 +95,17 @@ public class submit_GPS extends AppCompatActivity implements LocationListener {
         if (lastKnownLocation != null) {
             double lng = lastKnownLocation.getLongitude();
             double lat = lastKnownLocation.getLatitude();
-            gpsLatitude.setText(":: " + lat);
-            gpsLongitude.setText((":: " + lng));
             gpsX = String.valueOf(lat);
             gpsY = String.valueOf(lng);
+            //gpsLatitude.setText(gpsX);
+            //gpsLongitude.setText(gpsY);
         }
         listProviders = locationManager.getAllProviders();
         if (listProviders.get(0).equals(LocationManager.GPS_PROVIDER)) {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 100, this);
         }
         try {
-            mSocket = IO.socket("http://14.32.187.245:8080/");
+            mSocket = IO.socket("http://192.168.43.244:8080/");
             mSocket.connect();
             TimerTask tt = new TimerTask() {
                 //TimerTask 추상클래스를 선언하자마자 run()을 강제로 정의하도록 한다.
@@ -124,6 +147,7 @@ public class submit_GPS extends AppCompatActivity implements LocationListener {
                         jsonObject.put("gpsX", gpsX);
                         jsonObject.put("gpsY", gpsY);
                         jsonObject.put("location", loc);
+                        jsonObject.put("rotation",rotate);
                         jsonObject.put("time", formatDate);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -134,7 +158,7 @@ public class submit_GPS extends AppCompatActivity implements LocationListener {
 
             };
             final Timer timer = new Timer();
-            timer.schedule(tt, 0, 5000);
+            timer.schedule(tt, 1500, 4000);
             btn.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     mSocket.disconnect();
@@ -191,14 +215,7 @@ public class submit_GPS extends AppCompatActivity implements LocationListener {
         super.onStart();
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //권한이 없을 경우 최초 권한 요청 또는 사용자에 의한 재요청 확인
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION) &&
-                    ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                // 권한 재요청
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
-            }
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
         }
     }
 
@@ -206,6 +223,8 @@ public class submit_GPS extends AppCompatActivity implements LocationListener {
     protected void onPause() {
         super.onPause();
         locationManager.removeUpdates(this);
+        mSensorManager.unregisterListener(this, mAccelerometer);
+        mSensorManager.unregisterListener(this, mMagnetometer);
     }
 
     @Override
@@ -215,9 +234,11 @@ public class submit_GPS extends AppCompatActivity implements LocationListener {
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-    }
+        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+        mSensorManager.registerListener(this, mMagnetometer, SensorManager.SENSOR_DELAY_GAME);
 
-    // @SupresspLint("SetTextI18n")
+    }
+    //gps리스너
     @SuppressLint("SetTextI18n")
     public void onLocationChanged(Location location) {
 
@@ -230,6 +251,8 @@ public class submit_GPS extends AppCompatActivity implements LocationListener {
             Log.d("GPS", latitude + '/' + Double.toString(longitude));
             gpsX = String.valueOf(latitude);
             gpsY = String.valueOf(longitude);
+            //gpsLatitude.setText(gpsX);
+            //gpsLongitude.setText(gpsY);
         }
     }
 
@@ -241,14 +264,38 @@ public class submit_GPS extends AppCompatActivity implements LocationListener {
         //locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, this);*/
     }
 
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
 
     @Override
     public void onProviderDisabled(String provider) {
 
     }
+
+    //가속도 리스너
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if(event.sensor == mAccelerometer) {
+            System.arraycopy(event.values, 0, mLastAccelerometer, 0, event.values.length);
+            mLastAccelerometerSet = true;
+        } else if(event.sensor == mMagnetometer) {
+            System.arraycopy(event.values, 0, mLastMagnetometer, 0, event.values.length);
+            mLastMagnetometerSet = true;
+        }
+        if(mLastAccelerometerSet && mLastMagnetometerSet) {
+            SensorManager.getRotationMatrix(mR, null, mLastAccelerometer, mLastMagnetometer);
+            float azimuthinDegress  = (int) ( Math.toDegrees( SensorManager.getOrientation( mR, mOrientation)[0] ) + 360 ) % 360;
+            mCurrentDegree = -azimuthinDegress;
+            rotate=String.valueOf(mCurrentDegree);
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+    }
+
+
 }
 

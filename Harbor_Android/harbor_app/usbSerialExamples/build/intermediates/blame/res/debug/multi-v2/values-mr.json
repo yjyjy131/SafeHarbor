@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\harbor\\main\\Harbor_Android\\harbor_app\\usbSerialExamples\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-mr\\values-mr.xml",
+            "outputFile": "C:\\Users\\JoonHo\\Documents\\main\\Harbor_Android\\harbor_app\\usbSerialExamples\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-mr\\values-mr.xml",
             "map": [
                 {
                     "source": "C:\\Users\\JoonHo\\.gradle\\caches\\transforms-2\\files-2.1\\76f2b6439d16df60df3177021482ee5a\\core-1.1.0\\res\\values-mr\\values-mr.xml",
