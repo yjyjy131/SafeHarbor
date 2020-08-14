@@ -1,126 +1,82 @@
-// opSystem 소켓 통신
-// TODO: Ajax , db 거치지 않고 socket 으로 화면 깜빡임 없는 polyline 애니메이션 
-var socket = io.connect('http://localhost:8000'); 
-var areaRadius = 0;
-var shipCoordinates = new Array();
+var numDeltas = 1000;
+var map;
+var infowindow = null;
 
-var shipArea = new google.maps.Polyline({
-  path: shipCoordinates,
-  geodesic: false,
-  strokeColor: '#FF0000',
-  strokeOpacity: 1.0,
-  strokeWeight: 2
-});
+var circles = [
+  {lat: 35.514020, lng: 129.391979},
+  {lat: 35.469623, lng: 129.393169}
+];
 
-var circle = new google.maps.Circle({
-  strokeColor: '#FF0000', 
-  strokeOpacity: 0.8, 
-  strokeWeight: 1, 
-  fillColor: '#FF0000', 
-  fillOpacity: 0.2,
-  center: {lat: 35.514447, lng: 129.389802}, // gpsDatas.center
-  radius: areaRadius
-}); 
+var destination =[
+  {lat: 35.469623, lng: 129.393169},
+  {lat: 35.514020, lng: 129.391979}
+];
 
-socket.on('news', function (data) { 
-    console.log(data.serverData);
-}); 
-
-// userid ??? db or websocket.id?
-socket.emit('client connected', 
-{ clientData : '클라이언트 접속', clientType : 'opw', userid : 'userid'}); 
+var deltaLat = [];
+var deltaLng = [];
 
 function initMap() {
-  var ulsan = {lat: 35.497021, lng: 129.391589};
-  var map = new google.maps.Map(
-    document.getElementById('map'), {zoom: 13, center: ulsan});
-  //var marker = new google.maps.Marker({position: ulsan, map: map});
-  
-  socket.on('operator gps stream', function (data) {
-    
-    if (shipCoordinates.length != 0) 
+
+  infowindow = new google.maps.InfoWindow(
     {
-       for(key in shipCoordinates){
-         shipCoordinates[key] =null
-        }
+      content: 'blah blah',
+      size: new google.maps.Size(150,50)
     }
-    shipCoordinates = coordinate_segment(data);
-    areaRadius = calcRadius(data);
-    setDataQuery(data);
+  )
 
-    circle.setMap(map);
-    shipArea.setMap(map);
-})
+  var ulsan = {lat: 35.497021, lng: 129.391589};
+  map = new google.maps.Map(
+    document.getElementById('map'), {zoom: 13, center: ulsan});
 
-} 
+    for (var i=0; i<circles.length; i++){
+      console.log(circles[i], destination[i]);
+    }
 
-// 위도 y 경도 x , 상1 우2 하3 좌4 순서 
-function coordinate_segment(gpsDatas) {
-  var coordinates = new Array();
-  coordinates[0] = new google.maps.LatLng(gpsDatas.front[1], gpsDatas.right[0]);
-  coordinates[1] = new google.maps.LatLng(gpsDatas.front[1], gpsDatas.left[0]);
-  coordinates[2] = new google.maps.LatLng(gpsDatas.back[1], gpsDatas.left[0]);
-  coordinates[3] = new google.maps.LatLng(gpsDatas.back[1], gpsDatas.right[0]);
-  coordinates[4] = new google.maps.LatLng(gpsDatas.front[1], gpsDatas.right[0]);
-  return coordinates;
+    google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
+        for (var i=0; i<circles.length; i++){
+          createCircle(circles[i], destination[i], map, i);
+        }
+      });
 }
 
-function calcRadius (gpsData) {
-  var radius = 
-  sqrt(Math.pow(gpsDatas.right[1]-gpsDatas.center[1], 2) + 
-  Math.pow(gpsDatas.front[1]-gpsDatas.center[1], 2)
-  ) 
-  return radius;
-}
+google.maps.event.addDomListener(window, 'load', initMap);
 
-// 위도 y 경도 x , 상1 우2 하3 좌4 순서 
-function setDataQuery (gpsData) {
-  $('#centerlat').text(gpsData.center[1]);
-  $('#centerlong').text(gpsData.center[0]);
+
+function createCircle(start, end, map, content) {
+    var circleOption = {
+        center : start,
+        fillColor: '#3878c7',
+        fillOpacity: 0.6,
+        map: map,
+        radius: 500,
+        strokeColor: '#3878c7',
+        storkeOpacity: 1,
+        strokeWeight: 0.5
+    }
+    var circle = new google.maps.Circle(circleOption);
+
+  /*
+    var endPoints = {
+      start1: {lat: 35.497021, lng: 129.401589 },
+      start2: {lat: 35.497021, lng: 129.381589 }  
+    }
+  */
+    var startPos = start;
+    var endPos = end;
   
-  $('#frontlat').text(gpsData.front[1]);
-  $('#frontlong').text(gpsData.front[0]);
+    deltaLat[Number(content)] = (endPos.lat - startPos.lat)/numDeltas;
+    deltaLng[Number(content)] = (endPos.lng - startPos.lng)/numDeltas;
 
-  $('#rightlat').text(gpsData.front[1]);
-  $('#rightong').text(gpsData.front[0]);
-
-  $('#backlat').text(gpsData.front[1]);
-  $('#backlong').text(gpsData.front[0]);
-
-  $('#leftlat').text(gpsData.front[1]);
-  $('#leftlong').text(gpsData.front[0]);
-  
-  $('#speed').text(data.speed);
+    var circleTimer = setInterval (function() {
+      startPos.lat += deltaLat[Number(content)];
+      startPos.lng += deltaLng[Number(content)];
+      
+      var latlng = new google.maps.LatLng(startPos.lat,startPos.lng);
+      circleOption.center = latlng; 
+      circle.setOptions(circleOption);
+    }, 20);
 }
 
-function detectCollision (gpsData) {
-  $('#danger').text();
+function collisionCheck (){
+  console.log('')
 }
-
-/* 테스트값 
-  var shipArea = new google.maps.Polyline({
-    path: [
-      {lat: 35.515646 , lng: 129.389240},
-      {lat: 35.515646, lng: 129.390270},
-      {lat: 35.513262, lng: 129.390270},
-      {lat: 35.513262, lng: 129.389240},
-      {lat: 35.515646, lng: 129.389240}
-      ],
-    geodesic: false,
-    strokeColor: '#FF0000',
-    strokeOpacity: 1.0,
-    strokeWeight: 2
-  });
-
-  var circle = new google.maps.Circle({
-    strokeColor: '#FF0000', 
-    strokeOpacity: 0.8, 
-    strokeWeight: 1, 
-    fillColor: '#FF0000', 
-    fillOpacity: 0.2,
-    center: {lat: 35.514447, lng: 129.389802}, // gpsDatas.center
-    radius: 180 // calcRadius()
-  }); 
-
-  center: {lat: 35.514447, lng: 129.389802}
- */
