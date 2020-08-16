@@ -15,6 +15,7 @@ public class DestinationFlag : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             Debug.Log("arrived");
+            if (GameManager.Instance == null) return;
             GameManager.Instance.OnArrived();
             gameObject.SetActive(false);
         }

@@ -9,9 +9,15 @@ public class CamPosition : Singleton<CamPosition>
         base.Awake();
     }
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         transform.position = CamManager.Instance.mainCam.position;
         transform.rotation = CamManager.Instance.mainCam.rotation;
+    }
+
+    public void setTransform(Vector3 pos, Quaternion rot)
+    {
+        transform.position = pos;
+        transform.rotation = rot;
     }
 }

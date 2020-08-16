@@ -11,6 +11,16 @@ public class PanelSystem : Singleton<PanelSystem>
     private bool isActive = false;
     private bool preVitualRight = false;
     private bool preVitualLeft = false;
+    protected override void Awake()
+    {
+        base.Awake();
+        if (PanelSystem.instance != null && PanelSystem.instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
+    }
 
     public void active()
     {

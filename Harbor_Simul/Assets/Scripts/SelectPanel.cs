@@ -9,12 +9,12 @@ public class SelectPanel : MonoBehaviour
     private List<Button> buttons;
     private int currentButton;
 
-    public void active()
+    public virtual void active()
     {
         gameObject.SetActive(true);
     }
 
-    public void deActive()
+    public virtual void deActive()
     {
         gameObject.SetActive(false);
     }

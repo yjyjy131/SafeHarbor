@@ -16,37 +16,83 @@ public class SerialManager : Singleton<SerialManager>
     private PortNumber portNumber = PortNumber.COM1;
     [SerializeField]
     private int baudRate = 9600;
-    private string output;
+    [SerializeField]
+    private float readRate = 0.5f;
+    public string output { get; private set; }
 
     // Start is called before the first frame update
     protected override void Awake()
     {
         base.Awake();
         if (SerialManager.instance != null && SerialManager.instance != this)
+        {
             Destroy(gameObject);
+            return;
+        }
         instance = this;
         DontDestroyOnLoad(gameObject);
-        serial = new SerialPort(portNumber.ToString(), baudRate);
+        serial = new SerialPort(portNumber.ToString()
+                              , baudRate
+                              , Parity.None
+                              , 8
+                              , StopBits.One);
+        serial.Open();
+        serial.ReadTimeout = 2;
+        output = "";
+        StartCoroutine("read");
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void FixedUpdate()
+    {/*
+        //output = "";
         if (serial.IsOpen)
         {
             try
             {
-                output = serial.ReadLine();
-                if (output.Length > 0)
+                string line = serial.ReadLine();
+                Debug.Log(line);
+                if (line != null && line.Length > 0)
                 {
-                    Debug.Log(output);
+                    output = line;
                 }
             }
-            catch(Exception e)
+            catch(TimeoutException e)
             {
-                Debug.LogError(e.ToString());
+                //Debug.LogError(e.ToString());
             }
 
+        }*/
+    }
+
+    IEnumerator read()
+    {
+        while (true)
+        {
+            if (serial.IsOpen)
+            {
+                try
+                {
+                    string line = serial.ReadLine();
+                    Debug.Log(line);
+                    if (line != null && line.Length > 0)
+                    {
+                        output = line;
+                    }
+                }
+                catch (TimeoutException e)
+                {
+                    //Debug.LogError(e.ToString());
+                }
+
+            }
+            yield return new WaitForSeconds(readRate);
         }
+    }
+
+    void OnApplicationQuit()
+    {
+        StopCoroutine("read");
+        serial.Close();
     }
 }

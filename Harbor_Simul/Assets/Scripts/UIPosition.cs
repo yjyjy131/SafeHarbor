@@ -12,9 +12,15 @@ public class UIPosition : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         rect.position = CamManager.Instance.uiPos.position;
         rect.rotation = CamManager.Instance.uiPos.rotation;
+    }
+
+    public void setTransform(Vector3 pos, Quaternion rot)
+    {
+        rect.position = pos;
+        rect.rotation = rot;
     }
 }

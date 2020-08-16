@@ -5,4 +5,9 @@ using UnityEngine;
 public class StartPoint : MonoBehaviour
 {
     public Vector3 pos { get { return transform.position; } }
+
+    public void active()
+    {
+        gameObject.SetActive(true);
+    }
 }

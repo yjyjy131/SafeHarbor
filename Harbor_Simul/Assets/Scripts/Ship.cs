@@ -26,13 +26,14 @@ public class Ship : MovableEntity
 
     public void stopControl()
     {
-        rigid.constraints = RigidbodyConstraints.FreezeAll;
+        rigid.isKinematic = true;
         shipControl.Deactivate();
     }
 
     public void startControl()
     {
-        rigid.constraints = RigidbodyConstraints.None;
+        rigid.isKinematic = false;
         shipControl.Activate();
     }
+
 }

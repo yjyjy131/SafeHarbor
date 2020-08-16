@@ -6,12 +6,16 @@ using Valve.VR;
 
 public class SceneManage : Singleton<SceneManage>
 {
+    private bool isLoading = false;
     // Start is called before the first frame update
     protected override void Awake()
     {
         base.Awake();
         if (SceneManage.instance != null && SceneManage.instance != this)
+        {
             Destroy(gameObject);
+            return;
+        }
         instance = this;
         DontDestroyOnLoad(gameObject);
     }
@@ -19,6 +23,8 @@ public class SceneManage : Singleton<SceneManage>
     // Update is called once per frame
     public void loadScene(string s)
     {
+        if (isLoading) return;
+        isLoading = true;
         StartCoroutine("load", s);
     }
 
@@ -32,6 +38,7 @@ public class SceneManage : Singleton<SceneManage>
         {
             yield return null;
         }
+        isLoading = false;
         SteamVR_Fade.Start(Color.black, 0f);
         SteamVR_Fade.Start(Color.clear, 1f);
     }

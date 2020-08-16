@@ -17,7 +17,7 @@ public class MainMenu : Singleton<MainMenu>
     [SerializeField]
     private List<SelectPanel> selectPanels;
     [SerializeField]
-    private LogPanel logPanel;
+    private LogListPanel logPanel;
     private int currentPanel = 0;
     private Vector3 currentButtonPos = Vector3.zero;
     private bool buttonActive = true;
@@ -36,11 +36,12 @@ public class MainMenu : Singleton<MainMenu>
         selectPanels[currentPanel].active();
     }
 
-    public void onLogSelected()
+    public void onReplaySelected()
     {
         deActive();
-
+        logPanel.active();
     }
+
 
     public void onShipSelected(int shipType)
     {
@@ -70,7 +71,8 @@ public class MainMenu : Singleton<MainMenu>
     public void backPanel()
     {
         selectPanels[currentPanel].deActive();
-        currentPanel = (currentPanel-1) % selectPanels.Count;
+        currentPanel--;
+        if (currentPanel < 0) currentPanel = 0;
         selectPanels[currentPanel].active();
     }
     public void nextPanel()

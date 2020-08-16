@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
-    private float time = 0;
     private Ship player;
     private List<MovableEntity> entities = new List<MovableEntity>();
     [SerializeField]
@@ -13,20 +12,25 @@ public class GameManager : Singleton<GameManager>
     private List<MyRoute> routes = new List<MyRoute>();
     private MyRoute currentRoute;
     private bool isStart = false;
+    public float elapsedTime { get; private set; }
+    public static System.DateTime startedAt = System.DateTime.MinValue;
+    public GameObject map;
 
     // Start is called before the first frame update
     protected override void Awake()
     {
         base.Awake();
         setInstance(this);
-        foreach(MyRoute child in GameObject.Find("Routes").transform.GetComponentsInChildren<MyRoute>())
+        map = GameObject.Find("Map");
+        foreach (MyRoute child in map.transform.Find("Routes").transform.GetComponentsInChildren<MyRoute>())
         {
             routes.Add(child);
         }
-        foreach (MovableEntity child in GameObject.Find("Entities").transform.GetComponentsInChildren<MovableEntity>())
+        foreach (MovableEntity child in map.transform.GetComponentsInChildren<MovableEntity>())
         {
             entities.Add(child);
         }
+        elapsedTime = 0;
     }
 
     public void Start()
@@ -37,22 +41,30 @@ public class GameManager : Singleton<GameManager>
     public void StartGame()
     {
         currentRoute = routes[(int)GlobalData.route];
+        currentRoute.startPoint.active();
         currentRoute.destination.active();
         player = Instantiate(Resources.Load<GameObject>("Prefabs/Ship"+(int)GlobalData.shipType), currentRoute.startPoint.pos, Quaternion.identity).GetComponent<Ship>();
+        player.transform.SetParent(map.transform.Find("Entities"));
+        entities.Add(player);
         player.startControl();
         CamManager.Instance.mainCam = player.camPos;
         CamManager.Instance.uiPos = player.uiPos;
         DWP2.WaterObjectManager.Instance.Synchronize();
+        elapsedTime = 0;
+        startedAt = System.DateTime.Now;
         isStart = true;
         StartCoroutine("logCoroutine");
     }
 
-    public void Update()
+    public void FixedUpdate()
     {
+        if (isStart)
+            elapsedTime += Time.fixedDeltaTime;
     }
 
     public void OnArrived()
     {
+        if (player == null) return;
         player.stopControl();
         stopLogging();
         arrivePanel.active();
@@ -65,26 +77,39 @@ public class GameManager : Singleton<GameManager>
 
     public void doLogging()
     {
-
+        TransformDataSet dataSet = new TransformDataSet(elapsedTime);
+        foreach (MovableEntity entity in entities)
+        {
+            dataSet.transFormDatas.Add(entity.saveTransform());
+        }
+        //Debug.Log(dataSet.toString());
+        Logger.addData(dataSet);
+       // Debug.Log(Logger.toString());
     }
 
     public void stopLogging()
     {
         StopCoroutine("logCoroutine");
+        Logger.saveToFile();
     }
 
     public void Reset()
     {
+        startedAt = System.DateTime.MinValue;
+        isStart = false;
+        elapsedTime = 0;
         foreach(MovableEntity entity in entities)
         {
             entity.destroy();
         }
         currentRoute.destination.deActive();
+
     }
 
     public IEnumerator logCoroutine()
     {
-        float cooldown = 1f;
+        Logger.initLogData(startedAt, GlobalData.shipType, GlobalData.route);
+        float cooldown = Logger.interval;
         while (true)
         {
             doLogging();

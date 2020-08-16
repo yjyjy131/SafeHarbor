@@ -17,11 +17,16 @@ public class InputSystem : Singleton<InputSystem>
     protected override void Awake()
     {
         base.Awake();
+        if (InputSystem.instance != null && InputSystem.instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
+        DontDestroyOnLoad(gameObject);
     }
     private void Update()
     {
-        speed = getControllerSpeedValue();
-        angle = getControllerAngleValue();
 
         if (Input.GetKey(KeyCode.W))
         {
@@ -33,7 +38,7 @@ public class InputSystem : Singleton<InputSystem>
         }
         if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.S))
         {
-            speed = 0;
+            getControllerSpeedValue();
         }
         speed = Mathf.Clamp(speed, -1, 1);
 
@@ -47,7 +52,7 @@ public class InputSystem : Singleton<InputSystem>
         }
         if (!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D))
         {
-            angle = 0;
+            getControllerAngleValue();
         }
         angle = Mathf.Clamp(angle, -1, 1);
 
@@ -67,11 +72,11 @@ public class InputSystem : Singleton<InputSystem>
 
     private float getControllerSpeedValue()
     {
-        return speed;
+        return 0;
     }
 
     private float getControllerAngleValue()
     {
-        return angle;
+        return 0;
     }
 }
