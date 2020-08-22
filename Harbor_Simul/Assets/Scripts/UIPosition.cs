@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UIPosition : MonoBehaviour
 {
-    RectTransform rect;
+    public RectTransform rect;
     // Start is called before the first frame update
     void Start()
     {

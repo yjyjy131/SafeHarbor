@@ -5,10 +5,14 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
-    private Ship player;
+    public Ship player { get; private set; }
     private List<MovableEntity> entities = new List<MovableEntity>();
     [SerializeField]
     private ArrivePanel arrivePanel;
+    [SerializeField]
+    private InfoPanel infoPanel;
+    [SerializeField]
+    private OptionPanel optionPanel;
     private List<MyRoute> routes = new List<MyRoute>();
     private MyRoute currentRoute;
     private bool isStart = false;
@@ -43,7 +47,7 @@ public class GameManager : Singleton<GameManager>
         currentRoute = routes[(int)GlobalData.route];
         currentRoute.startPoint.active();
         currentRoute.destination.active();
-        player = Instantiate(Resources.Load<GameObject>("Prefabs/Ship"+(int)GlobalData.shipType), currentRoute.startPoint.pos, Quaternion.identity).GetComponent<Ship>();
+        player = Instantiate(Resources.Load<GameObject>("Prefabs/Ship"+(int)GlobalData.shipType), currentRoute.startPoint.pos, currentRoute.startPoint.transform.rotation).GetComponent<Ship>();
         player.transform.SetParent(map.transform.Find("Entities"));
         entities.Add(player);
         player.startControl();
@@ -67,7 +71,14 @@ public class GameManager : Singleton<GameManager>
         if (player == null) return;
         player.stopControl();
         stopLogging();
+        infoPanel.deActive();
+        optionPanel.deActive();
         arrivePanel.active();
+    }
+
+    public void onOption()
+    {
+        optionPanel.active();
     }
 
     public void SetPlayer(Ship ship)

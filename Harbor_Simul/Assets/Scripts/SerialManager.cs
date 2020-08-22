@@ -19,6 +19,10 @@ public class SerialManager : Singleton<SerialManager>
     [SerializeField]
     private float readRate = 0.5f;
     public string output { get; private set; }
+    public int angle { get; private set; }
+    public int speed { get; private set; }
+    public bool select { get; private set; }
+    public bool back { get; private set; }
 
     // Start is called before the first frame update
     protected override void Awake()
@@ -40,6 +44,10 @@ public class SerialManager : Singleton<SerialManager>
         serial.ReadTimeout = 2;
         output = "";
         StartCoroutine("read");
+        select = false;
+        back = false;
+        speed = 0;
+        angle = 0;
     }
 
     // Update is called once per frame
@@ -78,6 +86,14 @@ public class SerialManager : Singleton<SerialManager>
                     if (line != null && line.Length > 0)
                     {
                         output = line;
+                        string[] token = output.Split(' ');
+                        if (token.Length >= 4)
+                        {
+                            angle = int.Parse(token[0]);
+                            speed = int.Parse(token[1]);
+                            select = bool.Parse(token[2]);
+                            back = bool.Parse(token[3]);
+                        }
                     }
                 }
                 catch (TimeoutException e)

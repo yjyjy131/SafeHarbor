@@ -59,12 +59,12 @@ public class MainMenu : Singleton<MainMenu>
 
     public void backButton()
     {
-        selectPanels[currentPanel].moveLeft();
+        selectPanels[currentPanel].backButton();
         currentButtonPos = selectPanels[currentPanel].getCurrentButtonPos();
     }
     public void nextButton()
     {
-        selectPanels[currentPanel].moveRight();
+        selectPanels[currentPanel].nextButton();
         currentButtonPos = selectPanels[currentPanel].getCurrentButtonPos();
     }
 

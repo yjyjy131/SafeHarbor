@@ -56,6 +56,8 @@ public class LogManager : Singleton<LogManager>
         player.stopControl();
         CamManager.Instance.mainCam = player.camPos;
         CamManager.Instance.uiPos = player.uiPos;
+        CamManager.Instance.playerPos = player.transform;
+        CamManager.Instance.monitorCamRot = player.MonitorCamPos.rotation;
         playedTime = 0;
         isPlay = true;
         StartCoroutine("replayCoroutine");
@@ -107,6 +109,7 @@ public class LogManager : Singleton<LogManager>
     public void resumeReplay()
     {
         isPlay = true;
+        StopCoroutine("replayCoroutine");
         StartCoroutine("replayCoroutine");
     }
     public void setTimeScale(float multi)

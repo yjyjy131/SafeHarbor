@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class LogListPanel : SelectPanel
 {
@@ -39,12 +40,17 @@ public class LogListPanel : SelectPanel
         {
             makeLogEntity(log);
         }
+        if (buttons.Count >= 2)
+        {
+            nextButton();
+        }
     }
 
     public void makeLogEntity(LogData log)
     {
         GameObject entity = Instantiate(Resources.Load<GameObject>("Prefabs/LogEntity"), content.transform).gameObject;
         entity.GetComponent<LogEntity>().setText(log);
+        buttons.Add(entity.GetComponent<UnityEngine.UI.Button>());
     }
 
     public void back()

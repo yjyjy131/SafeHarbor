@@ -13,8 +13,9 @@ public class LogCtrPanel : SelectPanel
     public TextMeshProUGUI timeScale;
     public Slider playBar;
 
-    public void Update()
+    public override void Update()
     {
+        base.Update();
         if(LogManager.Instance.isFoward)
             timeScale.text = LogManager.Instance.getTimeScale().ToString();
         else
