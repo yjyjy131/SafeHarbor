@@ -1,4 +1,4 @@
-var numDeltas = 1000;
+var numDeltas = 100;
 var map;
 var infowindow = null;
 
@@ -18,29 +18,39 @@ var deltaLng = [];
 var cirRadius = [];
 var circles = [];
 
+var contentString = '<b>aaaa</b><br>';
+
 function initMap() {
+  // 2. AIS 지도 추가 => UI 수정
+  // 3. 충돌 시 연락처 제공
+  // 4. 충돌 감지 시 circle 클리킹
+  // 5. 맵 리로드 시 속도 오류
+  // 6. 애니메이션 상황 추가
+  var ulsan = {lat: 35.497021, lng: 129.391589};
 
   infowindow = new google.maps.InfoWindow(
-    {
-      content: 'blah blah',
-      size: new google.maps.Size(150,50)
-    }
-  )
+    { 
+      size: new google.maps.Size(150,50),
+      content: contentString
+    });
 
-  var ulsan = {lat: 35.497021, lng: 129.391589};
   map = new google.maps.Map(
-    document.getElementById('map'), {zoom: 13, center: ulsan});
-
+    document.getElementById('google1'), {zoom: 13, center: ulsan});
     google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
         for (var i=0; i<start.length; i++){
-          createCircle(start[i], destination[i], map, i);
+          createArea(start[i], destination[i], map, i);
         }
-      });
+    }
+  );
 }
+
+$('#mapBtn1').on('click', function(){
+  initMap();
+});
 
 google.maps.event.addDomListener(window, 'load', initMap);
 
-function createCircle(start, end, map, content) {
+function createArea(start, end, map, content) {
     var circleOption = {
         center : start,
         fillColor: '#3878c7',
@@ -60,12 +70,6 @@ function createCircle(start, end, map, content) {
     deltaLat[Number(content)] = (endPos.lat - startPos.lat)/numDeltas;
     deltaLng[Number(content)] = (endPos.lng - startPos.lng)/numDeltas;
 
-    // 원의 center 에서 반지름 값을 더한 곳의 lat, lng 필요 
-    //var recLatLng1 = new google.maps.LatLng(startPos.lat + 0.01, startPos.lng + 0.01);
-    //var recLatLng2 = new google.maps.LatLng(startPos.lat - 0.01, startPos.lng - 0.01);
-    //console.log('이건데' + recLatLng1.lat() + ' ' + recLatLng1.lng()+ ' ' + recLatLng2.lat()+ ' ' + recLatLng2.lng());
-
-
     var point = new google.maps.LatLng(startPos.lat, startPos.lng);
     bounds = computingOffset(point);
 
@@ -77,6 +81,11 @@ function createCircle(start, end, map, content) {
       fillOpacity: 0.35,
       map: map,
       bounds: bounds
+    }
+
+    var infoOption = {
+      size: new google.maps.Size(10,10),
+      position: {lat: 35.497021, lng: 129.391589}
     }
 
     var rectangle = new google.maps.Rectangle(recOption);
@@ -95,7 +104,28 @@ function createCircle(start, end, map, content) {
 
       circles[content] = latlng;
       collisionCheck(content);
-      //rectangle.setOptions(recOption);
+
+      /*
+      google.maps.event.addListener(circle, 'mouseover', function(){
+        console.log('mouseover');
+        infowindow.setContent(contentString);
+        infowindow.open(map, circle);
+      });
+      */
+
+      infowindow.setPosition(circles[0]);
+
+      // lat lng 표기 속도 조절 
+      //infowindow.setContent('<div style="color:black"> MMSI : ' + content + '<br> 속도 : 100 <br> lat : ' 
+      //+  startPos.lat + '<br> lng : ' + startPos.lng );
+
+     google.maps.event.addListener(circle, 'click', function(event) {
+         //infowindow.setPosition(event.latLng);
+         infowindow.setContent('<div style="color:black"> Name: 수상드론호 <br> MMSI : ' 
+         + content + '<br> IMO: ' + content + '<br> 속도 : 100 ' );
+         infowindow.open(map,circle);
+    });
+  
     }, 20);
 
 }
@@ -120,18 +150,40 @@ function computingOffset(center, content){
     return bounds;
 }
 
+var colCheck = false;
 function collisionCheck(circleNum){
-  var distance = google.maps.geometry.spherical.computeDistanceBetween (circles[0], circles[1]);
-
-  var totalRadi = cirRadius[0] + cirRadius[1];
-  if ( distance <= totalRadi){
-    $("#danger").text('매우 위험');
-  } else if ( distance <= totalRadi * 1.8){
-    $("#danger").text('위험');
+  if (circles[0]!= null && circles[1]!=null)
+  {
+    var distance = google.maps.geometry.spherical.computeDistanceBetween (circles[0], circles[1]);
+    var totalRadi = cirRadius[0] + cirRadius[1];
+    if ( distance <= totalRadi * 0.8){
+      if (!colCheck){
+        colCheck = true;
+        alert('충돌');
+      }
+    } else if ( distance <= totalRadi * 1.2){
+      $("#danger").text('매우 위험');
+      $("#danger").css("color", "#DF0101");
+      $("#danger").css("font-weight", "bold");
+    } else if ( distance <= totalRadi * 1.8){
+      $("#danger").text('위험');
+      $("#danger").css("color", "#FFFF00");
+      $("#danger").css("font-weight", "bold");
+    } else {
+        $("#danger").text('보통');
+    }
   } else {
-      $("#danger").text('보통');
+    console.log('Nothing in the arr');
   }
+ 
 }
+
+// embed vesselfinder map
+function initVessel() {
+  //$("#map").attr("style", "visibility: hidden")
+  //document.getElementById('vesselfinder').src='https://www.vesselfinder.com/aismap?zoom=13&amp;lat=35.497021&amp;lon=129.391589&amp;width=100%&amp;height=400&amp;names=false&amp;track=false&amp;fleet=false&amp;fleet_name=false&amp;fleet_hide_old_positions=false&amp;clicktoact=false&amp;store_pos=true&amp;ra=http%3A%2F%2Flocalhost%3A8000%2F';
+}
+
 
 
 

@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Forty by HTML5 UP</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" tpye="text/css" href="/stylesheets/basic.css"/>
+		<link rel="stylesheet" type="text/css" href="/stylesheets/menuStyle.css"/>
+        <link rel="stylesheet" type="text/css" href="/stylesheets/opSystem.css"/>	
+    </head>
+    <!-- 관제 센터 -->
+	<body class="is-preload">
+			<div id="wrapper">
+					<header id="header" class="alt">
+						<a href="/" class="logo"><strong>MALLANG</strong> <span> CAU </span></a>
+						<nav>
+							<a href="#menu">Menu</a>
+						</nav>
+					</header>
+					<nav id="menu">
+						<ul class="links">
+							<li><a href="/">Home</a></li>
+							<li><a href="/droneSystem">droneSystem</a></li>
+							<li><a href="/opSystem">opSystem</a></li>
+                            <li><a href="/log">logView</a></li>
+                            <li><a href="/guestSystem">guestView</a></li>
+						</ul>
+						<ul class="actions stacked">
+                            <form action="/user/logout" method="get">
+                                <li><a href="#" class="button fit">Log Out</a></li>
+                            </form>
+						</ul>
+                    </nav>
+                    <div id="main">
+						<div class="tab_wrap">
+							<ul class="tab_menu_container">
+								<li>
+									<button id="mapBtn1" class="tabBtn" type="button"> google1 </button>
+								</li>
+								<li>
+									<button id="mapBtn2" class="tabBtn" type="button"> google2 </button>
+								</li>
+								<li>
+									<button id="mapBtn3" class="tabBtn" type="button"> google3 </button>
+								</li>
+								<li>
+									<button class="tabBtn" type="button"> vesselfinder</button>
+								</li>
+							</ul>
+							<div class = "tab_content_container">
+								<div id="google1" class="tab_content" style="display: none;">
+									
+								</div>
+								<div id="google2" class="tab_content" style="display: none;">
+									
+								</div>
+								<div id="google3" class="tab_content" style="display: none;">
+								
+
+								</div>
+								<div id="vesslefinder" class="tab_content" style="display: none;">
+									<script type="text/javascript">
+										// Map appearance
+										var width="100%";         // width in pixels or percentage
+										var height="300";         // height in pixels
+										var latitude="35.497021";     // center latitude (decimal degrees)
+										var longitude="129.391589";    // center longitude (decimal degrees)
+										var zoom="13";             // initial zoom (between 3 and 18)
+									</script>
+									<script type="text/javascript" src="https://www.vesselfinder.com/aismap.js"></script>
+								</div>
+							</div>
+						</div>
+					</div>		
+                    <footer id="footer">
+						<div class="inner">
+							<ul class="copyright">
+								<li>한이음 스마트해상물류</li>
+							    <li>Mallng CAU </li>
+							    <li>Web templet Design: <a href="https://html5up.net">HTML5 UP</a></li>
+						    </ul>
+						</div>
+					</footer>				
+			</div>
+			<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+			<script src="/js/jquery.func.min.js"></script>
+			<script src="/js/util.js"></script>
+			<script src="/js/main.js"></script>
+			<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false&key=AIzaSyDkQqVhUhen65ZiP-GjNX3RYFgZZ1__OQI"></script>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+			<script src="/js/initMap.js"></script>
+			<script src="socket.io/socket.io.js"></script> 
+			<script src="/js/initVesselMap.js"></script>
+         </body>
+</html>

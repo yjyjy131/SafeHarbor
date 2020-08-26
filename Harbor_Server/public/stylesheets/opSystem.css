@@ -1,10 +1,15 @@
+.tab_content {
+  width: 100em;
+  height: 50em;
+}
+
 #main {
 	background-color: #242943;
 	height: 29em;
 	display: flex;
 	flex-grow: 1;
 	flex-basis: 1;
-	flex-basis: auto;
+    flex-basis: auto;
 }
 
 #opSide{
