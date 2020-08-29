@@ -1,6 +1,38 @@
-.tab_content {
-  width: 100em;
-  height: 50em;
+#vesselfinder {
+    overflow: hidden;
+}
+
+iframe {
+    margin-top: -50px;
+}
+
+.tabBtn {
+    float: left;
+    font-size: 1em;
+    color: white; 
+    padding: 1em;
+    margin-right: 1em;
+    background-color: #ffffff00;
+    z-index: 100;
+}
+
+.taBtn:focus {
+    outline: none;
+}
+
+.tabBtn.on {
+    color: white;
+    border-bottom: white, 1em;
+}
+
+.tabBtn:hover {
+    color: #2e4296;
+}
+
+.tab_Content {
+    width: 55em;
+    height: 22em;
+    margin: 0em 1em 0em 0em;
 }
 
 #main {
@@ -18,7 +50,6 @@
 }
 
 #map{
-    background-color: lightsteelblue;
     width:250em;
     margin: 1em 1em 0 1em;
 }

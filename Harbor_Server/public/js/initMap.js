@@ -1,6 +1,7 @@
 var numDeltas = 100;
 var map;
 var infowindow = null;
+var circleTimer = [];
 
 var start = [
   {lat: 35.514020, lng: 129.391979},
@@ -20,12 +21,16 @@ var circles = [];
 
 var contentString = '<b>aaaa</b><br>';
 
+google.maps.event.addDomListener(window, 'load', initMap);
+
 function initMap() {
-  // 2. AIS 지도 추가 => UI 수정
-  // 3. 충돌 시 연락처 제공
+
+  // 1. 맵 리로드 시 속도 오류
+  // 2. 충돌 시 연락처 제공 : 해양 안전 심판원, 해양경찰청, 울산항만
+  // 3. css 수정 
   // 4. 충돌 감지 시 circle 클리킹
-  // 5. 맵 리로드 시 속도 오류
-  // 6. 애니메이션 상황 추가
+  // 5. 애니메이션 상황 추가 , 탭 버튼 마다 다른 애니메이션 재생
+  
   var ulsan = {lat: 35.497021, lng: 129.391589};
 
   infowindow = new google.maps.InfoWindow(
@@ -35,7 +40,7 @@ function initMap() {
     });
 
   map = new google.maps.Map(
-    document.getElementById('google1'), {zoom: 13, center: ulsan});
+    document.getElementById('googleMap'), {zoom: 13, center: ulsan});
     google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
         for (var i=0; i<start.length; i++){
           createArea(start[i], destination[i], map, i);
@@ -44,11 +49,11 @@ function initMap() {
   );
 }
 
-$('#mapBtn1').on('click', function(){
-  initMap();
-});
+//$('#mapBtn1').on('click', function(){
+//  initMap();
+//});
 
-google.maps.event.addDomListener(window, 'load', initMap);
+
 
 function createArea(start, end, map, content) {
     var circleOption = {
@@ -90,7 +95,7 @@ function createArea(start, end, map, content) {
 
     var rectangle = new google.maps.Rectangle(recOption);
 
-    var circleTimer = setInterval (function() {
+    circleTimer[content] = setInterval (function() {
       startPos.lat += deltaLat[Number(content)];
       startPos.lng += deltaLng[Number(content)];
       
@@ -129,6 +134,12 @@ function createArea(start, end, map, content) {
     }, 20);
 
 }
+
+// stop playing button
+$('#stop').on('click', function(){
+  clearInterval(circleTimer[0]);
+  clearInterval(circleTimer[1]);
+});
 
 function computingOffset(center, content){
   var spherical = google.maps.geometry.spherical; 

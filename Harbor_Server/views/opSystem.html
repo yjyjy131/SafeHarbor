@@ -83,9 +83,47 @@
                                 </table>
                             </div>
                         </div>
-						<div id="map">
-                        <!-- 구글맵 -->
-                        </div>
+						<div class="tab_wrap">
+							<ul class="tabBtn_container">
+								<li>
+									<button id="mapBtn1" class="tabBtn gMap" type="button"> google1 </button>
+								</li>
+								<li>
+									<button id="mapBtn2" class="tabBtn gMap" type="button"> google2 </button>
+								</li>
+								<li>
+									<button id="mapBtn3" class="tabBtn gMap" type="button"> google3 </button>
+                                </li>
+                                <li>
+									<button id="mapBtn4" class="tabBtn" type="button"> vesselfinder</button>
+								</li>
+                            </ul>
+                            <ul class="animeBtn">
+                                <li>
+                                    <button id="play">p</button>
+                                    <button id="stop">s</button>
+                                    <button id="replay">r</button>
+                                </li>
+
+                            </ul>
+							<div class = "tab_content_container">
+                                <div id="googleMap" class="tab_Content" style="display: block;">
+									
+                                </div>
+                                <div id="vesselfinder" class="tab_Content" style="display: none;">
+									<script type="text/javascript">
+										// Map appearance
+										var width="100%";         // width in pixels or percentage
+										var height="300";         // height in pixels
+										var latitude="35.497021";     // center latitude (decimal degrees)
+										var longitude="129.391589";    // center longitude (decimal degrees)
+                                        var zoom="13";             // initial zoom (between 3 and 18)
+                                        
+									</script>
+									<script type="text/javascript" src="https://www.vesselfinder.com/aismap.js" ></script>
+								</div>
+							</div>
+						</div>
                     </div>					
 					<footer id="footer">
 						<div class="inner">
@@ -105,5 +143,6 @@
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
             <script src="socket.io/socket.io.js"></script> 
             <script src="/js/initMap.js"></script>
+            <script src="/js/initVesselMap.js"></script>
            </body>
 </html>
