@@ -2,6 +2,7 @@ var numDeltas = 100;
 var map;
 var infowindow = null;
 var circleTimer = [];
+var reset = false;
 
 var start = [
   {lat: 35.514020, lng: 129.391979},
@@ -19,18 +20,20 @@ var deltaLng = [];
 var cirRadius = [];
 var circles = [];
 
-var contentString = '<b>aaaa</b><br>';
+var contentString = '<b>Null message</b><br>';
+
+var toggle = [false, false];
 
 google.maps.event.addDomListener(window, 'load', initMap);
 
 function initMap() {
-
-  // 1. 맵 리로드 시 속도 오류
+  // 원, 직사각형 위치 바뀜
+  // infowindow 에러 수정
   // 2. 충돌 시 연락처 제공 : 해양 안전 심판원, 해양경찰청, 울산항만
   // 3. css 수정 
   // 4. 충돌 감지 시 circle 클리킹
   // 5. 애니메이션 상황 추가 , 탭 버튼 마다 다른 애니메이션 재생
-  
+
   var ulsan = {lat: 35.497021, lng: 129.391589};
 
   infowindow = new google.maps.InfoWindow(
@@ -42,9 +45,20 @@ function initMap() {
   map = new google.maps.Map(
     document.getElementById('googleMap'), {zoom: 13, center: ulsan});
     google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
-        for (var i=0; i<start.length; i++){
-          createArea(start[i], destination[i], map, i);
-        }
+        deltaLat = [];
+        deltaLng = [];
+
+        $('#play').on('click', function(){
+          if (circles[0] == null){ 
+            for (var i=0; i<start.length; i++){
+              createArea(start[i], destination[i], map, i);
+            }
+          }
+        });
+
+        $('#replay').on('click', function(){
+          
+        })
     }
   );
 }
@@ -53,14 +67,13 @@ function initMap() {
 //  initMap();
 //});
 
-
-
 function createArea(start, end, map, content) {
     var circleOption = {
         center : start,
         fillColor: '#3878c7',
         fillOpacity: 0.6,
         map: map,
+        zIndex: 1,
         radius: 500,
         strokeColor: '#3878c7',
         storkeOpacity: 1,
@@ -72,12 +85,13 @@ function createArea(start, end, map, content) {
     var endPos = end;
     
     cirRadius[content] = circle.getRadius();
+
     deltaLat[Number(content)] = (endPos.lat - startPos.lat)/numDeltas;
     deltaLng[Number(content)] = (endPos.lng - startPos.lng)/numDeltas;
 
     var point = new google.maps.LatLng(startPos.lat, startPos.lng);
-    bounds = computingOffset(point);
-
+    bounds = computingOffset(point, content);
+  
     var recOption = {
       strokeColor: "#FF0000",
       strokeOpacity: 0.8,
@@ -85,53 +99,76 @@ function createArea(start, end, map, content) {
       fillColor: "#FF0000",
       fillOpacity: 0.35,
       map: map,
+      zIndex: 0, 
       bounds: bounds
     }
 
+    /*
     var infoOption = {
       size: new google.maps.Size(10,10),
       position: {lat: 35.497021, lng: 129.391589}
     }
+    */
 
     var rectangle = new google.maps.Rectangle(recOption);
-
-    circleTimer[content] = setInterval (function() {
-      startPos.lat += deltaLat[Number(content)];
-      startPos.lng += deltaLng[Number(content)];
-      
-      var latlng = new google.maps.LatLng(startPos.lat,startPos.lng);
-      circleOption.center = latlng; 
-      circle.setOptions(circleOption);
-
-      point = latlng;
-      recOption.bounds = computingOffset(point, content);
-      rectangle.setOptions(recOption);
-
-      circles[content] = latlng;
-      collisionCheck(content);
-
-      /*
-      google.maps.event.addListener(circle, 'mouseover', function(){
-        console.log('mouseover');
-        infowindow.setContent(contentString);
-        infowindow.open(map, circle);
-      });
-      */
-
-      infowindow.setPosition(circles[0]);
-
-      // lat lng 표기 속도 조절 
-      //infowindow.setContent('<div style="color:black"> MMSI : ' + content + '<br> 속도 : 100 <br> lat : ' 
-      //+  startPos.lat + '<br> lng : ' + startPos.lng );
-
-     google.maps.event.addListener(circle, 'click', function(event) {
-         //infowindow.setPosition(event.latLng);
-         infowindow.setContent('<div style="color:black"> Name: 수상드론호 <br> MMSI : ' 
-         + content + '<br> IMO: ' + content + '<br> 속도 : 100 ' );
-         infowindow.open(map,circle);
+   
+    $('#play').on('click', function(){
+      if(!reset){
+        if(toggle[0]){
+          toggle[0] = false;
+          circleTimer[content] = setInterval ( function() {createCirTimer(circle, rectangle, startPos, circleOption, recOption, content) }, 20); 
+        } else if (toggle[1]){
+          toggle[1] = false;
+          circleTimer[content] = setInterval ( function() {createCirTimer(circle, rectangle, startPos, circleOption, recOption, content) }, 20); 
+        }
+      }
     });
-  
-    }, 20);
+
+    $('#replay').on('click', function(){
+        if(!toggle[1]){
+          clearInterval(circleTimer[0]);
+          clearInterval(circleTimer[1]); 
+          toggle[0] = true;
+          toggle[1] = true;
+        }
+
+        rectangle.setMap(null);
+        circle.setMap(null);
+        
+        varInitialize();
+        reset = true;
+      //varInitialize();
+      //circleTimer[0] = setInterval ( function() {createCirTimer(circle, rectangle, startPos, circleOption, recOption, content) }, 20); 
+      //circleTimer[1] = setInterval ( function() {createCirTimer(circle, rectangle, startPos, circleOption, recOption, content) }, 20); 
+
+    })
+ 
+   // setInterval Anonymous func
+   circleTimer[content] = setInterval ( function() {createCirTimer(circle, rectangle, startPos, circleOption, recOption, content) }, 20); 
+
+}
+
+function createCirTimer(circle, rectangle,  startPos, circleOption, recOption, content){
+    startPos.lat += deltaLat[content];
+    startPos.lng += deltaLng[content];
+    
+    var latlng = new google.maps.LatLng(startPos.lat,startPos.lng);
+    circleOption.center = latlng; 
+    circle.setOptions(circleOption);
+
+    point = latlng;
+    recOption.bounds = computingOffset(point, content);
+    rectangle.setOptions(recOption);
+
+    circles[content] = latlng;
+    collisionCheck(content);
+    infowindow.setPosition(circles[0]);
+
+   google.maps.event.addListener(circle, 'click', function(event) {
+       infowindow.setContent('<div style="color:black"> Name: 수상드론호 <br> MMSI : ' 
+       + content + '<br> IMO: ' + content + '<br> 속도 : 100 ' );
+       infowindow.open(map,circle);
+  });
 
 }
 
@@ -139,6 +176,9 @@ function createArea(start, end, map, content) {
 $('#stop').on('click', function(){
   clearInterval(circleTimer[0]);
   clearInterval(circleTimer[1]);
+
+  toggle[0] = true;
+  toggle[1] = true;
 });
 
 function computingOffset(center, content){
@@ -189,10 +229,29 @@ function collisionCheck(circleNum){
  
 }
 
-// embed vesselfinder map
-function initVessel() {
-  //$("#map").attr("style", "visibility: hidden")
-  //document.getElementById('vesselfinder').src='https://www.vesselfinder.com/aismap?zoom=13&amp;lat=35.497021&amp;lon=129.391589&amp;width=100%&amp;height=400&amp;names=false&amp;track=false&amp;fleet=false&amp;fleet_name=false&amp;fleet_hide_old_positions=false&amp;clicktoact=false&amp;store_pos=true&amp;ra=http%3A%2F%2Flocalhost%3A8000%2F';
+
+function varInitialize(){
+  numDeltas = 100;
+  infowindow = null;
+  circleTimer = [];
+
+  start = [
+  {lat: 35.514020, lng: 129.391979},
+  {lat: 35.469623, lng: 129.393169}
+];
+
+  destination =[
+  {lat: 35.469623, lng: 129.393169},
+  {lat: 35.514020, lng: 129.391979}
+];
+
+  deltaLat = [];
+  deltaLng = [];
+
+  cirRadius = [];
+  circles = [];
+  toggle = [false, false];
+  colCheck = false;
 }
 
 
