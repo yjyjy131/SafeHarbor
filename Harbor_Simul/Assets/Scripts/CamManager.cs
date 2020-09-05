@@ -6,7 +6,7 @@ public class CamManager : Singleton<CamManager>
 {
     public Transform mainCam;
     public RectTransform uiPos;
-    public Transform playerPos;
+    public Transform monitorPos;
     public Quaternion monitorCamRot;
 
 

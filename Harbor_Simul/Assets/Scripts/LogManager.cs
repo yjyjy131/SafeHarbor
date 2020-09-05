@@ -56,7 +56,7 @@ public class LogManager : Singleton<LogManager>
         player.stopControl();
         CamManager.Instance.mainCam = player.camPos;
         CamManager.Instance.uiPos = player.uiPos;
-        CamManager.Instance.playerPos = player.transform;
+        CamManager.Instance.monitorPos = player.MonitorCamPos;
         CamManager.Instance.monitorCamRot = player.MonitorCamPos.rotation;
         playedTime = 0;
         isPlay = true;
@@ -119,7 +119,7 @@ public class LogManager : Singleton<LogManager>
             timeScale = 1;
             return;
         }
-        if (Time.timeScale >= 32f) return;
+        if (timeScale >= 32f) return;
         timeScale *= multi;
     }
 
@@ -130,30 +130,36 @@ public class LogManager : Singleton<LogManager>
 
     public IEnumerator replayCoroutine()
     {
-        float cooldown = Logger.interval;
+        int cooldown = Mathf.RoundToInt(Logger.interval / 0.02f);
+        int frame = 0;
         loadByTime(playedTime);
-        yield return new WaitForSeconds(cooldown / timeScale);
         while (true)
         {
-            if(isFoward)
-                playedTime += cooldown;
-            else
-                playedTime -= cooldown;
-
-            loadByTime(playedTime);
-
-            if (playedTime >= endTime)
+            frame++;
+            if (frame >= cooldown)
             {
-                Debug.Log("time ended");
-                playedTime = endTime;
-                stopReplay();
+                frame = 0;
+                if (isFoward)
+                    playedTime += Logger.interval * timeScale;
+                else
+                    playedTime -= Logger.interval * timeScale;
+
+                loadByTime(playedTime);
+
+                if (playedTime >= endTime)
+                {
+                    Debug.Log("time ended");
+                    playedTime = endTime;
+                    stopReplay();
+                }
+                else if (playedTime <= 0)
+                {
+                    playedTime = 0;
+                    stopReplay();
+                }
             }
-            else if(playedTime <= 0)
-            {
-                playedTime = 0;
-                stopReplay();
-            }
-            yield return new WaitForSeconds(cooldown / timeScale);
+            
+            yield return new WaitForFixedUpdate();
         }
     }
 }

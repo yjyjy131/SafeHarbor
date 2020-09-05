@@ -86,4 +86,12 @@ public class SelectPanel : MonoBehaviour
     {
         return buttons[currentButton].transform.position;
     }
+
+    public void OnMouseEnter(Button btn)
+    {
+        buttons[currentButton].OnDeselect(null);
+        if (!buttons.Contains(btn)) return;
+        currentButton = buttons.IndexOf(btn);
+        buttons[currentButton].OnSelect(null);
+    }
 }

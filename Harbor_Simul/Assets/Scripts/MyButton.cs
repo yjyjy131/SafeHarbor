@@ -1,18 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class MyButton : MonoBehaviour
+public class MyButton : MonoBehaviour, IPointerEnterHandler
 {
-    // Start is called before the first frame update
-    void Start()
+    SelectPanel parent;
+    Button btn;
+
+    public void Awake()
     {
-        
+        parent = transform.parent.GetComponent<SelectPanel>();
+        btn = transform.GetComponent<UnityEngine.UI.Button>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnPointerEnter(PointerEventData eventData)
     {
-        
+        parent.OnMouseEnter(btn);
     }
+
 }

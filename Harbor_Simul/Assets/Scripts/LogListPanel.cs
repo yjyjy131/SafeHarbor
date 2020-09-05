@@ -20,15 +20,17 @@ public class LogListPanel : SelectPanel
     public override void deActive()
     {
         base.deActive();
-        Transform[] childList = content.GetComponentsInChildren<Transform>(true);
+        RectTransform[] childList = content.GetComponentsInChildren<RectTransform>();
         if (childList != null)
         {
             for (int i = 0; i < childList.Length; i++)
             {
-                if (childList[i] != content)
+                if (childList[i].gameObject != content.gameObject)
                     Destroy(childList[i].gameObject);
             }
         }
+        buttons.RemoveRange(1, buttons.Count-1);
+        currentButton = 0;
     }
 
     public void loadLogs()

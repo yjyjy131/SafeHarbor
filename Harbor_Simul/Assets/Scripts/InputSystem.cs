@@ -27,13 +27,13 @@ public class InputSystem : Singleton<InputSystem>
     protected override void Awake()
     {
         base.Awake();
-        if (InputSystem.instance != null && InputSystem.instance != this)
+        /*if (InputSystem.instance != null && InputSystem.instance != this)
         {
             Destroy(gameObject);
             return;
         }
+        DontDestroyOnLoad(gameObject);*/
         instance = this;
-        DontDestroyOnLoad(gameObject);
     }
     private void Update()
     {
@@ -80,8 +80,8 @@ public class InputSystem : Singleton<InputSystem>
         }
 
 #if INPUT_TEST
-        select = Input.GetKey(KeyCode.R);
-        back = Input.GetKey(KeyCode.F);
+        select = Input.GetKeyDown(KeyCode.R);
+        back = Input.GetKeyDown(KeyCode.F);
         if (back)
             RecenterVR();
 #else
@@ -112,8 +112,10 @@ public class InputSystem : Singleton<InputSystem>
 
     public void ValueTest()
     {
+        if (bar == null) bar = GameObject.Find("AngleBar").GetComponent<Scrollbar>();
         testValue = bar.value * 2 - 1;
     }
+
 
     public static void RecenterVR()
     {

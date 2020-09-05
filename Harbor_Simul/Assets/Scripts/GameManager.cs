@@ -42,6 +42,14 @@ public class GameManager : Singleton<GameManager>
         StartGame();
     }
 
+    public void Update()
+    {
+        if (InputSystem.instance.back && isStart)
+        {
+            onOption();
+        }
+    }
+
     public void StartGame()
     {
         currentRoute = routes[(int)GlobalData.route];
@@ -120,11 +128,18 @@ public class GameManager : Singleton<GameManager>
     public IEnumerator logCoroutine()
     {
         Logger.initLogData(startedAt, GlobalData.shipType, GlobalData.route);
-        float cooldown = Logger.interval;
+        int cooldown = Mathf.RoundToInt(Logger.interval/0.02f);
+        int frame = 0;
+        doLogging();
         while (true)
         {
-            doLogging();
-            yield return new WaitForSeconds(cooldown);
+            frame++;
+            if (frame >= cooldown)
+            {
+                frame = 0;
+                doLogging();
+            }
+            yield return new WaitForFixedUpdate();
         }
     }
 }
