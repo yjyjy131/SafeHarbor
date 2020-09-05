@@ -1,4 +1,4 @@
-var numDeltas = 100;
+var numDeltas = [100, 100];
 var map;
 var infowindow = null;
 var circleTimer = [];
@@ -23,18 +23,58 @@ var circles = [];
 var contentString = '<b>Null message</b><br>';
 
 var toggle = [false, false];
+/*
+var alertwindow = new google.maps.Infowindw({
+  size: new google.maps.Size(150,50)
+})*/
+
+/* 
+배 두개의 속도가 다르게 적용될 수 있어야 함. 
+배 방향에 중간에 꺾일 수도 있음. 
+
+상황 2. 35.465950, 129.376781 /   35.450051, 129.405485
+선박 출발지 35.457782, 129.388296 도착지 35.489482, 129.396625
+어선 출발지 
+
+상황1. 선박와 어선 충돌
+상황2. 어선과 어선 충돌
+상황3. 선박이 제대로 정박하지 못하고 영역에 충돌
+*/
+
+var cirRadi = [500, 500];
+var currentBtn = 1;
+
+var ulsan = [ {lat: 35.497021, lng: 129.391589},
+  {lat:35.463198, lng:129.388737}
+];
+
+$('#mapBtn1').on('click', function(){
+  currentBtn = 1;
+  map.panTo(ulsan[0]);
+  varInitialize();
+})
+
+$('#mapBtn2').on('click', function(){
+  currentBtn = 2;
+  map.panTo(ulsan[1]);
+  varInitialize();
+})
+
+$('#mapBtn3').on('click', function(){
+  currentBtn = 3;
+  varInitialize();
+})
 
 google.maps.event.addDomListener(window, 'load', initMap);
 
 function initMap() {
-  // 원, 직사각형 위치 바뀜
-  // infowindow 에러 수정
-  // 2. 충돌 시 연락처 제공 : 해양 안전 심판원, 해양경찰청, 울산항만
-  // 3. css 수정 
-  // 4. 충돌 감지 시 circle 클리킹
-  // 5. 애니메이션 상황 추가 , 탭 버튼 마다 다른 애니메이션 재생
-
-  var ulsan = {lat: 35.497021, lng: 129.391589};
+  // 충돌지점 latlng 수정
+  // 충돌정보 csv 
+  // 1. infowindow 에러 수정
+  // 2. css 수정 
+  // 3. 충돌 감지 시 circle 클리킹
+  // 4. 애니메이션 상황 추가 , 탭 버튼 마다 다른 애니메이션 재생
+  // 5. 소형선박 ? center 하나만으로 표현 ? 사이즈로 표현 
 
   infowindow = new google.maps.InfoWindow(
     { 
@@ -43,7 +83,7 @@ function initMap() {
     });
 
   map = new google.maps.Map(
-    document.getElementById('googleMap'), {zoom: 13, center: ulsan});
+    document.getElementById('googleMap'), {zoom: 13, center: ulsan[0]});
     google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
         deltaLat = [];
         deltaLng = [];
@@ -51,30 +91,28 @@ function initMap() {
         $('#play').on('click', function(){
           if (circles[0] == null){ 
             for (var i=0; i<start.length; i++){
-              createArea(start[i], destination[i], map, i);
+              createArea(start[i], destination[i], map, i, cirRadi[i], numDeltas[i]);
             }
           }
         });
-
-        $('#replay').on('click', function(){
-          
-        })
     }
   );
+
+
 }
 
 //$('#mapBtn1').on('click', function(){
 //  initMap();
 //});
 
-function createArea(start, end, map, content) {
+function createArea(start, end, map, content, cirRadi, numDeltaVal) {
     var circleOption = {
         center : start,
         fillColor: '#3878c7',
         fillOpacity: 0.6,
         map: map,
         zIndex: 1,
-        radius: 500,
+        radius: cirRadi, 
         strokeColor: '#3878c7',
         storkeOpacity: 1,
         strokeWeight: 0.5
@@ -86,8 +124,8 @@ function createArea(start, end, map, content) {
     
     cirRadius[content] = circle.getRadius();
 
-    deltaLat[Number(content)] = (endPos.lat - startPos.lat)/numDeltas;
-    deltaLng[Number(content)] = (endPos.lng - startPos.lng)/numDeltas;
+    deltaLat[Number(content)] = (endPos.lat - startPos.lat)/numDeltaVal;
+    deltaLng[Number(content)] = (endPos.lng - startPos.lng)/numDeltaVal;
 
     var point = new google.maps.LatLng(startPos.lat, startPos.lng);
     bounds = computingOffset(point, content);
@@ -183,8 +221,7 @@ $('#stop').on('click', function(){
 
 function computingOffset(center, content){
   var spherical = google.maps.geometry.spherical; 
-  var areaRadi = cirRadius[content] * 0.8;
-  
+  var areaRadi = cirRadius[content] * 0.8; 
   var areaRadi2 = cirRadius[content] * 0.5;
     var north = spherical.computeOffset(center, areaRadi, 0); 
     var west  = spherical.computeOffset(center, areaRadi2, -90); 
@@ -201,6 +238,8 @@ function computingOffset(center, content){
     return bounds;
 }
 
+// collision infowindow
+
 var colCheck = false;
 function collisionCheck(circleNum){
   if (circles[0]!= null && circles[1]!=null)
@@ -211,6 +250,19 @@ function collisionCheck(circleNum){
       if (!colCheck){
         colCheck = true;
         alert('충돌');
+        $('#colliInfo').fadeIn(500);
+        //$('#lat').text(bounds.south);
+        //$('#lng').text(bounds.east);
+
+        var currentdate = new Date(); 
+        var datetime = currentdate.getFullYear() + "/"
+                + (currentdate.getMonth()+1) + "/" 
+                + currentdate.getDate() + " "
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
+        $('#when').text(datetime);
+        //$('#colliInfo').show();
       }
     } else if ( distance <= totalRadi * 1.2){
       $("#danger").text('매우 위험');
@@ -226,24 +278,50 @@ function collisionCheck(circleNum){
   } else {
     console.log('Nothing in the arr');
   }
- 
 }
 
+$('#colliBtn').on('click', function(){
+  // $('#colliInfo').hide();
+  $('#colliInfo').fadeOut(500);
+})
 
 function varInitialize(){
-  numDeltas = 100;
   infowindow = null;
   circleTimer = [];
 
-  start = [
-  {lat: 35.514020, lng: 129.391979},
-  {lat: 35.469623, lng: 129.393169}
-];
+  if (currentBtn == 1){
+    cirRadi = [500, 500];
+    numDeltas = [100, 100];
+    start = [
+      {lat: 35.514020, lng: 129.391979},
+      {lat: 35.469623, lng: 129.393169}
+    ];
+    
+      destination =[
+      {lat: 35.469623, lng: 129.393169},
+      {lat: 35.514020, lng: 129.391979}
+    ];
 
-  destination =[
-  {lat: 35.469623, lng: 129.393169},
-  {lat: 35.514020, lng: 129.391979}
-];
+    $('#mmsi1').text('12345678');
+    $('#mmsi2').text('87654321');  
+  } else if (currentBtn == 2){
+    cirRadi = [500, 200];
+    numDeltas = [200, 80];
+    start = [
+      {lat: 35.457782, lng: 129.388296},
+      {lat: 35.465950, lng: 129.376781}
+    ];
+    destination =[
+      {lat: 35.489482, lng: 129.396625},
+      {lat: 35.459654, lng: 129.396903}
+    ];
+    
+    $('#mmsi1').text('12345678');
+    $('#mmsi2').text('87654321');  
+
+  } else if (currentBtn == 3){
+
+  }
 
   deltaLat = [];
   deltaLng = [];
