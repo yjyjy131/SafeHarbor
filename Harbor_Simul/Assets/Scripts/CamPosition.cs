@@ -13,9 +13,9 @@ public class CamPosition : MonoBehaviour
     {
         mainCam.position = CamManager.Instance.mainCam.position;
         mainCam.rotation = CamManager.Instance.mainCam.rotation;
-        if(CamManager.Instance.playerPos != null)
+        if(CamManager.Instance.monitorPos != null)
         {
-            Vector3 target = CamManager.Instance.playerPos.position + new Vector3(0, 0, -12);
+            Vector3 target = CamManager.Instance.monitorPos.position + new Vector3(0, 0, -12);
             //Vector3 lerped = Vector3.Lerp(monitorCam.position, target, Time.deltaTime *  3f);
             //monitorCam.position = new Vector3(lerped.x, monitorCam.position.y, lerped.z);
             monitorCam.position = new Vector3(target.x, monitorCam.position.y, target.z);
