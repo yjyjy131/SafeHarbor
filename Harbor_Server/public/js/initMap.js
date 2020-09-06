@@ -28,19 +28,6 @@ var alertwindow = new google.maps.Infowindw({
   size: new google.maps.Size(150,50)
 })*/
 
-/* 
-배 두개의 속도가 다르게 적용될 수 있어야 함. 
-배 방향에 중간에 꺾일 수도 있음. 
-
-상황 2. 35.465950, 129.376781 /   35.450051, 129.405485
-선박 출발지 35.457782, 129.388296 도착지 35.489482, 129.396625
-어선 출발지 
-
-상황1. 선박와 어선 충돌
-상황2. 어선과 어선 충돌
-상황3. 선박이 제대로 정박하지 못하고 영역에 충돌
-*/
-
 var cirRadi = [500, 500];
 var currentBtn = 1;
 
@@ -68,13 +55,21 @@ $('#mapBtn3').on('click', function(){
 google.maps.event.addDomListener(window, 'load', initMap);
 
 function initMap() {
+  // 애니메이션 사각형 방향 안맞음 
+  // 충돌정보 csv 화
+  // infowindow 에러 수정 
   // 충돌지점 latlng 수정
-  // 충돌정보 csv 
-  // 1. infowindow 에러 수정
+
+  /* 
+  상황1. 선박와 어선 충돌
+  상황2. 어선과 어선 충돌
+  상황3. 선박이 제대로 정박하지 못하고 영역에 충돌
+  */
+
   // 2. css 수정 
   // 3. 충돌 감지 시 circle 클리킹
-  // 4. 애니메이션 상황 추가 , 탭 버튼 마다 다른 애니메이션 재생
-  // 5. 소형선박 ? center 하나만으로 표현 ? 사이즈로 표현 
+  // 4. 애니메이션 상황 추가 , 탭 버튼 마다 다른 애니메이션 재생 => 더 매끄럽게 만들기 
+
 
   infowindow = new google.maps.InfoWindow(
     { 
@@ -97,8 +92,6 @@ function initMap() {
         });
     }
   );
-
-
 }
 
 //$('#mapBtn1').on('click', function(){
@@ -331,7 +324,3 @@ function varInitialize(){
   toggle = [false, false];
   colCheck = false;
 }
-
-
-
-
