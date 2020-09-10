@@ -1,6 +1,6 @@
 var numDeltas = [100, 100];
 var map;
-var infowindow = null;
+// var infowindow = null;
 var circleTimer = [];
 var reset = false;
 
@@ -55,10 +55,10 @@ $('#mapBtn3').on('click', function(){
 google.maps.event.addDomListener(window, 'load', initMap);
 
 function initMap() {
-  // 애니메이션 사각형 방향 안맞음 
-  // 충돌정보 csv 화
-  // infowindow 에러 수정 
-  // 충돌지점 latlng 수정
+
+  // 애니메이션 
+  // 충돌 감지 circle 클리킹 
+  // 충돌지점 latlng 수정 
 
   /* 
   상황1. 선박와 어선 충돌
@@ -66,16 +66,13 @@ function initMap() {
   상황3. 선박이 제대로 정박하지 못하고 영역에 충돌
   */
 
-  // 2. css 수정 
-  // 3. 충돌 감지 시 circle 클리킹
-  // 4. 애니메이션 상황 추가 , 탭 버튼 마다 다른 애니메이션 재생 => 더 매끄럽게 만들기 
-
-
+ /*
   infowindow = new google.maps.InfoWindow(
     { 
       size: new google.maps.Size(150,50),
       content: contentString
     });
+  */
 
   map = new google.maps.Map(
     document.getElementById('googleMap'), {zoom: 13, center: ulsan[0]});
@@ -187,20 +184,21 @@ function createCirTimer(circle, rectangle,  startPos, circleOption, recOption, c
     circleOption.center = latlng; 
     circle.setOptions(circleOption);
 
-    point = latlng;
-    recOption.bounds = computingOffset(point, content);
+    //point = latlng;
+    recOption.bounds = computingOffset(latlng, content);
     rectangle.setOptions(recOption);
 
     circles[content] = latlng;
     collisionCheck(content);
-    infowindow.setPosition(circles[0]);
+    /*
+    infowindow.setPosition(circles[content]);
 
    google.maps.event.addListener(circle, 'click', function(event) {
-       infowindow.setContent('<div style="color:black"> Name: 수상드론호 <br> MMSI : ' 
+       infowindow.setContent('<div style="color:black"> MMSI : ' 
        + content + '<br> IMO: ' + content + '<br> 속도 : 100 ' );
        infowindow.open(map,circle);
   });
-
+  */
 }
 
 // stop playing button
@@ -216,10 +214,10 @@ function computingOffset(center, content){
   var spherical = google.maps.geometry.spherical; 
   var areaRadi = cirRadius[content] * 0.8; 
   var areaRadi2 = cirRadius[content] * 0.5;
-    var north = spherical.computeOffset(center, areaRadi, 0); 
-    var west  = spherical.computeOffset(center, areaRadi2, -90); 
-    var south = spherical.computeOffset(center, areaRadi, 180); 
-    var east  = spherical.computeOffset(center, areaRadi2, 90);
+    var north = spherical.computeOffset(center, areaRadi, 10); // 0
+    var west  = spherical.computeOffset(center, areaRadi2, -80); // -90
+    var south = spherical.computeOffset(center, areaRadi, 200); // 180
+    var east  = spherical.computeOffset(center, areaRadi2, 80); // 90
 
     var bounds = {
       north: north.lat(),
@@ -227,6 +225,8 @@ function computingOffset(center, content){
       east: east.lng(),
       west: west.lng() 
     }
+
+
 
     return bounds;
 }
@@ -279,7 +279,7 @@ $('#colliBtn').on('click', function(){
 })
 
 function varInitialize(){
-  infowindow = null;
+  //infowindow = null;
   circleTimer = [];
 
   if (currentBtn == 1){
@@ -302,11 +302,11 @@ function varInitialize(){
     numDeltas = [200, 80];
     start = [
       {lat: 35.457782, lng: 129.388296},
-      {lat: 35.465950, lng: 129.376781}
+      {lat: 35.453227, lng: 129.380651}
     ];
     destination =[
       {lat: 35.489482, lng: 129.396625},
-      {lat: 35.459654, lng: 129.396903}
+      {lat: 35.467445, lng: 129.388097}
     ];
     
     $('#mmsi1').text('12345678');
@@ -324,3 +324,8 @@ function varInitialize(){
   toggle = [false, false];
   colCheck = false;
 }
+
+$('.tabBtn').on('click', function(){
+  $('.tabBtn').removeClass('on');
+  $(this).addClass('on');
+})
