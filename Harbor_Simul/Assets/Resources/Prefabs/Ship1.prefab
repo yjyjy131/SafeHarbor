@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1258203093158021594}
   m_LocalRotation: {x: 0.6337205, y: -0, z: -0, w: 0.7735621}
-  m_LocalPosition: {x: 0.24700165, y: 75.6, z: -23.6}
+  m_LocalPosition: {x: 0.24700165, y: 47.6, z: -18}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5868797877617473758}
@@ -362,7 +362,7 @@ GameObject:
   - component: {fileID: 5864270458487764897}
   - component: {fileID: 2303189123142947441}
   m_Layer: 0
-  m_Name: Ship0
+  m_Name: Ship1
   m_TagString: Ship
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

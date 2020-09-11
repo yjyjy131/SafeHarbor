@@ -51,8 +51,8 @@ public class LogListPanel : SelectPanel
     public void makeLogEntity(LogData log)
     {
         GameObject entity = Instantiate(Resources.Load<GameObject>("Prefabs/LogEntity"), content.transform).gameObject;
-        entity.GetComponent<LogEntity>().setText(log);
-        buttons.Add(entity.GetComponent<UnityEngine.UI.Button>());
+        entity.GetComponent<LogEntity>().setText(log, this);
+        buttons.Add(entity.GetComponent<MyButton>());
     }
 
     public void back()

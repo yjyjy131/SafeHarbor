@@ -13,12 +13,13 @@ public class LogEntity : MyButton
     private TextMeshProUGUI route;
     private LogData log;
 
-    public void setText(LogData _log)
+    public void setText(LogData _log, SelectPanel _parent)
     {
         log = _log;
         startedAt.text = log.startedAt.ToString();
         ship.text = log.shipType.ToString();
         route.text = log.route.ToString();
+        parent = _parent;
     }
 
     public void OnSelected()

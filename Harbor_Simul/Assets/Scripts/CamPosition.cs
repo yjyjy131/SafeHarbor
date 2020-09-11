@@ -7,6 +7,7 @@ public class CamPosition : MonoBehaviour
     public Transform mainCam;
     public Transform monitorCam;
     private Vector3 preAngle;
+    private bool isMonitorCamSet = false;
 
     // Update is called once per frame
     void LateUpdate()
@@ -15,10 +16,15 @@ public class CamPosition : MonoBehaviour
         mainCam.rotation = CamManager.Instance.mainCam.rotation;
         if(CamManager.Instance.monitorPos != null)
         {
-            Vector3 target = CamManager.Instance.monitorPos.position + new Vector3(0, 0, -12);
-            //Vector3 lerped = Vector3.Lerp(monitorCam.position, target, Time.deltaTime *  3f);
-            //monitorCam.position = new Vector3(lerped.x, monitorCam.position.y, lerped.z);
-            monitorCam.position = new Vector3(target.x, monitorCam.position.y, target.z);
+            if (!isMonitorCamSet)
+            {
+                monitorCam.position = CamManager.Instance.monitorPos.position;
+                isMonitorCamSet = true;
+            }
+            Vector3 target = CamManager.Instance.monitorPos.position;
+            Vector3 lerped = Vector3.Lerp(monitorCam.position, target, Time.deltaTime *  1f);
+            monitorCam.position = new Vector3(lerped.x, monitorCam.position.y, lerped.z);
+            //monitorCam.position = new Vector3(target.x, monitorCam.position.y, target.z);
             //monitorCam.position = CamManager.Instance.monitorCam.position;
             //preAngle = monitorCam.rotation.eulerAngles;
             //monitorCam.rotation = CamManager.Instance.monitorCamRot;

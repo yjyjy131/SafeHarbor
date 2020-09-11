@@ -7,21 +7,27 @@ using UnityEngine.UI;
 public class SelectPanel : MonoBehaviour
 {
     [SerializeField]
-    protected List<Button> buttons;
+    protected List<MyButton> buttons;
     protected int currentButton = 0;
     protected bool isActive = false;
     protected bool preVitualRight = false;
     protected bool preVitualLeft = false;
+    protected SelectPanel _prePanel;
+    public SelectPanel prePanel{ get; set;}
+
     public virtual void OnEnable()
     {
         if (buttons.Count > 0)
-            buttons[currentButton].OnSelect(null);
+        {
+           // buttons[currentButton].setBaseColor();
+            //buttons[currentButton].highlight();
+        }
     }
 
     public virtual void OnDisable()
     {
         if(buttons.Count > 0)
-        buttons[currentButton].OnDeselect(null);
+            buttons[currentButton].deHighlight();
     }
 
     public virtual void active()
@@ -64,17 +70,17 @@ public class SelectPanel : MonoBehaviour
 
     public void backButton()
     {
-        buttons[currentButton].OnDeselect(null);
+        buttons[currentButton].deHighlight();
         currentButton--;
         if (currentButton < 0)
             currentButton = buttons.Count - 1;
-        buttons[currentButton].OnSelect(null);
+        buttons[currentButton].highlight();
     }
     public void nextButton()
     {
-        buttons[currentButton].OnDeselect(null);
+        buttons[currentButton].deHighlight();
         currentButton = (currentButton + 1) % buttons.Count;
-        buttons[currentButton].OnSelect(null);
+        buttons[currentButton].highlight();
     }
 
     public void OnClick()
@@ -87,11 +93,11 @@ public class SelectPanel : MonoBehaviour
         return buttons[currentButton].transform.position;
     }
 
-    public void OnMouseEnter(Button btn)
+    public void OnMouseEnter(MyButton btn)
     {
-        buttons[currentButton].OnDeselect(null);
+        buttons[currentButton].deHighlight();
         if (!buttons.Contains(btn)) return;
         currentButton = buttons.IndexOf(btn);
-        buttons[currentButton].OnSelect(null);
+        buttons[currentButton].highlight();
     }
 }

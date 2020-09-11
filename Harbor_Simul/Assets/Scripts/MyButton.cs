@@ -4,20 +4,49 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class MyButton : MonoBehaviour, IPointerEnterHandler
+public class MyButton : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler
 {
-    SelectPanel parent;
-    Button btn;
+    protected SelectPanel parent;
+    protected MyButton btn;
+    public Color highlightColor;
+    protected Color baseColor;
+    protected bool isColorSetted = false;
+    public Image image;
 
     public void Awake()
     {
         parent = transform.parent.GetComponent<SelectPanel>();
-        btn = transform.GetComponent<UnityEngine.UI.Button>();
+        btn = transform.GetComponent<MyButton>();
+        if (!isColorSetted)
+        {
+            baseColor = image.color;
+            isColorSetted = true;
+        }
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
+    public virtual void OnPointerEnter(PointerEventData eventData)
     {
         parent.OnMouseEnter(btn);
     }
 
+    public virtual void highlight()
+    {
+        image.color = new Color(image.color.r, image.color.g, image.color.b, highlightColor.a);
+    }
+
+    public void setBaseColor()
+    {
+        baseColor = image.color;
+        isColorSetted = true;
+    }
+
+    public virtual void deHighlight()
+    {
+        image.color = baseColor;
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        deHighlight();
+    }
 }

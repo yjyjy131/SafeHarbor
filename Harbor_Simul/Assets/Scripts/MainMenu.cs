@@ -4,21 +4,30 @@ using UnityEngine;
 
 public enum ShipType
 {
-    Container
+    Container,
+    SmallShip
 }
 public enum Route
 {
-    RouteA
+    RouteA,
+    RouteB,
+    RouteC,
+    RouteD
 }
 
 
 public class MainMenu : Singleton<MainMenu>
 {
     [SerializeField]
-    private List<SelectPanel> selectPanels;
+    private SelectPanel currentPanel;
     [SerializeField]
     private LogListPanel logPanel;
-    private int currentPanel = 0;
+    [SerializeField]
+    public SelectPanel shipPanel;
+    [SerializeField]
+    public SelectPanel mainPanel;
+    [SerializeField]
+    private List<SelectPanel> routePanels;
     private Vector3 currentButtonPos = Vector3.zero;
     private bool buttonActive = true;
     protected override void Awake()
@@ -32,21 +41,19 @@ public class MainMenu : Singleton<MainMenu>
 
     public void onGameStartSelected()
     {
-        selectPanels[currentPanel++].deActive();
-        selectPanels[currentPanel].active();
+        changePanel(shipPanel);
     }
 
     public void onReplaySelected()
     {
-        deActive();
-        logPanel.active();
+        changePanel(logPanel);
     }
 
 
     public void onShipSelected(int shipType)
     {
         GlobalData.shipType = (ShipType) shipType;
-        nextPanel();
+        changePanel(routePanels[shipType]);
     }
 
     public void onRouteSelected(int route)
@@ -59,46 +66,45 @@ public class MainMenu : Singleton<MainMenu>
 
     public void backButton()
     {
-        selectPanels[currentPanel].backButton();
-        currentButtonPos = selectPanels[currentPanel].getCurrentButtonPos();
+        currentPanel.backButton();
+        currentButtonPos = currentPanel.getCurrentButtonPos();
     }
     public void nextButton()
     {
-        selectPanels[currentPanel].nextButton();
-        currentButtonPos = selectPanels[currentPanel].getCurrentButtonPos();
+        currentPanel.nextButton();
+        currentPanel.getCurrentButtonPos();
     }
-
     public void backPanel()
     {
-        selectPanels[currentPanel].deActive();
-        currentPanel--;
-        if (currentPanel < 0) currentPanel = 0;
-        selectPanels[currentPanel].active();
-    }
-    public void nextPanel()
-    {
-        selectPanels[currentPanel].deActive();
-        currentPanel = (currentPanel + 1) % selectPanels.Count;
-        selectPanels[currentPanel].active();
+        currentPanel.deActive();
+        currentPanel = currentPanel.prePanel;
+        currentPanel.active();
     }
 
     public void reset()
     {
-        selectPanels[currentPanel].deActive();
-        currentPanel = 0;
+        currentPanel.deActive();
+        currentPanel = mainPanel;
         currentButtonPos = Vector3.zero;
-        selectPanels[currentPanel].active();
-        active();
+        currentPanel.active();
     }
 
     public void active()
     {
-        selectPanels[currentPanel].active();
+        currentPanel.active();
 
     }
 
     public void deActive()
     {
-        selectPanels[currentPanel].deActive();
+        currentPanel.deActive();
+    }
+
+    public void changePanel(SelectPanel panel)
+    {
+        panel.prePanel = currentPanel;
+        currentPanel.deActive();
+        currentPanel = panel;
+        currentPanel.active();
     }
 }
