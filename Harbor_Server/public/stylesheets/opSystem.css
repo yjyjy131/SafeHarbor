@@ -1,10 +1,12 @@
+/*main area*/
+
 #main {
 	background-color: #242943;
 	height: 29em;
 	display: flex;
 	flex-grow: 1;
 	flex-basis: 1;
-	flex-basis: auto;
+    flex-basis: auto;
 }
 
 #opSide{
@@ -13,11 +15,145 @@
 }
 
 #map{
-    background-color: lightsteelblue;
     width:250em;
     margin: 1em 1em 0 1em;
 }
 
+.tab_wrap {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#vesselfinder {
+    overflow: hidden;
+}
+
+iframe {
+    margin-top: -1em;
+}
+
+.tabBtn {
+    height: auto;
+    width: auto;
+    float: left;
+    font-size: 1em;
+    color: #ffffffc7;
+    padding: 1em;
+    border: none;
+    margin-right: 1em;
+    margin-bottom: 0.15em;
+    background-color: #ffffff00;
+    z-index: 100;
+    outline:0;
+}
+
+.btnimg {
+    height: 1.5em;
+    padding: 0.3em 0 0 0em;
+}
+
+.aniBtn:hover {
+    background-color: #86f9ff;
+}
+
+.aniBtn {
+    width: 3.5em;
+    height: 3em;
+    background-color: white;
+    border-radius: 0.5em;
+    margin: 0.6em 0 0 0.3em;
+}
+
+.tabBtn.on {
+    border-bottom: solid 0.2em white;
+    font-weight: 600;
+    color: #f9db06;
+}
+
+.taBtn:focus {
+    outline: none;
+}
+
+.tabBtn:hover {
+    color: #f9db06;
+}
+
+.tab_Content {
+    width: 55em;
+    height: 22em;
+    margin: 0em 1em 0em 0em;
+}
+
+/* collision message*/
+#colliInfo {
+    position: absolute;
+    right: 0em;
+    margin: 0.5em 4em 0 0;
+    background-color: #ffffffcf;
+    height: 13.1em;
+    width: 14em;
+    z-index: 150;
+    border-radius: 0.5em;
+}
+
+#colliTable {
+    color: black;
+    font-size: 0.7em;
+    margin: 0 auto;
+    width: inherit;
+}
+
+    #colliTable tr:not(:last-child) {
+        border-bottom: 0.1em solid #00000038;
+    }
+
+    #colliTable tr td:nth-child(2n-1){
+        border-right: 0.1em solid #00000038;
+    }
+
+#colliTitle {
+    display: flex;
+    width: inherit;
+    height: 2em;
+    color: black;
+    border-bottom: 1px solid #00000038;
+    padding: 0.2em 0 0 0.6em;
+    font-weight: 400;
+}
+
+#colliBtn {
+    position: absolute;
+    right: 1.4em;
+    top: 0.6em;
+    width: 0.5em;
+    opacity: 0.3;
+  }
+    
+    #colliBtn:hover {
+        transition-delay: 3s;
+        opacity: 1;
+    }
+
+    #colliBtn:before, #colliBtn:after {
+        position: absolute;
+        left: 0.9em;
+        content: ' ';
+        height: 1em;
+        width: 0.1em;
+        background-color: #333;
+    }
+
+    #colliBtn:before {
+        transform: rotate(45deg);
+    }
+
+    #colliBtn:after {
+        transform: rotate(-45deg);
+    }
+    
+
+/* main table */
 .table-wrapper {
     width: inherit;
     height: inherit;
@@ -51,11 +187,8 @@ table {
      }
 
     table th {
-        color: #ffffff;
-        font-size: 1em;
         font-weight: 600;
         padding: 0 0.75em 0.75em 0.75em;
-        text-align: left;
     }
 
     table thead {

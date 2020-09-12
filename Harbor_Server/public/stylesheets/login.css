@@ -202,3 +202,8 @@ input[type="submit"] {
     #registerBtn:hover  {
         background-color: #9bf1ff;
     }
+
+    #guestLogin {
+       position: absolute;
+       right: 0;
+    }

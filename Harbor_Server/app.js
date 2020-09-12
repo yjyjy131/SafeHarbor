@@ -174,5 +174,4 @@ var ajaxApi = require('./routes/ajax');
 app.get('/signUp', ajaxApi.getSignUp);
 app.get('/logviewCreate', ajaxApi.getLogDatas);
 
-
 module.exports = app;
