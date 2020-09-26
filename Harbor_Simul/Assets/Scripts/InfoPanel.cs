@@ -15,7 +15,8 @@ public class InfoPanel : SelectPanel
     {
         float _angle;
         float knot;
-        knot = GameManager.Instance.player.speed / 1.9438f;
+        knot = GameManager.Instance.player.shipControl.SpeedKnots;
+        //knot = GameManager.Instance.player.speed / 1.9438f;
         speed.text = string.Format("{0:00.0}노트", knot);
         if (GameManager.Instance.player.angle > 180)
             _angle = -(360 - GameManager.Instance.player.angle);

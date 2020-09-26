@@ -14,6 +14,7 @@ public class UIPosition : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
+        rect.localScale = CamManager.Instance.uiPos.localScale;
         rect.position = CamManager.Instance.uiPos.position;
         rect.rotation = CamManager.Instance.uiPos.rotation;
     }

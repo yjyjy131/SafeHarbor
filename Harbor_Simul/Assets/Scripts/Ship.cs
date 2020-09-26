@@ -4,7 +4,7 @@ using UnityEngine;
 using DWP2.ShipController;
 public class Ship : MovableEntity
 {
-    private  AdvancedShipController shipControl;
+    public AdvancedShipController shipControl;
     private Rigidbody rigid;
     [SerializeField]
     public Transform camPos;

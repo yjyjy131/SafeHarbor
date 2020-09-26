@@ -40,13 +40,13 @@ namespace DWP2.ShipController
         public float GetAxis(string name)
         {
             try
-            {/*
+            {
                 switch (name)
                 {
                     case "Vertical":return InputSystem.Instance.speed;
                     case "Horizontal": return InputSystem.Instance.angle;
                     default: return Input.GetAxis(name);
-                }*/
+                }
                 /// ************************************************************************ /// 
                 /// **** REPLACE THE NEXT LINE IF YOU ARE USING DIFFERENT INPUT MANAGER **** ///
                 /// ************************************************************************ ///

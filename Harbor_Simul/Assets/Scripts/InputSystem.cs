@@ -80,8 +80,10 @@ public class InputSystem : Singleton<InputSystem>
         }
 
 #if INPUT_TEST
-        select = Input.GetKeyDown(KeyCode.R);
-        back = Input.GetKeyDown(KeyCode.F);
+        virtualLeft = Input.GetKey(KeyCode.LeftArrow) == true ? true : virtualLeft;
+        virtualRight = Input.GetKey(KeyCode.RightArrow) == true ? true : virtualRight;
+        select = Input.GetKeyDown(KeyCode.R) == true ? true : SerialManager.instance.select;
+        back = Input.GetKeyDown(KeyCode.F) == true ? true : SerialManager.instance.back;
         if (back)
             RecenterVR();
 #else
@@ -95,7 +97,7 @@ public class InputSystem : Singleton<InputSystem>
     private float getControllerSpeedValue()
     {
 #if INPUT_TEST
-        return 0;
+        return SerialManager.instance.speed;
 #else
         return SerialManager.instance.speed;
 #endif
@@ -104,7 +106,7 @@ public class InputSystem : Singleton<InputSystem>
     private float getControllerAngleValue()
     {
 #if INPUT_TEST
-        return testValue;
+        return SerialManager.instance.angle;
 #else
         return SerialManager.instance.angle;
 #endif

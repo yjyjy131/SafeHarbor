@@ -19,8 +19,8 @@ public class SelectPanel : MonoBehaviour
     {
         if (buttons.Count > 0)
         {
-           // buttons[currentButton].setBaseColor();
-            //buttons[currentButton].highlight();
+            buttons[currentButton].setBaseColor();
+            buttons[currentButton].highlight();
         }
     }
 

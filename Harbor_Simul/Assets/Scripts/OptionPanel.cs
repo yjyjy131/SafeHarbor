@@ -6,7 +6,8 @@ public class OptionPanel : SelectPanel
 {
     public void onResumeSelected()
     {
-        deActive();
+        Invoke("deActive", 0.1f);
+        //deActive();
     }
 
     public void onRestartSelected()

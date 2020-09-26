@@ -44,7 +44,7 @@ public class GameManager : Singleton<GameManager>
 
     public void Update()
     {
-        if (InputSystem.instance.back && isStart)
+        if (InputSystem.instance.select && isStart)
         {
             onOption();
         }
