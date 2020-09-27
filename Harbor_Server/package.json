@@ -5,7 +5,7 @@
   "scripts": {
     "start": "nodemon app",
     "pmstart": "pm2-dev start app.js",
-    "before" : "npm i pm2 nodemon -g"
+    "before": "npm i pm2 nodemon -g"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",

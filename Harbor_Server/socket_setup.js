@@ -9,8 +9,9 @@ var io;
 
 module.exports.attach_event = function(_io){
     io = _io;
-    io.emit('news', { serverData : "서버 작동" });
     io.on('connection', function (socket) {  
+        io.emit('news', { serverData : "서버 작동" });
+        console.log("socket connected");
         //socket.emit('news', { serverData : "서버 작동" });
 
         
@@ -118,7 +119,7 @@ function onClientConnected(socket){
     }
 
     //console.log(socket.clientType + " connected. cnt : " + counts[socket.clientType]);
-    console.log(socket.clientType + " connected. cnt : " + [socket.clientType]);
+    console.log(socket.clientType + " connected. cnt : " + io.sockets.adapter.rooms[socket.clientType].length);
 }
 
 //module.exports.count = count;
