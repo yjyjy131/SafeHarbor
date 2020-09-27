@@ -45,7 +45,7 @@ form {
         }
 
     form > .fields > .field {
-        padding: 0 1.5em 1.2em 0.8em;
+        padding: 0 1.5em 0.8em 0.8em;
     }
 
         form > .fields > .field.half {
@@ -165,4 +165,30 @@ input[type="submit"] {
 
    #opCheck > label {
        padding: 0.3em 0 0 0.2em;
+   }
+
+   #idChkField {
+       display: flex;
+       font-family: "Source Sans Pro", Helvetica, sans-serif;
+
+   }
+
+   #idChkField > p {
+        margin: 0.9em 0 0 0.5em;
+        font-size: 0.7em;
+        color: #ffffff00;
+   }
+
+   #idChkBox {
+        height: 2em;
+        width: auto;
+        margin: 0.7em 0 0 0;
+        border-radius: 6px;
+        font-size: 0.7em;
+        color: black;
+        background-color: white;
+   }
+
+   #createBtn {
+       margin-top: -1.2em;
    }

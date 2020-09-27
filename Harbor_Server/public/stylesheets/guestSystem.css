@@ -95,3 +95,7 @@ table {
         table.alt tfoot {
             border-top: 0;
         }
+
+    #tablespace {
+        height: 8em;
+    }

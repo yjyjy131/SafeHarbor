@@ -14,26 +14,26 @@
             <br>keycode <input type='text' id='keycode'/>
         </div>
 			<div id="wrapper">
-					<header id="header" class="alt">
-						<a href="mainMenu.html" class="logo"><strong>MALLANG</strong> <span> CAU </span></a>
-						<nav>
-							<a href="#menu">Menu</a>
-						</nav>
-					</header>
-					<nav id="menu">
-						<ul class="links">
-							<li><a href="mainMenu.html">Home</a></li>
-							<li><a href="droneSystem.html">droneSystem</a></li>
-							<li><a href="opSystem.html">opSystem</a></li>
-							<li><a href="logView.html">logView</a></li>
-						</ul>
-						<ul class="actions stacked">
-                            <li><a href="#" class="button primary fit">Register</a></li>
-                            <form action="/user/logout" method="get">
-                                <li><a href="#" class="button fit">Log Out</a></li>
-                            </form>
-						</ul>
+                <header id="header" class="alt">
+                    <a href="/" class="logo"><strong>MALLANG</strong> <span> CAU </span></a>
+                    <nav>
+                        <a href="#menu">Menu</a>
                     </nav>
+                </header>
+                <nav id="menu">
+                    <ul class="links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/droneSystem">droneSystem</a></li>
+                        <li><a href="/opSystem">opSystem</a></li>
+                        <li><a href="/log">logView</a></li>
+                        <li><a href="/guestSystem">guestView</a></li>
+                    </ul>
+                    <ul class="actions stacked">
+                        <form action="/user/logout" method="get">
+                            <li><a class="button fit">Log Out</a></li>
+                        </form>
+                    </ul>
+                </nav>
                     <div id="main">
                         <div id="drnSide">
                             <div class="table-wrapper">
@@ -63,11 +63,11 @@
                                             <td id="speed">19.99</td>
                                         </tr>
                                         <tr>
-                                            <td>contorller-angle</td>
+                                            <td>controller-angle</td>
                                             <td id="angleKeyInput">29.99</td>
                                         </tr>
                                         <tr>
-                                            <td>contorller-gear</td>
+                                            <td>controller-gear</td>
                                             <td id="gearKeyInput">null 단</td>
                                         </tr>
                                     </tbody>
@@ -76,10 +76,9 @@
                         </div>
                         <div id="drnCamera">
                         <!-- 스트리밍 -->
-                        <img id="control_main" src="/images/controller.png"  />
-                        <img id="control_gear" src="/images/gearBall.png"  />
-                        </div>
-                        
+                        <img id="control_main" src="/images/controller.png"/>
+                        <img id="control_gear" src="/images/gearBall.png"/>
+                        </div>  
                     </div>					
 					<footer id="footer">
 						<div class="inner">

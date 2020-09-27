@@ -110,10 +110,8 @@
 		}
 
 		#header.alt {
-			transition: opacity 2.5s ease;
-			transition-delay: 0.5s;
 			animation: none;
-			background-color: transparent;
+			background-color: #2a2f4a;
 			box-shadow: none;
 			position: absolute;
 		}

@@ -11,26 +11,31 @@
 	<!-- 로그인 후 메인페이지 ( 메인 메뉴 )-->
 	<body class="is-preload">
 			<div id="wrapper">
-					<header id="header" class="alt">
-						<a href="mainMenu.html" class="logo"><strong>MALLANG</strong> <span> CAU </span></a>
-						<nav>
-							<a href="#menu">Menu</a>
-						</nav>
-					</header>
-					<nav id="menu">
-						<ul class="links">
-							<li><a href="mainMenu.html">Home</a></li>
-							<li><a href="droneSystem.html">droneSystem</a></li>
-							<li><a href="opSystem.html">opSystem</a></li>
-							<li><a href="logView.html">logView</a></li>
-						</ul>
-						<ul class="actions stacked">
-							<li><a href="endSignup.html" class="button primary fit">Register</a></li>
-							<form action="/user/logout" method="get">
-                                <li><a href="#" class="button fit">Log Out</a></li>
-                            </form>
-						</ul>
+				<header id="header" class="alt">
+					<a href="/" class="logo"><strong>MALLANG</strong> <span> CAU </span></a>
+					<nav>
+						<a href="#menu">Menu</a>
 					</nav>
+				</header>
+				<nav id="menu">
+					<ul class="links">
+						<li><a href="/">Home</a></li>
+							<li><a href="/droneSystem">droneSystem</a></li>
+							<li><a href="/opSystem">opSystem</a></li>
+                            <li><a href="/log">logView</a></li>
+                            <li><a href="/guestSystem">guestView</a></li>
+					</ul>
+					<ul class="actions stacked">
+						<% if(session.userid){ %>
+							<form action="/user/logout" method="get">
+								<li><a type="submit" href="/user/logout" class="button fit" id="logoutBtn">Log Out</a></li>
+							</form>
+						<%} else { %>
+							<li><a href="/user/sign_up" class="button primary fit" id="resgiterBtn">Register</a></li>
+						<% } %>
+					</ul>
+				</nav>
+				
 					<div id="menuContainer">
 					<div id="main">
 							<section id="one" class="tiles">
@@ -39,7 +44,7 @@
 										<img src="/images/pic01.jpg" alt="" />
 									</span>
 									<header class="major">
-										<h3><a href="droneSystem.html" class="link">조종</a></h3>
+										<h3><a href="/droneSystem" class="link">조종</a></h3>
 										<p>드론조종 (조종/타각/속도/GPS/카메라) </p>
 									</header>
 								</article>
@@ -48,7 +53,7 @@
 										<img src="/images/pic02.jpg" alt="" />
 									</span>
 									<header class="major">
-										<h3><a href="opSystem.html" class="link">관제</a></h3>
+										<h3><a href="/opSystem" class="link">관제</a></h3>
 										<p>관제센터</p>
 									</header>
 								</article>
@@ -57,7 +62,7 @@
 										<img src="/images/pic03.jpg" alt="" />
 									</span>
 									<header class="major">
-										<h3><a href="logView.html" class="link">로그</a></h3>
+										<h3><a href="/log" class="link">로그</a></h3>
 										<p>로그확인 (전체/아이디/시간순조회)</p>
 									</header>
 								</article>
@@ -66,7 +71,7 @@
 										<img src="/images/pic04.jpg" alt="" />
 									</span>
 									<header class="major">
-										<h3><a href="landing.html" class="link">관람</a></h3>
+										<h3><a href="/guestSystem" class="link">관람</a></h3>
 										<p>드론조종 관람</p>
 									</header>
 								</article>
@@ -87,5 +92,8 @@
 			<script src="/js/jquery.func.min.js"></script>
 			<script src="/js/util.js"></script>
 			<script src="/js/main.js"></script>
+			<script>
+				
+			</script>
 	</body>
 </html>

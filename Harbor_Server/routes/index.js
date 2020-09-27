@@ -7,6 +7,7 @@ var router = express.Router();
 router.get('/', function (req, res, next) {
   if (req.session.userid == undefined) {
     if (req.session.isGuest) { //게스트로 로그인
+      console.log('게스트 로그인 완료');
       res.render('mainMenu.html', {
         session: req.session
       });
@@ -18,15 +19,24 @@ router.get('/', function (req, res, next) {
     }
   }
   else { //id를 가지고 로그인
-    res.render('mainMenu.html', {
-      session: req.session
+    res.render('mainMenu.html', { 
+      session: req.session 
     });
   }
 });
 
 
+router.get('/endSignup', function(req, res, next){
+  res.render('endSignup.html');
+})
+
 router.get('/log', function(req, res, next){
-    res.redirect("/log");
+    if(req.session.userid == undefined){
+      res.redirect("/");
+    }
+    else{
+        res.render('logView.html');
+    }
 });
 
 router.get('/droneSystem', function(req, res, next) {  
@@ -44,11 +54,16 @@ router.get('/opSystem', function(req, res, next) {
   }
   else{
       res.render('opSystem.html');
-  }
+    }
 });
 
+
 router.get('/guestSystem', function(req, res, next) {
-  res.render('guestSystem.html');
+  res.render('guestSystem.html', { session : req.session});
+});
+
+router.get('/guestMenu', function(req, res, next) {
+  res.render('mainMenu.html');
 });
 
 
