@@ -15,16 +15,14 @@
 	height: 100%;
 }
 
-#drnCamera {
-    background-color: lightsteelblue;
+#video-canvas{ 
     width:250em;
+    margin-right: 1.2em;
 }
 
 #drnMajor {
     margin: 1.5em 0em 1em -7em;
 }
-
-
 
 /* drone-page table style */
 .table-wrapper {

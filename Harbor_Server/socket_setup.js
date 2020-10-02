@@ -86,7 +86,6 @@ module.exports.attach_event = function(_io){
             }
         });
 
-
         socket.on('disconnect', function (data) {
             console.log("disconnected");
             if(socket.clientType == "ctw")

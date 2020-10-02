@@ -12,8 +12,7 @@
 	height: 100%;
 }
 
-#drnCamera{
-    background-color: lightsteelblue;
+#video-canvas{ 
     width:250em;
     margin-right: 1.2em;
 }
