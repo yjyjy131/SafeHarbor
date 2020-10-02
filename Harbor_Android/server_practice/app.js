@@ -43,22 +43,17 @@ io.sockets.on('connection', function (socket){
 	});
 
 	socket.on('request control stream', function(data){
-		//myTimer=setInterval(function(){ 
-	const control = {
-			speed : hexColour(getRandomInt(0,4)),
-			angle : hexColour(getRandomInt(0,5))	
-		};
-		const controlJSON=JSON.stringify(control);
+		var control=new Object();
+		control.speed=hexColour(getRandomInt(0,4));
+		control.angle=hexColour(getRandomInt(0,5));
+		var controlJSON=JSON.stringify(control);
 		console.log('안드로이드로 데이터 전송!\n'+'speed: '+control.speed+'\nangle: '+control.angle);
 		socket.emit('control stream', controlJSON);
-//}, 5000);
-	//setTimeout(function(){clearInterval(myTimer); }, 15000);
 	});
 
 
 	socket.on('disconnect',function(data){
 		console.log('접속종료');
-		//clearInterval(myTimer);
 		socket.disconnect();
 	});
 

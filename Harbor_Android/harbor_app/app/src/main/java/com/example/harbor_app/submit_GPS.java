@@ -8,6 +8,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbDeviceConnection;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -22,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.felhr.usbserial.UsbSerialDevice;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
@@ -67,6 +70,9 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
     float mCurrentDegree = 0f;
     String rotate;
 
+    boolean isConnected=false;
+    TextView connect;
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +115,7 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
         }
         try {
 
-            mSocket = IO.socket("http://121.133.157.160:8080/");
+            mSocket = IO.socket("http://221.167.229.34:8080/");
 
             mSocket.connect();
             TimerTask tt = new TimerTask() {
@@ -153,7 +159,7 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
                         jsonObject.put("gpsY", gpsY);
                         jsonObject.put("location", loc);
                         jsonObject.put("rotation", rotate);
-                        jsonObject.put("time", formatDate);
+                        jsonObject.put("time", date);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -242,6 +248,7 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
@@ -263,9 +270,18 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
             gpsX = String.valueOf(latitude);
             gpsY = String.valueOf(longitude);
 
-            //gpsLatitude.setText(gpsX);
-            //gpsLongitude.setText(gpsY);
+            gpsLatitude.setText(gpsX);
+            gpsLongitude.setText(gpsY);
 
+            connect=findViewById(R.id.connect);
+            if(mSocket.connected())
+            {
+                connect.setText("True");
+            }
+            else
+            {
+                connect.setText("False");
+            }
         }
     }
 

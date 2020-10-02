@@ -1,22 +1,22 @@
 package com.example.harbor_app;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.hardware.usb.UsbDeviceConnection;
-import android.hardware.usb.UsbManager;
 import android.location.Location;
 import android.location.LocationListener;
-
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,26 +26,22 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-
 import androidx.core.content.ContextCompat;
-
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
-import com.hoho.android.usbserial.driver.UsbSerialDriver;
-import com.hoho.android.usbserial.driver.UsbSerialPort;
-import com.hoho.android.usbserial.driver.UsbSerialProber;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
-
+import java.util.Date;
 
 public class MainDrive extends AppCompatActivity implements LocationListener, SensorEventListener {
 
@@ -53,15 +49,44 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
     Button stpBtn;
     //시리얼통신
     /*
-    TextView spdText;
-    TextView angText;
-    UsbDeviceConnection connection;
-    UsbSerialPort port;
-    int numBytesRead;
-    String substr, Command;
-<<<<<<< HEAD
-=======
-    */
+    UsbService usbService;
+    private MyHandler mHandler;
+    private final ServiceConnection usbConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName arg0, IBinder arg1) {
+            usbService = ((UsbService.UsbBinder) arg1).getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            usbService = null;
+        }
+    };
+
+     */
+    //시리얼 권한 체크
+    private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch (intent.getAction()) {
+                case UsbService.ACTION_USB_PERMISSION_GRANTED: // USB PERMISSION GRANTED
+                    Toast.makeText(context, "USB Ready", Toast.LENGTH_SHORT).show();
+                    break;
+                case UsbService.ACTION_USB_PERMISSION_NOT_GRANTED: // USB PERMISSION NOT GRANTED
+                    Toast.makeText(context, "USB Permission not granted", Toast.LENGTH_SHORT).show();
+                    break;
+                case UsbService.ACTION_NO_USB: // NO USB CONNECTED
+                    Toast.makeText(context, "No USB connected", Toast.LENGTH_SHORT).show();
+                    break;
+                case UsbService.ACTION_USB_DISCONNECTED: // USB DISCONNECTED
+                    Toast.makeText(context, "USB disconnected", Toast.LENGTH_SHORT).show();
+                    break;
+                case UsbService.ACTION_USB_NOT_SUPPORTED: // USB NOT SUPPORTED
+                    Toast.makeText(context, "USB device not supported", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
     //gps센서
     LocationManager locationManager;
     String gpsX;
@@ -93,8 +118,8 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drive_main);
         stpBtn = (Button) findViewById(R.id.stopBtn);
-        //InitArduino();
-
+        //시리얼통신
+        //mHandler = new MyHandler(this);
         //가속도센서 on
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -126,14 +151,12 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
             gpsLa.setText(gpsX);
             gpsLo.setText(gpsY);
         }
-        listProviders = locationManager.getAllProviders();
-        if (listProviders.get(0).equals(LocationManager.GPS_PROVIDER)) {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 100, this);
-        }
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 100, this);
 
         //소켓 connect
         try {
-            socket = IO.socket("http://121.133.157.160:8080/");
+            socket = IO.socket("http://ksyksy12.iptime.org:33337/");
             socket.connect();
             //////////////////////////////////////////////////
             socket.on(Socket.EVENT_CONNECT, onConnect);
@@ -145,7 +168,7 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
                 }
             };
             final Timer timer = new Timer();
-            timer.schedule(tt, 1500, 4000);
+            timer.schedule(tt, 1500, 2000);
             stpBtn.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     socket.off(Socket.EVENT_CONNECT, onConnect);
@@ -170,7 +193,15 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
     private Emitter.Listener onConnect = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            socket.emit("request control stream", 0);
+            JSONObject clientInfo = new JSONObject();
+            try {
+                clientInfo.put("clientType","ctd");
+                clientInfo.put("userid","socket.id");
+                socket.emit("client connected", clientInfo);
+                Log.d("소켓","id와 type전송");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     };
 
@@ -181,19 +212,17 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
         public void call(Object... args) {
             Log.d("Drone", "데이터받음");
             // 시리얼 통신 -> 라즈베리파이로 speed, angle 전송
-            //String send;
-            //byte[] sendByte;//
+            String send;
 
             try {
                 JSONObject receivedData = new JSONObject((String) args[0]);
                 speed.setText(receivedData.getString("speed"));
                 angle.setText(receivedData.getString("angle"));
-                //send = receivedData.getString("speed");
-                //send = send.concat(",");
-                //send = send.concat(receivedData.getString("angle"));
-                //send = send.concat(".");
-                //sendByte = binaryStringToByteArray(send);
-                //port.write(sendByte, 50);
+                send = receivedData.getString("speed");
+                send = send.concat(",");
+                send = send.concat(receivedData.getString("angle"));
+                send = send.concat(".");
+                //usbService.write(send.getBytes());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -202,174 +231,20 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
 
     void sendDrone() {
         try {
+            Date date=new Date();
             JSONObject droneInfo = new JSONObject();
             droneInfo.put("ClientType", "ctd");
             droneInfo.put("gpsX", gpsX);
             droneInfo.put("gpsY", gpsY);
             droneInfo.put("speed", strSpeed);
             droneInfo.put("angle", strAngle);
+            droneInfo.put("time",date);
             socket.emit("drone data stream", droneInfo);
             Log.d("Drone", "현재상태 전송!");
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
-/*
-    public static byte[] binaryStringToByteArray(String s) {
-        int count = s.length() / 8;
-        byte[] b = new byte[count];
-        for (int i = 1; i < count; ++i) {
-            String t = s.substring((i - 1) * 8, i * 8);
-            b[i - 1] = binaryStringToByte(t);
-        }
-        return b;
-    }
-
-    public static byte binaryStringToByte(String s) {
-        byte ret, total = 0;
-        for (int i = 0; i < 8; ++i) {
-            ret = (s.charAt(7 - i) == '1') ? (byte) (1 << i) : 0;
-            total = (byte) (ret | total);
-        }
-        return total;
-    }
-
-    public String byteToBinaryString(byte n) {
-        StringBuilder sb = new StringBuilder("00000000");
-        for (int bit = 0; bit < 8; bit++) {
-            if (((n >> bit) & 1) > 0) {
-                sb.setCharAt(7 - bit, '1');
-            }
-        }
-        return sb.toString();
-    }
-
-    public String byteArrayToBinaryString(byte[] b) {
-        StringBuilder sb = new StringBuilder();
-        for (byte value : b) {
-            sb.append(byteToBinaryString(value));
-        }
-        return sb.toString();
-    }
-*/
-    //readBack()
-    /*public void ReadBack() {
-
-        TimerTask timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                try {
-
-                    byte[] buffer = new byte[120];
-
-                    numBytesRead = port.read(buffer, 50);
-
-                    String str = byteArrayToBinaryString(buffer);
-
-            시리얼통신으로 라즈베리파이에서 안드로 speed, angle, time 수신하면 소켓 통신으로 값 전송
-                    JSONObject receivedData = (JSONObject) args[0];
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("ClientType", "ctd");
-                    jsonObject.put("gpsX", "135");
-                    jsonObject.put("gpsY", "124");
-                    jsonObject.put("time", receivedData.getString("time"));
-                    jsonObject.put("speed", receivedData.getString("speed"));
-                    jsonObject.put("angle", receivedData.getString("angle"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                socket.emit("drone data stream", jsonObject);
-
-
-                } catch (IOException e) {
-                    System.out.println("IOException occured.");
-                }
-            }
-        };
-        final Timer timer = new Timer();
-        timer.schedule(timerTask, 5000, 1000);
-
-    }*/
-    //commandWrite()
-    /*public void CommandWrite() {
-        try {
-
-
-            byte[] comm = Command.getBytes();
-            port.write(comm, 100);
-
-
-        } catch (IOException e) {
-            System.out.println("IOException occured.");
-        }
-    }*/
-
-    //initAduino()
-    /*void InitArduino() {
-
-        try {
-
-            UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
-            List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
-            if (availableDrivers.isEmpty()) {
-                return;
-            }
-
-            UsbSerialDriver driver = availableDrivers.get(0);
-            connection = manager.openDevice(driver.getDevice());
-            if (connection == null) {
-                return;
-            }
-
-
-            port = driver.getPorts().get(0);
-
-            port.open(connection);
-            port.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
-
-
-            port.purgeHwBuffers(true, true);
-
-
-        } catch (IOException e) {
-            System.out.println("IOException occured.");
-
-        }
-
-
-        TimerTask timerTask = new TimerTask() {
-            @Override
-            public void run() {
-
-                ReadBack();
-            }
-        };
-
-        Timer timer = new Timer();
-        timer.schedule(timerTask, 0, 250);
-
-
-        TimerTask timerWriteTask = new TimerTask() {
-            @Override
-            public void run() {
-
-                try {
-                    port.purgeHwBuffers(true, true);
-                } catch (IOException e) {
-                    System.out.println("IOException occured.");
-                }
-
-                CommandWrite();
-
-            }
-        };
-
-        Timer timer2 = new Timer();
-        timer2.schedule(timerWriteTask, 0, 250);
-
-
-    }*/
 
     //gps, 가속도 센서//
     protected void onStart() {
@@ -388,6 +263,9 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
 
         mSensorManager.unregisterListener(this, mAccelerometer);
         mSensorManager.unregisterListener(this, mMagnetometer);
+
+        unregisterReceiver(mUsbReceiver);
+       // unbindService(usbConnection);
     }
 
     @Override
@@ -400,6 +278,9 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
 
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
         mSensorManager.registerListener(this, mMagnetometer, SensorManager.SENSOR_DELAY_GAME);
+
+        setFilters();  // Start listening notifications from UsbService
+       // startService(UsbService.class, usbConnection, null); // Start UsbService(if it was not started before) and Bind it
     }
 
 //위치 리스너
@@ -411,7 +292,8 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
         double longitude;
         double deltaTime = (location.getTime() - lastKnownLocation.getTime()) / 1000.0;
         if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
-            strSpeed = String.valueOf(Math.round(lastKnownLocation.distanceTo(location) / deltaTime*100)/100.0);
+            //strSpeed = String.valueOf(Math.round(lastKnownLocation.distanceTo(location) / deltaTime * 100) / 100.0);
+            strSpeed=String.valueOf(3);
             latitude = location.getLatitude();
             longitude = location.getLongitude();
             gpsX = String.valueOf(Math.round(latitude * 1000) / 1000.0);
@@ -435,7 +317,8 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
             SensorManager.getRotationMatrix(mR, null, mLastAccelerometer, mLastMagnetometer);
             float azimuthinDegress = (int) (Math.toDegrees(SensorManager.getOrientation(mR, mOrientation)[0]) + 360) % 360;
             mCurrentDegree = -azimuthinDegress;
-            strAngle = String.valueOf(mCurrentDegree);
+            //strAngle = String.valueOf(mCurrentDegree);
+            strAngle=String.valueOf(0);
             nowSpeed.setText(strSpeed);
             nowAngle.setText(strAngle);
         }
@@ -462,5 +345,52 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
     public void onStatusChanged(String provider, int status, Bundle extras) {
     }
 
-    ///////////// 하단 바 숨김 ///////////
+    //시리얼 메소드/클래스
+    private void setFilters() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(UsbService.ACTION_USB_PERMISSION_GRANTED);
+        filter.addAction(UsbService.ACTION_NO_USB);
+        filter.addAction(UsbService.ACTION_USB_DISCONNECTED);
+        filter.addAction(UsbService.ACTION_USB_NOT_SUPPORTED);
+        filter.addAction(UsbService.ACTION_USB_PERMISSION_NOT_GRANTED);
+        registerReceiver(mUsbReceiver, filter);
+    }
+
+    private void startService(Class<?> service, ServiceConnection serviceConnection, Bundle extras) {
+        if (!UsbService.SERVICE_CONNECTED) {
+            Intent startService = new Intent(this, service);
+            if (extras != null && !extras.isEmpty()) {
+                Set<String> keys = extras.keySet();
+                for (String key : keys) {
+                    String extra = extras.getString(key);
+                    startService.putExtra(key, extra);
+                }
+            }
+            startService(startService);
+        }
+        Intent bindingIntent = new Intent(this, service);
+        bindService(bindingIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+    private static class MyHandler extends Handler {
+        private final WeakReference<MainDrive> mActivity;
+
+        public MyHandler(MainDrive activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case UsbService.MESSAGE_FROM_SERIAL_PORT:
+                    String data = (String) msg.obj;
+                    break;
+                case UsbService.CTS_CHANGE:
+                    Toast.makeText(mActivity.get(), "CTS_CHANGE",Toast.LENGTH_LONG).show();
+                    break;
+                case UsbService.DSR_CHANGE:
+                    Toast.makeText(mActivity.get(), "DSR_CHANGE",Toast.LENGTH_LONG).show();
+                    break;
+            }
+        }
+    }
 }
