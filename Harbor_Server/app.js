@@ -122,7 +122,7 @@ socketServer.broadcast = function(data) {
 // HTTP Server to accept incomming MPEG-TS Stream from ffmpeg
 var streamServer = http.createServer( function(request, response) {
 	var params = request.url.substr(1).split('/');
-
+/*
 	if (params[0] !== STREAM_SECRET) {
 		console.log(
 			'Failed Stream Connection: '+ request.socket.remoteAddress + ':' +
@@ -130,7 +130,7 @@ var streamServer = http.createServer( function(request, response) {
 		);
 		response.end();
 	}
-
+*/
 	response.connection.setTimeout(0);
 	console.log(
 		'Stream Connected: ' +
@@ -171,7 +171,10 @@ app.use('/user', userRouter);
 //app.use('/mySocket', mySocketRouter);
 app.use('/log', logRouter);
 //app.use('/main', mainRouter);
-
+// Ajax 처리
+var ajaxApi = require('./routes/ajax');
+app.get('/signUp', ajaxApi.getSignUp);
+app.get('/logviewCreate', ajaxApi.getLogDatas);
 
 //------------------------------------에러핸들링-----------------------------------------
 // catch 404 and forward to error handler
@@ -256,9 +259,6 @@ function onListening() {
   debug('Listening on ' + bind);
 }
 
-// Ajax 처리
-var ajaxApi = require('./routes/ajax');
-app.get('/signUp', ajaxApi.getSignUp);
-app.get('/logviewCreate', ajaxApi.getLogDatas);
+
 
 module.exports = app;
