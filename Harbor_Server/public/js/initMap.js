@@ -61,6 +61,12 @@ $('#mapBtn3').on('click', function(){
 
 google.maps.event.addDomListener(window, 'load', initMap);
 
+// 실제 드론 gps 값 
+
+
+
+
+
 function initMap() {
 
  /*

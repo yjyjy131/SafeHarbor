@@ -66,5 +66,9 @@ router.get('/guestMenu', function(req, res, next) {
   res.render('mainMenu.html');
 });
 
+router.get('/stream', function(req, res, next) {
+  res.render('view-stream.html');
+});
+
 
 module.exports = router;

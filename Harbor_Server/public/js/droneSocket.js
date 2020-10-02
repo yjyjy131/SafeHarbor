@@ -1,6 +1,6 @@
 // droneSystem.html 드론 조종 소켓 통신
 //TODO: 비디오 값 수신
-var socket = io.connect('http://localhost:8000'); 
+var socket = io.connect('http://ksyksy12.iptime.org:33337/'); 
 var gearVal = 0;
 var angleVal = 0;
 
@@ -16,7 +16,8 @@ socket.on('drone data stream', function (data) {
     $('#userid').text(data.userid);
     $('#gpsX').text(data.gpsX);
     $('#gpsY').text(data.gpsY);
-    $('#speed').text(data.speed);
+    $('#gear').text(data.speed);
+    $('#angle').text(data.angle);
 })
 
 //keyboard input event 
@@ -28,7 +29,7 @@ document.addEventListener('keydown', function(event){
         case(event.keyCode >= 48 && event.keyCode <=51):
             //translate(gearVal, event.keyCode-48);
             gearVal = event.keyCode-48;
-            $('#gearKeyInput').text(gearVal + '단');
+            $('#gear').text(gearVal + '단');
             $('#control_gear').fadeOut(280);
             $('#control_gear').fadeIn(280);
             break;
@@ -37,18 +38,18 @@ document.addEventListener('keydown', function(event){
             angleVal += 0.4;  
             if (angleVal == 360) angleVal = 0;
             rotate(angleVal);
-            $('#angleKeyInput').text(angleVal.toFixed(3));
+            $('#angle').text(angleVal.toFixed(3));
             break;
 
         case(event.keyCode == 37):
             angleVal -= 0.4;
             if (angleVal == -360) angleVal = 0;
             rotate(angleVal);
-            $('#angleKeyInput').text(angleVal.toFixed(3));
+            $('#angle').text(angleVal.toFixed(3));
             break;
 
         default:      
-        socket.emit('control stream', 
+        socket.emit('control stream', // 키보드 컨트롤 전송
             { gear: gearVal , angle : angleVal, controlTime: controlTimeVal }); 
     }
     
