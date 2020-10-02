@@ -37,11 +37,11 @@ module.exports.attach_event = function(_io){
         // gpsX, gpsY, time, speed, angle
         socket.on('drone data stream', function(data){
             console.log('drone data stream \n' + data);
-            var userid;
-            if(droneWeb != null){
-                userid = droneWeb.userid;
+            var _userid;
+            if(data != null){
+                _userid = data.userid;
                 models.control_log.create({
-                    userid: userid,
+                    userid: _userid,
                     speed: data.speed,
                     angle: data.angle,
                     gpsX: data.gpsX,
@@ -76,13 +76,10 @@ module.exports.attach_event = function(_io){
                 if(gpsDatas[key] == null)
                 isFull = false;
             }
-            if(isFull){
-
                 //서버에서 웹으로 gps정보 전달(관제시)
-                io.in('opw').emit("operator gps stream", gpsDatas);
-                for(key in gpsDatas){
-                    gpsDatas[key] = null;
-                }
+            io.in('opw').emit("operator gps stream", gpsDatas);
+            for(key in gpsDatas){
+                gpsDatas[key] = null;
             }
         });
 
@@ -100,7 +97,7 @@ function onClientConnected(socket){
         return;
     }
 
-    if(socket.clientType == "opd" || socket.clientType == "ctd" ||socket.clientType == "ctw" ){
+    if(socket.clientType == "ctd" ||socket.clientType == "ctw" ){
         if(io.in(socket.clientType).clients.length != 0){
             console.log("이미 연결이 있습니다. 기존연결을 지웁니다. " + socket.clientType);   
             io.in(socket.clientType).clients((error, socketIds) => {
