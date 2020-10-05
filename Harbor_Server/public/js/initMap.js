@@ -1,41 +1,52 @@
 var map;
+var dronelat = 35.497021;
+var dronelng = 129.391589;
+var bounds = 0;
 
-google.maps.event.addDomListener(window, 'load', initMap);
+var socket = io.connect('localhost:8000');
+//var socket = io.connect('http://'+document.location.hostname+':33337/');
+
+socket.on('news', function (data) { 
+  console.log(data.serverData);
+}); 
+
+socket.emit('operator gps stream', 
+  { clientData : '드론 관제 접속', clientType : 'opw', userid : 'userid'}
+); 
+
+socket.on('operator gps stream', function (data) {
+  console.log("드론 정보 수신 성공");
+  dronelng = data.center[0];
+  dronelat = data.center[1];
+})
+
+var droneCenter =  new google.maps.LatLng(dronelat, dronelng);
 
 // 실제 드론 gps 값 
 function initMap() {
-
   map = new google.maps.Map(
-    document.getElementById('googleMap'), {zoom: 13, center: ulsan[0]});
-    google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
-        deltaLat = [];
-        deltaLng = [];
-    }
-  );
+    document.getElementById('googleMap'), { zoom: 13, center: droneCenter }
+    );
+
+  google.maps.event.addListenerOnce(map, 'tilesloaded', function(){ 
+       createArea(map);
+  });
 }
 
-function createArea(start, end, map, content, cirRadi) {
+function createArea(map) {
     var circleOption = {
-        center : start,
+        center : droneCenter ,
         fillColor: '#3878c7',
         fillOpacity: 0.6,
         map: map,
-        zIndex: 1,
-        radius: cirRadi, 
+        radius: 400, 
         strokeColor: '#3878c7',
         storkeOpacity: 1,
         strokeWeight: 0.5
     }
     var circle = new google.maps.Circle(circleOption);
 
-    var startPos = start;
-    var endPos = end;
-    
-    cirRadius[content] = circle.getRadius();
-
-    var point = new google.maps.LatLng(startPos.lat, startPos.lng);
-    bounds = computingOffset(point, content);
-  
+    bounds = computingOffset(droneCenter, circleOption.radius);
     var recOption = {
       strokeColor: "#FF0000",
       strokeOpacity: 0.8,
@@ -46,23 +57,18 @@ function createArea(start, end, map, content, cirRadi) {
       zIndex: 0, 
       bounds: bounds
     }
-
-    if (currentBtn == 3 && content == 1){
-      circleOption.fillOpacity = 0;
-      circleOption.strokeOpacity = 0;
-      recOption.fillOpacity = 0;
-      recOption.strokeOpacity = 0;
-    }
-
     var rectangle = new google.maps.Rectangle(recOption);
    
+    circle.setMap(map);
+    rectangle.setMap(map);
 }
 
+google.maps.event.addDomListener(window, 'load', initMap);
 
-function computingOffset(center, content){
+function computingOffset(center, cirRadius){
   var spherical = google.maps.geometry.spherical; 
-  var areaRadi = cirRadius[content] * 0.8; 
-  var areaRadi2 = cirRadius[content] * 0.5;
+  var areaRadi = cirRadius * 0.8; 
+  var areaRadi2 = cirRadius * 0.5;
     var north = spherical.computeOffset(center, areaRadi, 10); // 0
     var west  = spherical.computeOffset(center, areaRadi2, -80); // -90
     var south = spherical.computeOffset(center, areaRadi, 200); // 180
@@ -74,61 +80,16 @@ function computingOffset(center, content){
       east: east.lng(),
       west: west.lng() 
     }
-    return bounds;
-}
 
-function collisionCheck(circleNum){
-    
+    return bounds;
 }
 
 // page reload
 $('#mapBtn1').on('click', function(){
-  currentBtn = 1;
-  map.panTo(ulsan[0]);
-  varInitialize();
+  map.panTo(droneCenter);
 })
 
-function exportDataToCSVFile(header, keys, body) {
-  var csv = '';
-  csv = csv.replace(/\s+/, "");
-  csv = header.join(',');
-  csv+='\n';
-
-  $.each(body, function(index, rows){
-    if(rows){
-      var tmp = [];
-      $.each(keys, function(index, key){
-        key && tmp.push(rows[key])
-      })
-      csv+=tmp.join(',');
-      csv+='\n';
-    }
-  })
-
-  var BOM = '%EF%BB%BF'; // 한글깨짐
-  var csvData = 'data:application/csv;charset=utf-8,'+BOM+',' + encodeURIComponent(csv);
-  $(this)
-    .attr({
-    'download': 'temp.csv',
-    'href': csvData,
-    'target': '_blank'
-  });
-}
-
-
-$('#excelDownload').on('click', function(event){
-  header.push('mmsi(1)');
-  header.push('mmsi(2)');
-  header.push('lat');
-  header.push('long');
-  header.push('Timestamp');
-
-  keys.push('index');
-  keys.push('mmsi(1)');
-  keys.push('mmsi(2)');
-  keys.push('lat');
-  keys.push('long');
-  keys.push('Timestamp');
-  exportDataToCSVFile.apply(this, [ header, keys, body ])
+$('.tabBtn').on('click', function(){
+  $('.tabBtn').removeClass('on');
+  $(this).addClass('on');
 })
-
