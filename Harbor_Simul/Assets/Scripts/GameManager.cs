@@ -81,7 +81,7 @@ public class GameManager : Singleton<GameManager>
         stopLogging();
         infoPanel.deActive();
         optionPanel.deActive();
-        arrivePanel.active();
+        arrivePanel.active(elapsedTime);
     }
 
     public void onOption()

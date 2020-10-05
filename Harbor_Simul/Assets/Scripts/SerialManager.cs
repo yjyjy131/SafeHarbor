@@ -18,9 +18,19 @@ public class SerialManager : Singleton<SerialManager>
     private int baudRate = 9600;
     [SerializeField]
     private float readRate = 0.5f;
+    [SerializeField]
+    private string _output;
+    [SerializeField]
+    private float _angle;
+    [SerializeField]
+    private float _speed;
+    [SerializeField]
+    private bool _select;
+    [SerializeField]
+    private bool _back;
     public string output { get; private set; }
-    public int angle { get; private set; }
-    public int speed { get; private set; }
+    public float angle { get; set; }
+    public float speed { get; private set; }
     public bool select { get; private set; }
     public bool back { get; private set; }
 
@@ -89,10 +99,10 @@ public class SerialManager : Singleton<SerialManager>
                         string[] token = output.Split(' ');
                         if (token.Length >= 4)
                         {
-                            angle = int.Parse(token[0]);
-                            speed = int.Parse(token[1]);
-                            select = bool.Parse(token[2]);
-                            back = bool.Parse(token[3]);
+                            angle = float.Parse(token[0]);
+                            speed = float.Parse(token[1]);
+                            select = token[2].Equals("0") ? false : true;
+                            back = token[3].Equals("0") ? false : true;
                         }
                     }
                 }

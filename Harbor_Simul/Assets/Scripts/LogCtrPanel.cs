@@ -20,7 +20,10 @@ public class LogCtrPanel : SelectPanel
             timeScale.text = LogManager.Instance.getTimeScale().ToString();
         else
             timeScale.text = "-" + LogManager.Instance.getTimeScale().ToString();
-        time.text = (LogManager.Instance.playedTime - (LogManager.Instance.playedTime % Logger.interval)).ToString();
+
+        TimeSpan span = TimeSpan.FromSeconds((double)(new decimal(LogManager.Instance.playedTime - (LogManager.Instance.playedTime % Logger.interval))));
+        time.text = string.Format("{0:00}:{1:00}", span.Minutes, span.Seconds);
+        //time.text = (LogManager.Instance.playedTime - (LogManager.Instance.playedTime % Logger.interval)).ToString();
         playBar.value = LogManager.Instance.playedTime / LogManager.Instance.endTime;
     }
 

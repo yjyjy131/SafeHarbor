@@ -115,7 +115,7 @@ public class InputSystem : Singleton<InputSystem>
     public void ValueTest()
     {
         if (bar == null) bar = GameObject.Find("AngleBar").GetComponent<Scrollbar>();
-        testValue = bar.value * 2 - 1;
+        SerialManager.instance.angle = bar.value * 2 - 1;
     }
 
 

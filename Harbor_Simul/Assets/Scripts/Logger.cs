@@ -88,7 +88,7 @@ public static class Logger
 
     public static void saveToFile()
     {
-        using (FileStream fs = new FileStream(path + "/" + filename, FileMode.Create, FileAccess.Write))
+        using (FileStream fs = new FileStream(path + "/" + filename, FileMode.OpenOrCreate, FileAccess.Write))
         using (BufferedStream bs = new BufferedStream(fs))
         {
             byte[] data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(logDatas));
