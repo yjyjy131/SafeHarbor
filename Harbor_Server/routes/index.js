@@ -70,5 +70,10 @@ router.get('/stream', function(req, res, next) {
   res.render('view-stream.html');
 });
 
+router.get('/example', function(req, res, next) {
+  res.render('opExample.html');
+});
+
+
 
 module.exports = router;
