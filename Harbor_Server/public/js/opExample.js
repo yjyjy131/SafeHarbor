@@ -14,11 +14,14 @@ var destination =[
   {lat: 35.514020, lng: 129.391979}
 ];
 
-var deltaLat = [];
-var deltaLng = [];
+var deltaLat = [], deltaLng = [];
 
 var cirRadius = [];
-var circles = [];
+var circles = []; // circle 들의 latlng을 저장한다. 
+
+var circleObj = [];
+var rectObj = [];
+var objIndex = 0;
 
 var contentString = '<b>Null message</b><br>';
 
@@ -41,35 +44,73 @@ var body = [];
 var keys = [];
 var index = 0;
 
+var play = false;
 $('#mapBtn1').on('click', function(){
-  currentBtn = 1;
-  map.panTo(ulsan[0]);
-  varInitialize();
+  tabChange();
+  if (play == false){
+    currentBtn = 1;
+    map.panTo(ulsan[0]);
+    varInitialize();
+  }
 })
 
 $('#mapBtn2').on('click', function(){
-  currentBtn = 2;
-  map.panTo(ulsan[1]);
-  varInitialize();
+  tabChange();
+  if (play == false){
+    currentBtn = 2;
+    map.panTo(ulsan[1]);
+    varInitialize(); 
+  }
 })
 
 $('#mapBtn3').on('click', function(){
-  currentBtn = 3;
-  map.panTo(ulsan[2]);
-  varInitialize();
+  tabChange();
+  if (play == false){
+    currentBtn = 3;
+    map.panTo(ulsan[2]);
+    varInitialize(); 
+  }
 })
+
+function tabChange() {
+  play = false;
+
+  clearInterval(circleTimer[0]);
+  clearInterval(circleTimer[1]);
+
+    if(!toggle[1]){
+      clearInterval(circleTimer[0]);
+      clearInterval(circleTimer[1]); 
+      toggle[0] = true;
+      toggle[1] = true;
+    }
+
+    circleObj[0].setMap(null);
+    circleObj[1].setMap(null);
+    
+    reset = true;
+
+}
+
+/*
+문제 
+1. example1 => 2, 3, 으로 넘어가면 원래 있던 객체를 삭제하고 해당 객체만 보여준다. 
+2. example2 에서 스탑 버튼 누른 이후에 재생 버튼 클릭 안됨
+=> 원래 기존에 만들어졌었던 객체가 움직여서 지금 보이는 객체가 움직이지 않는 것으로 보인다. 
+
+방법 1) example1,2,3 으로 넘어갈 때 , 리셋 버튼을 누를 때 해당 array에 null값 할당 
+
+방법 2) 리셋이 필요할때마다 모든 페이지를 리셋한다
+플레이버튼 - 객체 움직임
+스탑버튼 - 객체 정지
+리셋버튼 - 현재 페이지로 리로드 
+exampel1,2,3 탭 - 클릭시 페이지 리로드 
+*/
+
 
 google.maps.event.addDomListener(window, 'load', initMap);
 
 function initMap() {
-
- /*
-  infowindow = new google.maps.InfoWindow(
-    { 
-      size: new google.maps.Size(150,50),
-      content: contentString
-    });
-  */
 
   map = new google.maps.Map(
     document.getElementById('googleMap'), {zoom: 13, center: ulsan[0]});
@@ -78,6 +119,8 @@ function initMap() {
         deltaLng = [];
 
         $('#play').on('click', function(){
+          play = true;
+          console.log('init에서 play실행');
           if (circles[0] == null){ 
             for (var i=0; i<start.length; i++){
               createArea(start[i], destination[i], map, i, cirRadi[i], numDeltas[i]);
@@ -87,10 +130,6 @@ function initMap() {
     }
   );
 }
-
-//$('#mapBtn1').on('click', function(){
-//  initMap();
-//});
 
 function createArea(start, end, map, content, cirRadi, numDeltaVal) {
     var circleOption = {
@@ -104,12 +143,14 @@ function createArea(start, end, map, content, cirRadi, numDeltaVal) {
         storkeOpacity: 1,
         strokeWeight: 0.5
     }
-    var circle = new google.maps.Circle(circleOption);
+    
+    circleObj[objIndex] = new google.maps.Circle(circleOption);
+    //var circle = new google.maps.Circle(circleOption);
 
     var startPos = start;
     var endPos = end;
     
-    cirRadius[content] = circle.getRadius();
+    cirRadius[content] = circleObj[objIndex].getRadius();
 
     deltaLat[Number(content)] = (endPos.lat - startPos.lat)/numDeltaVal;
     deltaLng[Number(content)] = (endPos.lng - startPos.lng)/numDeltaVal;
@@ -135,28 +176,31 @@ function createArea(start, end, map, content, cirRadi, numDeltaVal) {
       recOption.strokeOpacity = 0;
     }
 
-    /*
-    var infoOption = {
-      size: new google.maps.Size(10,10),
-      position: {lat: 35.497021, lng: 129.391589}
-    }
-    */
-
-    var rectangle = new google.maps.Rectangle(recOption);
+    rectObj[objIndex] = new google.maps.Rectangle(recOption);
    
+    objIndex++;
+    
     $('#play').on('click', function(){
-      if(!reset){
-        if(toggle[0]){
-          toggle[0] = false;
-          circleTimer[content] = setInterval ( function() {createCirTimer(circle, rectangle, startPos, circleOption, recOption, content) }, 20); 
-        } else if (toggle[1]){
-          toggle[1] = false;
-          circleTimer[content] = setInterval ( function() {createCirTimer(circle, rectangle, startPos, circleOption, recOption, content) }, 20); 
-        }
+      play = true;
+      if(reset){
+        console.log(content + '의 circle create에서 play실행');
+          console.log('asdaw');
+          if(toggle[0]){
+            toggle[0] = false;
+            circleTimer[content] = setInterval ( function() {createCirTimer(startPos, circleOption, recOption, content) }, 20); 
+          } else if (toggle[1]){ 
+            toggle[1] = false;
+            circleTimer[content] = setInterval ( function() {createCirTimer(startPos, circleOption, recOption, content) }, 20); 
+          }
       }
     });
 
     $('#replay').on('click', function(){
+      play = false;
+      console.log(content + '의 replay실행');
+      clearInterval(circleTimer[0]);
+      clearInterval(circleTimer[1]);
+
         if(!toggle[1]){
           clearInterval(circleTimer[0]);
           clearInterval(circleTimer[1]); 
@@ -164,11 +208,12 @@ function createArea(start, end, map, content, cirRadi, numDeltaVal) {
           toggle[1] = true;
         }
 
-        rectangle.setMap(null);
-        circle.setMap(null);
+        circleObj[0].setMap(null);
+        circleObj[1].setMap(null);
         
         varInitialize();
         reset = true;
+
       //varInitialize();
       //circleTimer[0] = setInterval ( function() {createCirTimer(circle, rectangle, startPos, circleOption, recOption, content) }, 20); 
       //circleTimer[1] = setInterval ( function() {createCirTimer(circle, rectangle, startPos, circleOption, recOption, content) }, 20); 
@@ -176,24 +221,27 @@ function createArea(start, end, map, content, cirRadi, numDeltaVal) {
     })
 
    // setInterval Anonymous func
-   circleTimer[content] = setInterval ( function() {createCirTimer(circle, rectangle, startPos, circleOption, recOption, content) }, 20); 
+   circleTimer[content] = setInterval ( function(){ 
+     createCirTimer(startPos, circleOption, recOption, content) }, 20); 
 
 }
 
-function createCirTimer(circle, rectangle,  startPos, circleOption, recOption, content){
+function createCirTimer(startPos, circleOption, recOption, content){
     startPos.lat += deltaLat[content];
     startPos.lng += deltaLng[content];
     
     var latlng = new google.maps.LatLng(startPos.lat,startPos.lng);
     circleOption.center = latlng; 
-    circle.setOptions(circleOption);
+
+    circleObj[content].setOptions(circleOption);
+    //circleObj[1].setOptions(circleOption);
 
     //point = latlng;
     recOption.bounds = computingOffset(latlng, content);
-    rectangle.setOptions(recOption);
+    rectObj[content].setOptions(recOption);
 
     circles[content] = latlng;
-    collisionCheck(content);
+    collisionCheck();
     /*
     infowindow.setPosition(circles[content]);
 
@@ -207,6 +255,8 @@ function createCirTimer(circle, rectangle,  startPos, circleOption, recOption, c
 
 // stop playing button
 $('#stop').on('click', function(){
+  play = false;
+  console.log('stop 실행');
   clearInterval(circleTimer[0]);
   clearInterval(circleTimer[1]);
 
@@ -236,8 +286,16 @@ function computingOffset(center, content){
 // collision infowindow
 
 var colCheck = false;
-function collisionCheck(circleNum){
-    var distance = google.maps.geometry.spherical.computeDistanceBetween (circles[0], circles[1]);
+function collisionCheck(){
+  
+    // 2번째 객체 생성 전 error handling
+    try {
+      var distance = google.maps.geometry.spherical.computeDistanceBetween (circles[0], circles[1]);
+     }
+     catch(e) {
+        console.log('초기값 설정 중');
+     }
+
     var totalRadi = cirRadius[0] + cirRadius[1];
     if ( distance <= totalRadi * 0.8){
       if (!colCheck){
@@ -274,12 +332,10 @@ function collisionCheck(circleNum){
 }
 
 $('#colliBtn').on('click', function(){
-  // $('#colliInfo').hide();
   $('#colliInfo').fadeOut(500);
 })
 
 function varInitialize(){
-  //infowindow = null;
   circleTimer = [];
 
   if (currentBtn == 1){
@@ -297,13 +353,16 @@ function varInitialize(){
 
     $('#mmsi1').text('12345678');
     $('#mmsi2').text('87654321');  
+
   } else if (currentBtn == 2){
     cirRadi = [500, 200];
     numDeltas = [200, 80];
+
     start = [
       {lat: 35.457782, lng: 129.388296},
       {lat: 35.453227, lng: 129.380651}
     ];
+
     destination =[
       {lat: 35.489482, lng: 129.396625},
       {lat: 35.467445, lng: 129.388097}
@@ -315,10 +374,12 @@ function varInitialize(){
   } else if (currentBtn == 3){
     cirRadi = [500, 500];
     numDeltas = [200, 0.5];
+
     start = [
       {lat: 35.486726, lng: 129.397937},
       {lat:35.504331, lng: 129.399319}
     ];
+
     destination =[
       {lat:  35.500341, lng:129.398696},
       {lat:35.504331, lng: 129.399319}
@@ -332,6 +393,13 @@ function varInitialize(){
   deltaLng = [];
 
   cirRadius = [];
+
+  circleObj[0].setMap(null);
+  circleObj[1].setMap(null);
+  rectObj[0].setMap(null);
+  rectObj[1].setMap(null);
+  objIndex = 0; 
+ 
   circles = [];
   toggle = [false, false];
   colCheck = false;
@@ -341,7 +409,6 @@ $('.tabBtn').on('click', function(){
   $('.tabBtn').removeClass('on');
   $(this).addClass('on');
 })
-
 
 function exportDataToCSVFile(header, keys, body) {
   var csv = '';
