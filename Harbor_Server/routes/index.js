@@ -44,7 +44,7 @@ router.get('/droneSystem', function(req, res, next) {
     res.redirect("/");
   }
   else{
-      res.render('droneSystem.html');
+      res.render('droneSystem.html', { session : req.session });
   }
 });
 
@@ -53,13 +53,13 @@ router.get('/opSystem', function(req, res, next) {
     res.redirect("/");
   }
   else{
-      res.render('opSystem.html');
+      res.render('opSystem.html', { session : req.session });
     }
 });
 
 
 router.get('/guestSystem', function(req, res, next) {
-  res.render('guestSystem.html', { session : req.session});
+  res.render('guestSystem.html', { session : req.session });
 });
 
 router.get('/guestMenu', function(req, res, next) {

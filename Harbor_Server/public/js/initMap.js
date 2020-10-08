@@ -2,16 +2,17 @@ var map;
 var dronelat = 35.497021;
 var dronelng = 129.391589;
 var bounds = 0;
+var userid = document.getElementById('myDiv').dataset.userid;
 
-var socket = io.connect('localhost:8000');
-//var socket = io.connect('http://'+document.location.hostname+':33337/');
+//var socket = io.connect('localhost:8000');
+var socket = io.connect('http://'+document.location.hostname+':33337/');
 
 socket.on('news', function (data) { 
   console.log(data.serverData);
 }); 
 
 socket.emit('operator gps stream', 
-  { clientData : '드론 관제 접속', clientType : 'opw', userid : 'userid'}
+  { clientData : '드론 관제 접속', clientType : 'opw', userid : userid }
 ); 
 
 socket.on('operator gps stream', function (data) {

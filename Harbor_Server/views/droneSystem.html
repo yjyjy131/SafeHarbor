@@ -86,7 +86,8 @@
 						    </ul>
 						</div>
 					</footer>
-			</div>
+            </div>
+            <div id="myDiv" data-userid=<%= session.userid %>></div>
 			<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 			<script src="/js/jquery.func.min.js"></script>
 			<script src="/js/util.js"></script>
@@ -98,6 +99,6 @@
 		        var canvas = document.getElementById('video-canvas');
 		        var url = 'ws://'+document.location.hostname+':33402/';
 		        var player = new JSMpeg.Player(url, {canvas: canvas});
-	        </script>
+            </script>
     </body>
 </html>
