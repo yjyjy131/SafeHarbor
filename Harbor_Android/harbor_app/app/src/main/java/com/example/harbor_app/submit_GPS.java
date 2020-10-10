@@ -115,9 +115,9 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
         }
         try {
 
-            mSocket = IO.socket("http://221.167.229.34:8080/");
-
+            mSocket = IO.socket("");
             mSocket.connect();
+            mSocket.on(Socket.EVENT_CONNECT, onConnect);
             TimerTask tt = new TimerTask() {
                 //TimerTask 추상클래스를 선언하자마자 run()을 강제로 정의하도록 한다.
                 @SuppressLint({"SimpleDateFormat", "SetTextI18n"})
@@ -154,11 +154,9 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
                                 loc = "error";
                                 break;
                         }
-                        jsonObject.put("ClientType", "opd");
                         jsonObject.put("gpsX", gpsX);
                         jsonObject.put("gpsY", gpsY);
                         jsonObject.put("location", loc);
-                        jsonObject.put("rotation", rotate);
                         jsonObject.put("time", date);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -179,42 +177,32 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
                 }
             });
 
-            //mSocket.on(Socket.EVENT_CONNECT, onConnect);
-            mSocket.on("serverMessage", onMessageReceived);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
     }
 
     // Socket connect 되자마자 발생하는 이벤트
-    /*private Emitter.Listener onConnect = new Emitter.Listener() {
+    private Emitter.Listener onConnect = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
             JSONObject jsonObject = new JSONObject();
             try {
-                jsonObject.put("gpsX", "135");
-                jsonObject.put("gpsY", "124");
+                jsonObject.put("clientType", "opd");
+                jsonObject.put("userid", mSocket.id());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            mSocket.emit("operator gps stream", jsonObject);
+            mSocket.emit("client connected", jsonObject);
         }
     };
-*/
-    // 서버에서 받은 message 로그로 출력
-    private Emitter.Listener onMessageReceived = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            // 전달 받은 var message 값 추출하기
-            try {
-                JSONObject receivedData = (JSONObject) args[0];
-                Log.d("Server", receivedData.getString("server"));
-                Log.d("Server", receivedData.getString("data"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    };
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        mSocket.disconnect();
+    }
 
     /////////////////////////////////////////////////////gps함수/////////////////////////////////////
     //gps권한체크용~~//
@@ -226,9 +214,7 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
         super.onStart();
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
-
         }
     }
 

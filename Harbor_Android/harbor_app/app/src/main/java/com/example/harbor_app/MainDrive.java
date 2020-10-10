@@ -129,6 +129,7 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
         nowSpeed = (TextView) findViewById(R.id.getNowSpeed);
         nowSpeed.setText("0");
         nowAngle = (TextView) findViewById(R.id.getNowAngle);
+        nowAngle.setText("0");
 
 
         //gps권한체크
@@ -196,9 +197,9 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
             JSONObject clientInfo = new JSONObject();
             try {
                 clientInfo.put("clientType","ctd");
-                clientInfo.put("userid","socket.id");
+                clientInfo.put("userid","test");
                 socket.emit("client connected", clientInfo);
-                Log.d("소켓","id와 type전송");
+                Log.d("소켓",socket.id());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -210,12 +211,11 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
         @SuppressLint("DefaultLocale")
         @Override
         public void call(Object... args) {
-            Log.d("Drone", "데이터받음");
             // 시리얼 통신 -> 라즈베리파이로 speed, angle 전송
             String send;
-
             try {
                 JSONObject receivedData = new JSONObject((String) args[0]);
+                Log.d("Drone", "데이터받음, speed:"+speed+", angle:"+angle);
                 speed.setText(receivedData.getString("speed"));
                 angle.setText(receivedData.getString("angle"));
                 send = receivedData.getString("speed");
@@ -233,14 +233,14 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
         try {
             Date date=new Date();
             JSONObject droneInfo = new JSONObject();
-            droneInfo.put("ClientType", "ctd");
+            droneInfo.put("userid","test");
             droneInfo.put("gpsX", gpsX);
             droneInfo.put("gpsY", gpsY);
             droneInfo.put("speed", strSpeed);
             droneInfo.put("angle", strAngle);
             droneInfo.put("time",date);
             socket.emit("drone data stream", droneInfo);
-            Log.d("Drone", "현재상태 전송!");
+            Log.d("Drone", "현재상태 전송!, 앵글 값:"+strAngle);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -292,8 +292,7 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
         double longitude;
         double deltaTime = (location.getTime() - lastKnownLocation.getTime()) / 1000.0;
         if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
-            //strSpeed = String.valueOf(Math.round(lastKnownLocation.distanceTo(location) / deltaTime * 100) / 100.0);
-            strSpeed=String.valueOf(3);
+            strSpeed = String.valueOf(Math.round(lastKnownLocation.distanceTo(location) / deltaTime * 100) / 100.0);
             latitude = location.getLatitude();
             longitude = location.getLongitude();
             gpsX = String.valueOf(Math.round(latitude * 1000) / 1000.0);
@@ -317,8 +316,8 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
             SensorManager.getRotationMatrix(mR, null, mLastAccelerometer, mLastMagnetometer);
             float azimuthinDegress = (int) (Math.toDegrees(SensorManager.getOrientation(mR, mOrientation)[0]) + 360) % 360;
             mCurrentDegree = -azimuthinDegress;
-            //strAngle = String.valueOf(mCurrentDegree);
-            strAngle=String.valueOf(0);
+            mCurrentDegree+=360;
+            strAngle = String.valueOf(mCurrentDegree);
             nowSpeed.setText(strSpeed);
             nowAngle.setText(strAngle);
         }
