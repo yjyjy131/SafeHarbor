@@ -62,8 +62,8 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
             usbService = null;
         }
     };
-
      */
+
     //시리얼 권한 체크
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         @Override
@@ -117,6 +117,8 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drive_main);
+        //Intent intent=getIntent();
+        //String url=intent.getStringExtra("url");
         stpBtn = (Button) findViewById(R.id.stopBtn);
         //시리얼통신
         //mHandler = new MyHandler(this);
@@ -157,6 +159,7 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
 
         //소켓 connect
         try {
+            //socket=IO.socket(url);
             socket = IO.socket("http://ksyksy12.iptime.org:33337/");
             socket.connect();
             //////////////////////////////////////////////////

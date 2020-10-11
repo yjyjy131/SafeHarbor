@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,10 +21,11 @@ public class MainActivity extends AppCompatActivity {
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     String[] REQUIRED_PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-
+    EditText url;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        url=findViewById(R.id.address);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
@@ -112,11 +114,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void jbtn(View view) {
         Intent intent = new Intent(getApplicationContext(), MainDrive.class);
+        intent.putExtra("url",url.getText().toString());
         startActivity(intent);
     }
 
     public void gbtn(View view) {
         Intent intent = new Intent(getApplicationContext(), MainGPS.class);
+        intent.putExtra("url",url.getText().toString());
         startActivity(intent);
     }
 
