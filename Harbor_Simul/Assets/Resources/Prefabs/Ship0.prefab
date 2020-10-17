@@ -756,7 +756,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3383238318487126769}
   serializedVersion: 2
-  m_Mass: 600000
+  m_Mass: 10000000
   m_Drag: 0.025
   m_AngularDrag: 0.2
   m_UseGravity: 1
@@ -791,7 +791,7 @@ MonoBehaviour:
     inputMapping: 0
     _minRPM: 300
     _maxRPM: 6000
-    _maxThrust: 250000
+    _maxThrust: 1800000
     _spinUpTime: 8
     startingRpm: 100
     startDuration: 1.3
@@ -800,7 +800,7 @@ MonoBehaviour:
     thrustDirection: {x: 0, y: 0, z: 1}
     applyThrustWhenAboveWater: 0
     reverseThrustCoefficient: 0.3
-    maxSpeed: 30
+    maxSpeed: 35
     thrustCurve:
       serializedVersion: 2
       m_Curve:
@@ -850,7 +850,7 @@ MonoBehaviour:
     inputMapping: 2
     _minRPM: 300
     _maxRPM: 6000
-    _maxThrust: 2000000
+    _maxThrust: 10000000
     _spinUpTime: 8
     startingRpm: 100
     startDuration: 1.3
@@ -859,7 +859,7 @@ MonoBehaviour:
     thrustDirection: {x: 0, y: 0, z: 1}
     applyThrustWhenAboveWater: 0
     reverseThrustCoefficient: 0.3
-    maxSpeed: 60
+    maxSpeed: 35
     thrustCurve:
       serializedVersion: 2
       m_Curve:
@@ -900,7 +900,7 @@ MonoBehaviour:
     inputMapping: 1
     _minRPM: 300
     _maxRPM: 6000
-    _maxThrust: 250000
+    _maxThrust: 1800000
     _spinUpTime: 8
     startingRpm: 100
     startDuration: 1.3
@@ -909,7 +909,7 @@ MonoBehaviour:
     thrustDirection: {x: 0, y: 0, z: 1}
     applyThrustWhenAboveWater: 0
     reverseThrustCoefficient: 0.3
-    maxSpeed: 60
+    maxSpeed: 35
     thrustCurve:
       serializedVersion: 2
       m_Curve:
@@ -987,7 +987,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbbaebf52636fec4fb7fd0bb3734d275, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  centerOfMassOffset: {x: 0, y: -2.29, z: 1}
+  centerOfMassOffset: {x: 0, y: 2.3, z: 8}
   showCOM: 1
 --- !u!114 &3383764609487139408
 MonoBehaviour:

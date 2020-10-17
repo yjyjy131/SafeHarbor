@@ -19,6 +19,7 @@ public class InputSystem : Singleton<InputSystem>
     public bool back { get; private set; }
     public bool virtualRight { get; private set; }
     public bool virtualLeft { get; private set; }
+    public bool preBack { get; private set; }
 
     public float testValue;
     public Scrollbar bar;
@@ -85,7 +86,11 @@ public class InputSystem : Singleton<InputSystem>
         select = Input.GetKeyDown(KeyCode.R) == true ? true : SerialManager.instance.select;
         back = Input.GetKeyDown(KeyCode.F) == true ? true : SerialManager.instance.back;
         if (back)
-            RecenterVR();
+        {
+            //RecenterVR();
+            SerialManager.instance.Reset();
+        }
+        preBack = back;
 #else
         select = SerialManager.instance.select;
         back = SerialManager.instance.back;

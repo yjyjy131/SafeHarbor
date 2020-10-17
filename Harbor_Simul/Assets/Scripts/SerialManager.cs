@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO.Ports;
 using System;
+using UnityEngine.UI;
 
 public class SerialManager : Singleton<SerialManager>
 {
@@ -18,6 +19,8 @@ public class SerialManager : Singleton<SerialManager>
     private int baudRate = 9600;
     [SerializeField]
     private float readRate = 0.5f;
+    [SerializeField]
+    private int readTimeout = 2;
     [SerializeField]
     private string _output;
     [SerializeField]
@@ -51,7 +54,7 @@ public class SerialManager : Singleton<SerialManager>
                               , 8
                               , StopBits.One);
         serial.Open();
-        serial.ReadTimeout = 2;
+        serial.ReadTimeout = readTimeout;
         output = "";
         StartCoroutine("read");
         select = false;
@@ -83,8 +86,29 @@ public class SerialManager : Singleton<SerialManager>
         }*/
     }
 
+    public void Reset()
+    {
+        StopCoroutine("read");
+        serial.Close();
+        serial = new SerialPort(portNumber.ToString()
+                              , baudRate
+                              , Parity.None
+                              , 8
+                              , StopBits.One);
+        serial.Open();
+        serial.ReadTimeout = readTimeout;
+        output = "";
+        StartCoroutine("read");
+        select = false;
+        back = false;
+        speed = 0;
+        angle = 0;
+        Debug.Log("시리얼 리셋됨");
+    }
+    public Text text;
     IEnumerator read()
     {
+        float parseOutput;
         while (true)
         {
             if (serial.IsOpen)
@@ -92,6 +116,7 @@ public class SerialManager : Singleton<SerialManager>
                 try
                 {
                     string line = serial.ReadLine();
+                    //string line = text.text;
                     Debug.Log(line);
                     if (line != null && line.Length > 0)
                     {
@@ -99,16 +124,28 @@ public class SerialManager : Singleton<SerialManager>
                         string[] token = output.Split(' ');
                         if (token.Length >= 4)
                         {
-                            angle = float.Parse(token[0]);
-                            speed = float.Parse(token[1]);
+                            if (float.TryParse(token[0], out parseOutput)) angle = parseOutput;
+                            else
+                                throw new Exception("err");
+                            if (float.TryParse(token[0], out parseOutput)) speed = parseOutput;
+                            else
+                                throw new Exception("err");
                             select = token[2].Equals("0") ? false : true;
                             back = token[3].Equals("0") ? false : true;
                         }
+                        else
+                            throw new Exception("err");
                     }
+                    else
+                        throw new Exception("err");
                 }
                 catch (TimeoutException e)
                 {
                     //Debug.LogError(e.ToString());
+                }
+                catch(Exception e)
+                {
+                    if (e.Message.Equals("err")) Debug.Log("시리얼 형식오류, 입력을 무시합니다");
                 }
 
             }

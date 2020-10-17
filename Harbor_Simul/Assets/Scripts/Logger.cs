@@ -51,6 +51,11 @@ public static class Logger
     {
         curLogData.transformDataSet.Add(data);
     }
+    public static void deleteCurLog()
+    {
+        logDatas.Remove(curLogData);
+        curLogData = null;
+    }
 
     public static void initLogData(System.DateTime startedAt, ShipType ship, Route route)
     {

@@ -112,6 +112,12 @@ public class GameManager : Singleton<GameManager>
         Logger.saveToFile();
     }
 
+    public void stopAndDeleteLog()
+    {
+        StopCoroutine("logCoroutine");
+        Logger.deleteCurLog();
+    }
+
     public void Reset()
     {
         startedAt = System.DateTime.MinValue;

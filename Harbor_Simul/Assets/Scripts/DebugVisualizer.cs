@@ -29,7 +29,7 @@ public class DebugVisualizer : MonoBehaviour
             newString = "\n" + stackTrace;
             myLogQueue.Enqueue(newString);
         }
-        while (myLogQueue.Count > 15)
+        while (myLogQueue.Count > 20)
         {
             myLogQueue.Dequeue();
         }

@@ -12,11 +12,13 @@ public class OptionPanel : SelectPanel
 
     public void onRestartSelected()
     {
+        GameManager.Instance.stopAndDeleteLog();
         SceneManage.Instance.loadScene("MyScene");
     }
 
     public void onMainMenuSelected()
     {
+        GameManager.Instance.stopAndDeleteLog();
         SceneManage.Instance.loadScene("MainScene");
     }
 }
