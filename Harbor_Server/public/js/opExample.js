@@ -1,4 +1,4 @@
-var numDeltas = [100, 100];
+var numDeltas = [450, 450];
 var map;
 // var infowindow = null;
 var circleTimer = [];
@@ -43,6 +43,8 @@ var header = [];
 var body = [];
 var keys = [];
 var index = 0;
+
+var audio = new Audio('/sound/beep-24.mp3');
 
 var play = false;
 $('#mapBtn1').on('click', function(){
@@ -92,22 +94,6 @@ function tabChange() {
 
 }
 
-/*
-문제 
-1. example1 => 2, 3, 으로 넘어가면 원래 있던 객체를 삭제하고 해당 객체만 보여준다. 
-2. example2 에서 스탑 버튼 누른 이후에 재생 버튼 클릭 안됨
-=> 원래 기존에 만들어졌었던 객체가 움직여서 지금 보이는 객체가 움직이지 않는 것으로 보인다. 
-
-방법 1) example1,2,3 으로 넘어갈 때 , 리셋 버튼을 누를 때 해당 array에 null값 할당 
-
-방법 2) 리셋이 필요할때마다 모든 페이지를 리셋한다
-플레이버튼 - 객체 움직임
-스탑버튼 - 객체 정지
-리셋버튼 - 현재 페이지로 리로드 
-exampel1,2,3 탭 - 클릭시 페이지 리로드 
-*/
-
-
 google.maps.event.addDomListener(window, 'load', initMap);
 
 function initMap() {
@@ -120,7 +106,6 @@ function initMap() {
 
         $('#play').on('click', function(){
           play = true;
-          console.log('init에서 play실행');
           if (circles[0] == null){ 
             for (var i=0; i<start.length; i++){
               createArea(start[i], destination[i], map, i, cirRadi[i], numDeltas[i]);
@@ -183,8 +168,6 @@ function createArea(start, end, map, content, cirRadi, numDeltaVal) {
     $('#play').on('click', function(){
       play = true;
       if(reset){
-        console.log(content + '의 circle create에서 play실행');
-          console.log('asdaw');
           if(toggle[0]){
             toggle[0] = false;
             circleTimer[content] = setInterval ( function() {createCirTimer(startPos, circleOption, recOption, content) }, 20); 
@@ -197,7 +180,6 @@ function createArea(start, end, map, content, cirRadi, numDeltaVal) {
 
     $('#replay').on('click', function(){
       play = false;
-      console.log(content + '의 replay실행');
       clearInterval(circleTimer[0]);
       clearInterval(circleTimer[1]);
 
@@ -256,7 +238,6 @@ function createCirTimer(startPos, circleOption, recOption, content){
 // stop playing button
 $('#stop').on('click', function(){
   play = false;
-  console.log('stop 실행');
   clearInterval(circleTimer[0]);
   clearInterval(circleTimer[1]);
 
@@ -287,7 +268,6 @@ function computingOffset(center, content){
 
 var colCheck = false;
 function collisionCheck(){
-  
     // 2번째 객체 생성 전 error handling
     try {
       var distance = google.maps.geometry.spherical.computeDistanceBetween (circles[0], circles[1]);
@@ -300,6 +280,7 @@ function collisionCheck(){
     if ( distance <= totalRadi * 0.8){
       if (!colCheck){
         colCheck = true;
+        alert('충돌');
         $("#danger").text('충돌');
         $('#colliInfo').fadeIn(500);
         $('#lat').text(bounds.south);
@@ -319,10 +300,12 @@ function collisionCheck(){
         //$('#colliInfo').show();
       }
     } else if ( distance <= totalRadi * 1.2){
+      audio.play();
       $("#danger").text('매우 위험');
       $("#danger").css("color", "#DF0101");
       $("#danger").css("font-weight", "bold");
     } else if ( distance <= totalRadi * 1.8){
+      audio.play();
       $("#danger").text('위험');
       $("#danger").css("color", "#FFFF00");
       $("#danger").css("font-weight", "bold");
@@ -340,7 +323,7 @@ function varInitialize(){
 
   if (currentBtn == 1){
     cirRadi = [500, 500];
-    numDeltas = [100, 100];
+    numDeltas = [450, 450];
     start = [
       {lat: 35.514020, lng: 129.391979},
       {lat: 35.469623, lng: 129.393169}
@@ -356,7 +339,7 @@ function varInitialize(){
 
   } else if (currentBtn == 2){
     cirRadi = [500, 200];
-    numDeltas = [200, 80];
+    numDeltas = [200, 200];
 
     start = [
       {lat: 35.457782, lng: 129.388296},
@@ -373,7 +356,7 @@ function varInitialize(){
 
   } else if (currentBtn == 3){
     cirRadi = [500, 500];
-    numDeltas = [200, 0.5];
+    numDeltas = [200, 10];
 
     start = [
       {lat: 35.486726, lng: 129.397937},
