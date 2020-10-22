@@ -1,6 +1,45 @@
-// droneSystem.html 드론 조종 소켓 통신
-//TODO: 비디오 값 수신
+//ArOLz3DSTlEph91xotAdXlVeJjjF57wBwxauMk/b8iUwzl0uttsIze0KT66YurXIcJabHGihF3exllih/xxLagoAAABHeyJvcmlnaW4iOiJodHRwOi8vbG9jYWxob3N0OjgwIiwiZmVhdHVyZSI6IlNlcmlhbCIsImV4cGlyeSI6MTYwNTg2NTUwOX0=
+const serialConnect = document.getElementById('serialConnect');
 
+document.addEventListener('DOMContentLoaded', () => {
+    serialConnect.addEventListener('click', clickConnect);
+  });
+
+async function connect() {
+    // 직렬 포트 열기
+    port = await navigator.serial.requestPort();
+    await port.open({ baudrate: 9600 });
+
+    // 장치 연결 후 데이터 읽을 수 있도록 입력스트림/디코더 설정
+    let decoder = new TextDecoderStream();
+    inputDone = port.readable.pipeTo(decoder.writable);
+    inputStream = decoder.readable;
+  
+    reader = inputStream.getReader();
+    readLoop();
+}
+
+// 새 데이터가 도착하면 판독기는 두 가지 속성, 즉 value및 done부울을 반환합니다. 경우 done에 해당하는 포트는 폐쇄되었거나오고 더 이상 데이터가 없습니다.
+async function readLoop() {
+    // CODELAB: Add read loop here.
+   while (true) {
+    const { value, done } = await reader.read();
+    if (value) {
+      log.textContent += value + '\n';
+    }
+    if (done) {
+      console.log('[readLoop] DONE', done);
+      reader.releaseLock();
+      break;
+    }
+  }
+}
+
+async function clickConnect() {
+    await connect(); 
+}
+
+/////////////////////////////////////////////////////////////////////////
 var userid = document.getElementById('myDiv').dataset.userid;
 
 var socket = io.connect('http://'+document.location.hostname+':33337/'); 
@@ -22,6 +61,7 @@ socket.on('drone data stream', function (data) {
     $('#gear').text(data.speed);
     $('#angle').text(data.angle);
 })
+
 
 //keyboard input event 
 document.addEventListener('keydown', function(event){
@@ -77,9 +117,9 @@ function translate(preGear, moveGear) {
     if (preGear > moveGear) {
         movepx = -1*(moveGear-preGear)*distance;
     }
-    */
+    */ 
 
-    console.log(preGear+ '에서 ' + moveGear +'로 ' + movepx+'만큼 움직ㅇ');
+    console.log(preGear+ '에서 ' + moveGear +'로 ' + movepx+'만큼 움직');
     $('#control_gear').css({ WebkitTransform: 'translate(' + movepx + 'px, 0px)'});
 }
 

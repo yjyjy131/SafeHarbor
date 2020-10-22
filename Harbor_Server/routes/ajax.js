@@ -5,10 +5,14 @@ exports.getSignUp = function(req, res) {
     result.findAll({
       where: { userid: req.query.userid }
     }).then(result => {
-       res.send(false);
-      
+      console.log(req.query.userid);
+      if (result == "") {
+        res.send(true);
+      } else {
+        res.send(false);
+      }
     }).catch(function (err) {
-      res.send(true);
+      console.log('회원가입 에러 발생');
     })
 }
 
