@@ -19,4 +19,7 @@
     <string name="nowDrone">현재드론상태</string>
     <string name="gpsY">gpsY</string>
     <string name="gpsX">gpsX</string>
+    <string name="url">url:</string>
+    <string name="gpsx">GpsX:</string>
+    <string name="gpsy">GpsY:</string>
 </resources>

@@ -2,6 +2,7 @@ package com.example.harbor_app;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -16,17 +17,18 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
@@ -37,24 +39,32 @@ import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Date;
 
 public class MainDrive extends AppCompatActivity implements LocationListener, SensorEventListener {
 
     private Socket socket;
     Button stpBtn;
+    TextView urladdress;
+    TextView connect;
+    SensorManager sensorManager;
+    Sensor accelerometer;
     //시리얼통신
     /*
-    UsbService usbService;
+    private UsbService usbService;
     private MyHandler mHandler;
+    EditText editText;
     private final ServiceConnection usbConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName arg0, IBinder arg1) {
             usbService = ((UsbService.UsbBinder) arg1).getService();
+            usbService.setHandler(mHandler);
+            //TextView serial=(TextView)findViewById(R.id.serial);
+           // serial.setText(Boolean.toString(usbService.isOpen()));
         }
 
         @Override
@@ -62,8 +72,8 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
             usbService = null;
         }
     };
-     */
-
+*/
+/*
     //시리얼 권한 체크
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         @Override
@@ -87,6 +97,7 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
             }
         }
     };
+ */
     //gps센서
     LocationManager locationManager;
     String gpsX;
@@ -117,12 +128,23 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drive_main);
-        //Intent intent=getIntent();
-        //String url=intent.getStringExtra("url");
+        Intent intent = getIntent();
+        String url = intent.getStringExtra("url");
+        urladdress = findViewById(R.id.urladdress);
+        urladdress.setText(url);
         stpBtn = (Button) findViewById(R.id.stopBtn);
+
         //시리얼통신
-        //mHandler = new MyHandler(this);
+        /*
+        mHandler = new MyHandler(this);
+        Button sendButton = (Button) findViewById(R.id.buttonSend);
+        editText= (EditText)findViewById(R.id.editText1);
+        sendButton.setOnClickListener(click);
+         */
         //가속도센서 on
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+
+
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mMagnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
@@ -135,9 +157,9 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
 
 
         //gps권한체크
-        int permissionCheck = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION);
-        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(getApplicationContext(), "GPS 권한 있음", Toast.LENGTH_SHORT).show();
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
         }
         //gps수신
 
@@ -154,13 +176,13 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
             gpsLa.setText(gpsX);
             gpsLo.setText(gpsY);
         }
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 100, this);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 100, this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 100, this);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 100, this);
 
         //소켓 connect
         try {
-            //socket=IO.socket(url);
-            socket = IO.socket("http://ksyksy12.iptime.org:33337/");
+            socket = IO.socket(url);
+            //socket = IO.socket("http://ksyksy12.iptime.org:33337/");
             socket.connect();
             //////////////////////////////////////////////////
             socket.on(Socket.EVENT_CONNECT, onConnect);
@@ -172,7 +194,7 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
                 }
             };
             final Timer timer = new Timer();
-            timer.schedule(tt, 1500, 2000);
+            timer.schedule(tt, 1500, 3000);
             stpBtn.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     socket.off(Socket.EVENT_CONNECT, onConnect);
@@ -199,10 +221,10 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
         public void call(Object... args) {
             JSONObject clientInfo = new JSONObject();
             try {
-                clientInfo.put("clientType","ctd");
-                clientInfo.put("userid","test");
+                clientInfo.put("clientType", "ctd");
+                clientInfo.put("userid", "test");
                 socket.emit("client connected", clientInfo);
-                Log.d("소켓",socket.id());
+                Log.d("소켓", socket.id());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -218,7 +240,7 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
             String send;
             try {
                 JSONObject receivedData = new JSONObject((String) args[0]);
-                Log.d("Drone", "데이터받음, speed:"+speed+", angle:"+angle);
+                Log.d("Drone", "데이터받음, speed:" + speed + ", angle:" + angle);
                 speed.setText(receivedData.getString("speed"));
                 angle.setText(receivedData.getString("angle"));
                 send = receivedData.getString("speed");
@@ -234,16 +256,17 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
 
     void sendDrone() {
         try {
-            Date date=new Date();
+            Date date = new Date();
             JSONObject droneInfo = new JSONObject();
-            droneInfo.put("userid","test");
+            droneInfo.put("userid", "test");
             droneInfo.put("gpsX", gpsX);
             droneInfo.put("gpsY", gpsY);
             droneInfo.put("speed", strSpeed);
             droneInfo.put("angle", strAngle);
-            droneInfo.put("time",date);
+            droneInfo.put("time", date);
             socket.emit("drone data stream", droneInfo);
-            Log.d("Drone", "현재상태 전송!, 앵글 값:"+strAngle);
+            //Log.d("전송값", droneInfo.toString());
+            //Log.d("방향", android.sensor.
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -252,10 +275,7 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
     //gps, 가속도 센서//
     protected void onStart() {
         super.onStart();
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
-        }
+
     }
 
     @Override
@@ -266,9 +286,9 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
 
         mSensorManager.unregisterListener(this, mAccelerometer);
         mSensorManager.unregisterListener(this, mMagnetometer);
-
-        unregisterReceiver(mUsbReceiver);
-       // unbindService(usbConnection);
+//시리얼코드//
+        //unregisterReceiver(mUsbReceiver);
+        //unbindService(usbConnection);
     }
 
     @Override
@@ -281,9 +301,9 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
 
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
         mSensorManager.registerListener(this, mMagnetometer, SensorManager.SENSOR_DELAY_GAME);
-
-        setFilters();  // Start listening notifications from UsbService
-       // startService(UsbService.class, usbConnection, null); // Start UsbService(if it was not started before) and Bind it
+//시리얼코드//
+        //setFilters();  // Start listening notifications from UsbService
+        //startService(UsbService.class, usbConnection, null); // Start UsbService(if it was not started before) and Bind it
     }
 
 //위치 리스너
@@ -293,15 +313,23 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
 
         double latitude;
         double longitude;
-        double deltaTime = (location.getTime() - lastKnownLocation.getTime()) / 1000.0;
+        //double deltaTime = (location.getTime() - lastKnownLocation.getTime()) / 1000.0;
         if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
-            strSpeed = String.valueOf(Math.round(lastKnownLocation.distanceTo(location) / deltaTime * 100) / 100.0);
+            //strSpeed = String.valueOf(Math.round(lastKnownLocation.distanceTo(location) / deltaTime * 100) / 100.0);
             latitude = location.getLatitude();
             longitude = location.getLongitude();
-            gpsX = String.valueOf(Math.round(latitude * 1000) / 1000.0);
-            gpsY = String.valueOf(Math.round(longitude * 1000) / 1000.0);
+            //gpsX = String.valueOf(Math.round(latitude * 100000) / 100000.0);
+            //gpsY = String.valueOf(Math.round(longitude * 100000) / 100000.0);
+            gpsX = String.valueOf(latitude);
+            gpsY = String.valueOf(longitude);
             gpsLa.setText(gpsX);
             gpsLo.setText(gpsY);
+            connect = findViewById(R.id.connect);
+            if (socket.connected()) {
+                connect.setText("Socket is open");
+            } else {
+                connect.setText("Socket is close");
+            }
         }
     }
 
@@ -319,7 +347,7 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
             SensorManager.getRotationMatrix(mR, null, mLastAccelerometer, mLastMagnetometer);
             float azimuthinDegress = (int) (Math.toDegrees(SensorManager.getOrientation(mR, mOrientation)[0]) + 360) % 360;
             mCurrentDegree = -azimuthinDegress;
-            mCurrentDegree+=360;
+            mCurrentDegree += 360;
             strAngle = String.valueOf(mCurrentDegree);
             nowSpeed.setText(strSpeed);
             nowAngle.setText(strAngle);
@@ -346,7 +374,7 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
     }
-
+/*
     //시리얼 메소드/클래스
     private void setFilters() {
         IntentFilter filter = new IntentFilter();
@@ -373,6 +401,7 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
         Intent bindingIntent = new Intent(this, service);
         bindService(bindingIntent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
+
     private static class MyHandler extends Handler {
         private final WeakReference<MainDrive> mActivity;
 
@@ -387,12 +416,26 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
                     String data = (String) msg.obj;
                     break;
                 case UsbService.CTS_CHANGE:
-                    Toast.makeText(mActivity.get(), "CTS_CHANGE",Toast.LENGTH_LONG).show();
+                    Toast.makeText(mActivity.get(), "CTS_CHANGE", Toast.LENGTH_LONG).show();
                     break;
                 case UsbService.DSR_CHANGE:
-                    Toast.makeText(mActivity.get(), "DSR_CHANGE",Toast.LENGTH_LONG).show();
+                    Toast.makeText(mActivity.get(), "DSR_CHANGE", Toast.LENGTH_LONG).show();
                     break;
             }
         }
     }
+
+    View.OnClickListener click= new View.OnClickListener() {
+        @Override
+        public void onClick(View v){
+            if (!editText.getText().toString().equals("")) {
+                String data = editText.getText().toString();
+                Log.d("Serial",data);
+                if (usbService != null) { // if UsbService was correctly binded, Send data
+                    usbService.write(data.getBytes());
+                }
+            }
+        }
+    };
+ */
 }

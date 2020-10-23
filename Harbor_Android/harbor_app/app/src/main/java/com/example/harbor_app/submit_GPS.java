@@ -46,9 +46,10 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
     Button btn;
     Intent intent;
     TextView dateNow;
-    TextView checkText;
     int dir_phone;
-
+    String url;
+    TextView urladdress;
+    TextView connect;
     //gps센서
 
     LocationManager locationManager;
@@ -70,9 +71,6 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
     float mCurrentDegree = 0f;
     String rotate;
 
-    boolean isConnected=false;
-    TextView connect;
-
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,11 +78,13 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
         setContentView(R.layout.gps_submit);
         btn = findViewById(R.id.stopbtn);
         intent = getIntent();
+        url = intent.getStringExtra("url");
         dir_phone = intent.getIntExtra("dir_phone", 0);
         dateNow = findViewById(R.id.dateNow);
         gpsLatitude = findViewById(R.id.gpsLa);
         gpsLongitude = findViewById(R.id.gpsLo);
-        checkText = findViewById(R.id.check);
+        urladdress = findViewById(R.id.urladdress);
+        urladdress.setText(url);
 
         //가속도센서 on
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -114,8 +114,7 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 100, this);
         }
         try {
-
-            mSocket = IO.socket("");
+            mSocket = IO.socket(url);
             mSocket.connect();
             mSocket.on(Socket.EVENT_CONNECT, onConnect);
             TimerTask tt = new TimerTask() {
@@ -158,6 +157,9 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
                         jsonObject.put("gpsY", gpsY);
                         jsonObject.put("location", loc);
                         jsonObject.put("time", date);
+                        if(mSocket.connected()) {
+                            Log.d("전송값", jsonObject.toString());
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -171,6 +173,7 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
             btn.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     mSocket.disconnect();
+                    mSocket.off(Socket.EVENT_CONNECT, onConnect);
                     timer.cancel();
                     Intent goIntent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(goIntent);
@@ -252,21 +255,15 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
         if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
             latitude = location.getLatitude();
             longitude = location.getLongitude();
-            Log.d("GPS", latitude + '/' + Double.toString(longitude));
             gpsX = String.valueOf(latitude);
             gpsY = String.valueOf(longitude);
-
             gpsLatitude.setText(gpsX);
             gpsLongitude.setText(gpsY);
-
-            connect=findViewById(R.id.connect);
-            if(mSocket.connected())
-            {
-                connect.setText("True");
-            }
-            else
-            {
-                connect.setText("False");
+            connect = findViewById(R.id.connect);
+            if (mSocket.connected()) {
+                connect.setText("Socket is open");
+            } else {
+                connect.setText("Socket is close");
             }
         }
     }
