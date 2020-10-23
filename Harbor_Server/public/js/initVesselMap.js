@@ -4,7 +4,7 @@ $('.gMap').on('click', function(){
     $('#googleMap').css('display', 'block');
 });
 
-$('#mapBtn4').on('click', function(){
+$('#mapBtn2').on('click', function(){
     $('#googleMap').css('display', 'none');
     $('#vesselfinder').css('display', 'block');
 });

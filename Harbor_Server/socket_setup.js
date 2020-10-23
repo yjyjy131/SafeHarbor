@@ -44,8 +44,8 @@ module.exports.attach_event = function(_io){
                     userid: _userid,
                     speed: data.speed,
                     angle: data.angle,
-                    gpsX: data.gpsX,
-                    gpsY: data.gpsY,
+                    gpsX: 110,
+                    gpsY: 34,
                     time: data.time
                   });
             }
@@ -76,7 +76,8 @@ module.exports.attach_event = function(_io){
                 if(gpsDatas[key] == null)
                 isFull = false;
             }
-                //서버에서 웹으로 gps정보 전달(관제시)
+
+            //서버에서 웹으로 gps정보 전달(관제시)
             io.in('opw').emit("operator gps stream", gpsDatas);
             for(key in gpsDatas){
                 gpsDatas[key] = null;

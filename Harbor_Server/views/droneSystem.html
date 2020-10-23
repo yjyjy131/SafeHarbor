@@ -36,6 +36,7 @@
                 </nav>
                     <div id="main">
                         <div id="drnSide">
+                            <button id="serialConnect" type="button">Connect</button>
                             <div class="table-wrapper">
                                 <table class="alt">
                                     <thead>
@@ -48,23 +49,23 @@
                                         <!-- DB -->
                                         <tr>
                                             <td>userId</td>
-                                            <td id="userid" >29.99</td>
+                                            <td id="userid" >null</td>
                                         </tr>
                                         <tr>
                                             <td>latitude</td>
-                                            <td id="gpsX">29.99</td>
+                                            <td id="gpsX">null</td>
                                         </tr>
                                         <tr>
                                             <td>logitude</td>
-                                            <td id="gpsY">19.99</td>
+                                            <td id="gpsY">null</td>
                                         </tr>
                                         <tr>
                                             <td>angle</td>
-                                            <td id="angle">29.99</td>
+                                            <td id="angle">null</td>
                                         </tr>
                                         <tr>
                                             <td>controller-gear</td>
-                                            <td id="gear">null 단</td>
+                                            <td id="gear">null</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -86,7 +87,8 @@
 						    </ul>
 						</div>
 					</footer>
-			</div>
+            </div>
+            <div id="myDiv" data-userid=<%= session.userid %>></div>
 			<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 			<script src="/js/jquery.func.min.js"></script>
 			<script src="/js/util.js"></script>
@@ -98,6 +100,6 @@
 		        var canvas = document.getElementById('video-canvas');
 		        var url = 'ws://'+document.location.hostname+':33402/';
 		        var player = new JSMpeg.Player(url, {canvas: canvas});
-	        </script>
+            </script>
     </body>
 </html>
