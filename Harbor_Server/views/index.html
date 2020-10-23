@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Forty by HTML5 UP</title>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" type="text/css" href="/stylesheets/basic.css"/>
+		<link rel="stylesheet" type="text/css" href="/stylesheets/login.css" />
+	</head>
+    <body>      
+        <!--최초 로그인 페이지-->
+        <% if (session.userid) { %>
+            <h3> 로그인 성공 - 메인메뉴 </h3>
+            <form action="user/logout" method="get">
+                <input type="submit" value="logout">
+            </form>
+        <% } else { %>
+			<div id="wrapper">
+					<header id="header">
+						<a href="index.html" class="logo"><strong>MALLANG</strong> <span> CAU </span></a>
+					</header>
+					<div id="main">
+							<div class="content">
+								<div id="loginSide">
+									<header class="major">
+										<h3 id="loginTitle">Mallang CAU</h3>
+									</header>
+									<div id="loginPara">
+									<p> 5G와 수상드론을 이용한 울산항 안전운항 관리 솔루션 및 시뮬레이션 Ha how you like that?
+										You gon’ like that that that that that
+										How you like that?
+										How you like that that that that that
+										
+										Now look at you now look at me
+										Look at you now look at me
+										Look at you now look at me
+										
+										How you like that
+										
+										Now look at you now look at me
+										Look at you now look at me
+										Look at you now look at me
+										
+										How you like that
+									</p>	
+									</div>
+								</div>
+							</div>
+						<div id="logindiv">
+							<div id="loginBox">
+							<form method="post" action="user/login">
+								<div class="fields">
+									<div class="field half">
+										<div id="loginBox">
+										<label> Username </label>
+										<div class="boxType">
+										<input type="text" name="userid" class="primary"/>
+										</div>
+									</div>
+									</div>
+									<div class="field half" id="passField">
+										<label> Password </label>
+										<div class="boxType">
+										<input type="password" name="password" class="primary"/>
+										</div>
+									</div>		
+								</div>								
+								<div id="flexContainer">
+								<ul class="actions">
+									<li class="login" ><input type="submit" value="login" class="primary" /></li>
+									<li> &nbsp </li>
+                                    <li class="login">
+                                        <!-- <form action="user/sign_up" method="get"></form> -->
+										<input type="submit" value="register" class="primary" /></form>
+                                    </li>
+                                    <li><input type="hidden" name="isOperator" value="true"></li>
+								</ul>
+								</div>
+							</form>
+							</div>
+						</div>
+                    </div>	
+        <% } %>
+				<footer id="footer">
+					<div class="inner">
+						<ul class="copyright">
+							<li>한이음 스마트해상물류</li>
+							<li>Mallng CAU </li>
+							<li>Web templet Design: <a href="https://html5up.net">HTML5 UP</a></li>
+						</ul>
+					</div>
+				</footer>
+			</div>
+	</body>
+</html>

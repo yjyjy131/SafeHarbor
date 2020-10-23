@@ -5,14 +5,29 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "command": "npm start",
+            "name": "디버그 모드로 시작",
+            "request": "launch",
+            "type": "node-terminal"
+        },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "프로세스에 연결",
+            "processId": "${command:PickProcess}",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
+        {
             "type": "node",
             "request": "launch",
-            "name": "프로그램 시작",
+            "name": "프로그램 시작(사용금지)",
             "skipFiles": [
                 "<node_internals>/**"
             ],
           //  "program": "${workspaceFolder}\\index.js"
-            "program": "${file}" , "env": { "NODE_ENV": "development" }
+            "program": "${workspaceFolder}/app.js" , "env": { "NODE_ENV": "development" }
         }
     ]
 }

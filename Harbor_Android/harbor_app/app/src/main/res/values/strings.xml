@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">harbor_app</string>
+    <string name="주행">주행</string>
+    <string name="gps">gps</string>
+    <string name="changeActivity">주행화면입니다</string>
+    <string name="north">북쪽</string>
+    <string name="west">서쪽</string>
+    <string name="east">동쪽</string>
+    <string name="south">남쪽</string>
+    <string name="stop">중지</string>
+    <string name="received">받은값:</string>
+    <string name="center">중앙</string>
+    <string name="nowtime">현재시각:</string>
+    <string name="timeformat">yyyy/MM/dd HH:mm:ss</string>
+    <string name="receivedData">받은조종정보</string>
+    <string name="speed">speed:</string>
+    <string name="angle">angle:</string>
+    <string name="rotation">rotation:</string>
+    <string name="nowDrone">현재드론상태</string>
+    <string name="gpsY">gpsY</string>
+    <string name="gpsX">gpsX</string>
+    <string name="url">url:</string>
+    <string name="gpsx">GpsX:</string>
+    <string name="gpsy">GpsY:</string>
+</resources>

@@ -1,0 +1,100 @@
+#main {
+	background-color: #242943;
+	height: 29em;
+	display: flex;
+	flex-grow: 1;
+	flex-basis: 1;
+    flex-basis: auto;
+    align-items: center;
+    flex-direction: column;
+}
+
+header.major {
+    margin: 6em 0 2em 0;
+    width: max-content;
+}
+	header.major > :after {
+            content: '';
+            background-color: #ffffff;
+            display: block;
+            height: 2px;
+            width: 100%;
+            text-align: center;
+		}
+        
+    header.major > :first-child {
+        margin-bottom: 0;
+        width: calc(100%);
+    }
+
+    #signupInfo > p {
+        font-size: 1.1em;
+        font-weight: 350;
+        text-align: center;
+        margin-bottom: 0.8em;
+    }
+
+label {
+color: #ffffff;
+display: block;
+font-size: 0.8em;
+font-weight: 600;
+letter-spacing: 0.2em;
+margin: 0 0 0.3em 0 !important;
+text-transform: uppercase;
+}
+
+ul {
+    list-style: disc;
+    margin: 0 0 2em 0;
+    padding-left: 1em;
+}
+
+ul.actions {
+    display: flex;
+    cursor: default;
+    list-style: none;
+    align-items: center;
+    justify-content: center;
+    padding-top: 1em;
+    margin-left: -1em;
+}
+
+input[type="submit"] {
+    appearance: none;
+    background-color: #24294370;
+    box-shadow: inset 0 0 0 2px #242943;
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 0.8em;
+    font-weight: 600;
+    height: 3.5em;
+    letter-spacing: 0.25em;
+    line-height: 3.5em;
+    padding: 0em 7em;
+    text-align: center;
+    text-transform: uppercase;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+    input[type="submit"].primary,
+    input[type="button"].primary,
+    button.primary,
+    .button.primary {
+        background-color: #dfba06;
+        box-shadow: none;
+        color: #ffffff;
+    }
+
+    input[type="submit"].primary:active,
+    input[type="submit"].primary:hover {
+        background-color: #9bf1ff;
+    }
+
+   input:-webkit-autofill, input:-webkit-autofill:focus,
+   input:-webkit-autofill:hover, input:-webkit-autofill:active {
+       transition: background-color 5000s ease-in-out 0s;
+       -webkit-text-fill-color: #ffffff;
+   }
