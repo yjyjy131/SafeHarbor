@@ -21,14 +21,16 @@ public class CamPosition : MonoBehaviour
                 monitorCam.position = CamManager.Instance.monitorPos.position;
                 monitorCam.rotation = CamManager.Instance.monitorPos.rotation;
                 isMonitorCamSet = true;
+                preAngle = monitorCam.rotation.eulerAngles;
             }
             Vector3 target = CamManager.Instance.monitorPos.position;
-            Vector3 lerped = Vector3.Lerp(monitorCam.position, target, Time.deltaTime *  2f);
+            Vector3 lerped = Vector3.Lerp(monitorCam.position, target, Time.deltaTime *  3f);
             monitorCam.position = new Vector3(lerped.x, monitorCam.position.y, lerped.z);
-            monitorCam.rotation = CamManager.Instance.monitorPos.rotation;
+            //monitorCam.rotation = CamManager.Instance.monitorPos.rotation;
+            monitorCam.rotation = Quaternion.Euler(preAngle.x, Mathf.Lerp(preAngle.y, CamManager.Instance.monitorPos.rotation.eulerAngles.y, Time.deltaTime * 2f), preAngle.z);
             //monitorCam.position = new Vector3(target.x, monitorCam.position.y, target.z);
             //monitorCam.position = CamManager.Instance.monitorCam.position;
-            //preAngle = monitorCam.rotation.eulerAngles;
+            preAngle = monitorCam.rotation.eulerAngles;
             //monitorCam.rotation = CamManager.Instance.monitorCamRot;
             //monitorCam.rotation =  Quaternion.Euler(preAngle.x, Mathf.Lerp(preAngle.y, CamManager.Instance.monitorCam.rotation.eulerAngles.y, Time.deltaTime * 2f), preAngle.z);
         }

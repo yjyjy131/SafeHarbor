@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LogManager : Singleton<LogManager>
 {
-    private Ship player;
+    public Ship player;
     private List<MovableEntity> entities = new List<MovableEntity>();
     private List<MyRoute> routes = new List<MyRoute>();
     private MyRoute currentRoute;
