@@ -22,23 +22,24 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import java.lang.ref.WeakReference;
+import java.util.Objects;
 import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity {
+    /*
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     public static final int REQUEST_CODE = 1;
     String[] REQUIRED_PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     EditText url;
     Button drive;
-    Button gps;
+    Button gps;*/
     //////////////////////시리얼코드///////////////////
     TextView writeText;
     /*
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
             usbService = null;
         }
     };
+
     /////////////////////////////////
 
     @Override
@@ -105,7 +107,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
         ////////////////////////////////////////////////////
+        /*
         url = findViewById(R.id.address);
         drive = (Button) findViewById(R.id.run);
         gps = (Button) findViewById(R.id.gps);
@@ -140,7 +144,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
-
+        */
+/*
     public boolean checkLocationServicesStatus() {
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -213,6 +218,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+ */
 ///////////////////////시리얼코드//////////////////////////
 
     @Override
