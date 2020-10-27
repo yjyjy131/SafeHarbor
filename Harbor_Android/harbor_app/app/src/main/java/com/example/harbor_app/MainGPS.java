@@ -9,11 +9,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainGPS extends AppCompatActivity {
     String url;
+    String userId;
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gps_main);
         Intent intent=getIntent();
         url=intent.getStringExtra("url");
+        userId=intent.getStringExtra("userId");
     }
 
     // 0:북쪽, 1:서쪽, 2:동쪽, 3:남쪽
@@ -21,6 +23,7 @@ public class MainGPS extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), submit_GPS.class);
         intent.putExtra("dir_phone", 0);
         intent.putExtra("url",url);
+        intent.putExtra("userId",userId);
         startActivity(intent);
     }
 
@@ -28,6 +31,7 @@ public class MainGPS extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), submit_GPS.class);
         intent.putExtra("dir_phone", 1);
         intent.putExtra("url",url);
+        intent.putExtra("userId",userId);
         startActivity(intent);
     }
 
@@ -35,6 +39,7 @@ public class MainGPS extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), submit_GPS.class);
         intent.putExtra("dir_phone", 2);
         intent.putExtra("url",url);
+        intent.putExtra("userId",userId);
         startActivity(intent);
     }
 
@@ -42,12 +47,14 @@ public class MainGPS extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), submit_GPS.class);
         intent.putExtra("dir_phone", 3);
         intent.putExtra("url",url);
+        intent.putExtra("userId",userId);
         startActivity(intent);
     }
     public void center(View view) {
         Intent intent = new Intent(getApplicationContext(), submit_GPS.class);
         intent.putExtra("dir_phone", 4);
         intent.putExtra("url",url);
+        intent.putExtra("userId",userId);
         startActivity(intent);
     }
 }

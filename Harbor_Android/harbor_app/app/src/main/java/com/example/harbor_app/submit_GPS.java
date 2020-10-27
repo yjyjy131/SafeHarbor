@@ -14,6 +14,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -41,7 +43,7 @@ import java.util.TimerTask;
 
 
 public class submit_GPS extends AppCompatActivity implements LocationListener, SensorEventListener {
-
+    String userId;
     private Socket mSocket;
     Button btn;
     Intent intent;
@@ -50,6 +52,7 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
     String url;
     TextView urladdress;
     TextView connect;
+    TextView idText;
     //gps센서
 
     LocationManager locationManager;
@@ -80,11 +83,15 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
         intent = getIntent();
         url = intent.getStringExtra("url");
         dir_phone = intent.getIntExtra("dir_phone", 0);
+        userId=intent.getStringExtra("userId");
         dateNow = findViewById(R.id.dateNow);
         gpsLatitude = findViewById(R.id.gpsLa);
         gpsLongitude = findViewById(R.id.gpsLo);
         urladdress = findViewById(R.id.urladdress);
         urladdress.setText(url);
+        connect = findViewById(R.id.connect);
+        idText=findViewById(R.id.userId);
+        idText.setText(userId);
 
         //가속도센서 on
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -106,12 +113,10 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
 
             gpsX = String.valueOf(lat);
             gpsY = String.valueOf(lng);
-            //gpsLatitude.setText(gpsX);
-            //gpsLongitude.setText(gpsY);
         }
         listProviders = locationManager.getAllProviders();
         if (listProviders.get(0).equals(LocationManager.GPS_PROVIDER)) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 100, this);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 100, this);
         }
         try {
             mSocket = IO.socket(url);
@@ -122,6 +127,15 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
                 @SuppressLint({"SimpleDateFormat", "SetTextI18n"})
                 @Override
                 public void run() {
+                    if (mSocket.connected()) {
+                        Message oMsg=oHandler.obtainMessage();
+                        oHandler.sendMessage(oMsg);
+                    } else {
+                        Message cMsg=cHandler.obtainMessage();
+                        cHandler.sendMessage(cMsg);
+                    }
+                    Message msg=lHandler.obtainMessage();
+                    lHandler.sendMessage(msg);
                     String loc;
                     Date date = new Date();
                     // 시간을 나타냇 포맷
@@ -153,6 +167,7 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
                                 loc = "error";
                                 break;
                         }
+                        jsonObject.put("userid",userId);
                         jsonObject.put("gpsX", gpsX);
                         jsonObject.put("gpsY", gpsY);
                         jsonObject.put("location", loc);
@@ -192,7 +207,7 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
             JSONObject jsonObject = new JSONObject();
             try {
                 jsonObject.put("clientType", "opd");
-                jsonObject.put("userid", mSocket.id());
+                jsonObject.put("userid", userId);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -237,16 +252,14 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
         mSensorManager.registerListener(this, mMagnetometer, SensorManager.SENSOR_DELAY_GAME);
 
     }
     //gps리스너
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("TextI18n")
     public void onLocationChanged(Location location) {
 
         double latitude;
@@ -257,17 +270,46 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
             longitude = location.getLongitude();
             gpsX = String.valueOf(latitude);
             gpsY = String.valueOf(longitude);
-            gpsLatitude.setText(gpsX);
-            gpsLongitude.setText(gpsY);
-            connect = findViewById(R.id.connect);
+
+            Message msg=lHandler.obtainMessage();
+            lHandler.sendMessage(msg);
             if (mSocket.connected()) {
-                connect.setText("Socket is open");
+                Message oMsg=oHandler.obtainMessage();
+                oHandler.sendMessage(oMsg);
             } else {
-                connect.setText("Socket is close");
+                Message cMsg=cHandler.obtainMessage();
+                cHandler.sendMessage(cMsg);
             }
         }
     }
-
+    Handler lHandler = new Handler(new Handler.Callback() {
+        @SuppressLint("SetTextI18n")
+        @Override
+        public boolean handleMessage(Message msg) {
+            // todo
+            gpsLatitude.setText(gpsX);
+            gpsLongitude.setText(gpsY);;
+            return true;
+        }
+    });
+    Handler oHandler = new Handler(new Handler.Callback() {
+        @SuppressLint("SetTextI18n")
+        @Override
+        public boolean handleMessage(Message msg) {
+            // todo
+            connect.setText("Socket is open");
+            return true;
+        }
+    });
+    Handler cHandler = new Handler(new Handler.Callback() {
+        @SuppressLint("SetTextI18n")
+        @Override
+        public boolean handleMessage(Message msg) {
+            // todo
+            connect.setText("Socket is close");
+            return true;
+        }
+    });
     public void onProviderEnabled(String provider) {
         /*if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
         }

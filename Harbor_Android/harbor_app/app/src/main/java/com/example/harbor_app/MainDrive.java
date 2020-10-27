@@ -29,6 +29,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
@@ -36,6 +37,7 @@ import com.github.nkzawa.socketio.client.Socket;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
@@ -53,6 +55,8 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
     TextView connect;
     SensorManager sensorManager;
     Sensor accelerometer;
+    String userId;
+    TextView idView;
     //시리얼통신
     /*
     private UsbService usbService;
@@ -130,10 +134,13 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
         setContentView(R.layout.drive_main);
         Intent intent = getIntent();
         String url = intent.getStringExtra("url");
+        userId = intent.getStringExtra("userId");
         urladdress = findViewById(R.id.urladdress);
         urladdress.setText(url);
         stpBtn = (Button) findViewById(R.id.stopBtn);
-
+        connect = findViewById(R.id.connect);
+        idView=(TextView)findViewById(R.id.userId);
+        idView.setText(userId);
         //시리얼통신
         /*
         mHandler = new MyHandler(this);
@@ -157,9 +164,9 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
 
 
         //gps권한체크
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
+        int permissionCheck = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION);
+        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(getApplicationContext(), "GPS 권한 있음", Toast.LENGTH_SHORT).show();
         }
         //gps수신
 
@@ -171,14 +178,14 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
         if (lastKnownLocation != null) {
             double lng = lastKnownLocation.getLongitude();
             double lat = lastKnownLocation.getLatitude();
-            gpsX = String.valueOf(Math.round(lat) * 1000 / 1000.0);
-            gpsY = String.valueOf(Math.round(lng) * 1000 / 1000.0);
-            gpsLa.setText(gpsX);
-            gpsLo.setText(gpsY);
-        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 100, this);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 100, this);
 
+            gpsX = String.valueOf(lat);
+            gpsY = String.valueOf(lng);
+        }
+        listProviders = locationManager.getAllProviders();
+        if (listProviders.get(0).equals(LocationManager.GPS_PROVIDER)) {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 100, this);
+        }
         //소켓 connect
         try {
             socket = IO.socket(url);
@@ -188,13 +195,24 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
             socket.on(Socket.EVENT_CONNECT, onConnect);
             socket.on("control stream", controlData); //speed, angle, time 수신
             TimerTask tt = new TimerTask() {
+                @SuppressLint("SetTextI18n")
                 @Override
                 public void run() {
                     sendDrone();
+                    Message lMsg = lHandler.obtainMessage();
+                    lHandler.sendMessage(lMsg);
+                    if (socket.connected()) {
+                        Message msg = oHandler.obtainMessage();
+                        oHandler.sendMessage(msg);
+                    } else {
+                        Message msg = cHandler.obtainMessage();
+                        cHandler.sendMessage(msg);
+                    }
+
                 }
             };
             final Timer timer = new Timer();
-            timer.schedule(tt, 1500, 3000);
+            timer.schedule(tt, 1500, 4000);
             stpBtn.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     socket.off(Socket.EVENT_CONNECT, onConnect);
@@ -216,13 +234,31 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
 
     }
 
+    Handler oHandler = new Handler(new Handler.Callback() {
+        @SuppressLint("SetTextI18n")
+        @Override
+        public boolean handleMessage(Message msg) {
+            // todo
+            connect.setText("Socket is open");
+            return true;
+        }
+    });
+    Handler cHandler = new Handler(new Handler.Callback() {
+        @SuppressLint("SetTextI18n")
+        @Override
+        public boolean handleMessage(Message msg) {
+            // todo
+            connect.setText("Socket is close");
+            return true;
+        }
+    });
     private Emitter.Listener onConnect = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
             JSONObject clientInfo = new JSONObject();
             try {
                 clientInfo.put("clientType", "ctd");
-                clientInfo.put("userid", "test");
+                clientInfo.put("userid", userId);
                 socket.emit("client connected", clientInfo);
                 Log.d("소켓", socket.id());
             } catch (JSONException e) {
@@ -258,14 +294,15 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
         try {
             Date date = new Date();
             JSONObject droneInfo = new JSONObject();
-            droneInfo.put("userid", "test");
+            droneInfo.put("userid", userId);
             droneInfo.put("gpsX", gpsX);
             droneInfo.put("gpsY", gpsY);
             droneInfo.put("speed", strSpeed);
             droneInfo.put("angle", strAngle);
             droneInfo.put("time", date);
             socket.emit("drone data stream", droneInfo);
-            //Log.d("전송값", droneInfo.toString());
+            if (socket.connected())
+                Log.d("전송값", droneInfo.toString());
             //Log.d("방향", android.sensor.
         } catch (JSONException e) {
             e.printStackTrace();
@@ -291,6 +328,7 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
         //unbindService(usbConnection);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onResume() {
         super.onResume();
@@ -298,7 +336,6 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
         mSensorManager.registerListener(this, mMagnetometer, SensorManager.SENSOR_DELAY_GAME);
 //시리얼코드//
@@ -318,20 +355,32 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
             //strSpeed = String.valueOf(Math.round(lastKnownLocation.distanceTo(location) / deltaTime * 100) / 100.0);
             latitude = location.getLatitude();
             longitude = location.getLongitude();
-            //gpsX = String.valueOf(Math.round(latitude * 100000) / 100000.0);
-            //gpsY = String.valueOf(Math.round(longitude * 100000) / 100000.0);
             gpsX = String.valueOf(latitude);
             gpsY = String.valueOf(longitude);
-            gpsLa.setText(gpsX);
-            gpsLo.setText(gpsY);
-            connect = findViewById(R.id.connect);
+
+            Message msg = lHandler.obtainMessage();
+            lHandler.sendMessage(msg);
             if (socket.connected()) {
-                connect.setText("Socket is open");
+                Message oMsg=oHandler.obtainMessage();
+                oHandler.sendMessage(oMsg);
             } else {
-                connect.setText("Socket is close");
+                Message cMsg=cHandler.obtainMessage();
+                cHandler.sendMessage(cMsg);
             }
         }
     }
+
+    Handler lHandler = new Handler(new Handler.Callback() {
+        @SuppressLint("SetTextI18n")
+        @Override
+        public boolean handleMessage(Message msg) {
+            // todo
+            gpsLa.setText(gpsX);
+            gpsLo.setText(gpsY);
+            return true;
+        }
+    });
+
 
     //가속도 리스너
     @Override
@@ -355,11 +404,13 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
     }
 
     public void onProviderEnabled(String provider) {
-        /*if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        /*
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
         }
-        //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 100, this);
-        //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
-        //locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, this);*/
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 100, this);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 100, this);
+        locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, this);
+         */
     }
 
     @Override

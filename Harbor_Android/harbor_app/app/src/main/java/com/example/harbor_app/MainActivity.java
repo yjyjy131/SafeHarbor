@@ -32,14 +32,14 @@ import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity {
-    /*
+
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     public static final int REQUEST_CODE = 1;
     String[] REQUIRED_PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     EditText url;
     Button drive;
-    Button gps;*/
+    Button gps;
     //////////////////////시리얼코드///////////////////
     TextView writeText;
     /*
@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         writeText = (TextView) findViewById(R.id.textView2);
         mHandler = new MyHandler(this);
         editText = (EditText) findViewById(R.id.editText1);
+        /*
         Button sendButton = (Button) findViewById(R.id.buttonSend);
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,9 +108,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-    }
+         */
         ////////////////////////////////////////////////////
-        /*
+
         url = findViewById(R.id.address);
         drive = (Button) findViewById(R.id.run);
         gps = (Button) findViewById(R.id.gps);
@@ -134,18 +135,20 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.run:
                     Intent intent = new Intent(MainActivity.this, MainDrive.class);
                     intent.putExtra("url", url.getText().toString());
+                    intent.putExtra("userId",editText.getText().toString());
                     startActivityForResult(intent, REQUEST_CODE); //값을 돌려받을수있다.
                     break;
                 case R.id.gps:
                     Intent intent2 = new Intent(getApplicationContext(), MainGPS.class);
                     intent2.putExtra("url", url.getText().toString());
+                    intent2.putExtra("userId",editText.getText().toString());
                     startActivityForResult(intent2, REQUEST_CODE); //값을 돌려받을수있다.
                     break;
             }
         }
     };
-        */
-/*
+
+
     public boolean checkLocationServicesStatus() {
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -218,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
- */
+
 ///////////////////////시리얼코드//////////////////////////
 
     @Override
