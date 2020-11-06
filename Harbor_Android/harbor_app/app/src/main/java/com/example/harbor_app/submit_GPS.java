@@ -167,7 +167,7 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
                                 loc = "error";
                                 break;
                         }
-                        jsonObject.put("userid",userId);
+                        jsonObject.put("userid", userId);
                         jsonObject.put("gpsX", gpsX);
                         jsonObject.put("gpsY", gpsY);
                         jsonObject.put("location", loc);
@@ -208,6 +208,7 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
             try {
                 jsonObject.put("clientType", "opd");
                 jsonObject.put("userid", userId);
+                Log.d("소켓", mSocket.id());
             } catch (JSONException e) {
                 e.printStackTrace();
             }

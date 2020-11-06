@@ -35,17 +35,25 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class MainDrive extends AppCompatActivity implements LocationListener, SensorEventListener {
 
@@ -54,9 +62,10 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
     TextView urladdress;
     TextView connect;
     SensorManager sensorManager;
-    Sensor accelerometer;
     String userId;
     TextView idView;
+    String gear;
+    String getAngle;
     //시리얼통신
     /*
     private UsbService usbService;
@@ -126,7 +135,6 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
     TextView angle;
     //속도센서
     TextView speed;
-    TextView nowSpeed;
 
     @SuppressLint("SimpleDateFormat")
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -150,15 +158,11 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
          */
         //가속도센서 on
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-
-
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mMagnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         speed = findViewById(R.id.getSpeed);
         angle = findViewById(R.id.getAngle);
-        nowSpeed = (TextView) findViewById(R.id.getNowSpeed);
-        nowSpeed.setText("0");
         nowAngle = (TextView) findViewById(R.id.getNowAngle);
         nowAngle.setText("0");
 
@@ -275,20 +279,40 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
             // 시리얼 통신 -> 라즈베리파이로 speed, angle 전송
             String send;
             try {
-                JSONObject receivedData = new JSONObject((String) args[0]);
-                Log.d("Drone", "데이터받음, speed:" + speed + ", angle:" + angle);
-                speed.setText(receivedData.getString("speed"));
-                angle.setText(receivedData.getString("angle"));
+                Gson gson=new Gson();
+                String data=gson.toJson(args);
+                JSONArray dataArray=new JSONArray(data);
+                JSONObject tempObject=dataArray.getJSONObject(0);
+                JSONObject receivedData=tempObject.getJSONObject("nameValuePairs");
+                gear=receivedData.getString("gear");
+                getAngle=receivedData.getString("angle");
+                Log.d("Drone", "데이터받음, gear:" + gear + ", angle:" + getAngle);
+                Message msg = saHandler.obtainMessage();
+                saHandler.sendMessage(msg);
+                /*
                 send = receivedData.getString("speed");
                 send = send.concat(",");
                 send = send.concat(receivedData.getString("angle"));
                 send = send.concat(".");
+                 */
                 //usbService.write(send.getBytes());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+
     };
+    Handler saHandler = new Handler(new Handler.Callback() {
+        @SuppressLint("SetTextI18n")
+        @Override
+        public boolean handleMessage(Message msg) {
+            // todo
+            speed.setText(gear);
+            angle.setText(getAngle);
+            return true;
+        }
+    });
+
 
     void sendDrone() {
         try {
@@ -398,7 +422,6 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
             mCurrentDegree = -azimuthinDegress;
             mCurrentDegree += 360;
             strAngle = String.valueOf(mCurrentDegree);
-            nowSpeed.setText(strSpeed);
             nowAngle.setText(strAngle);
         }
     }

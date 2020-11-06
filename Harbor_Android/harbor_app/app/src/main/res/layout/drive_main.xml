@@ -148,31 +148,6 @@
         app:layout_constraintVertical_bias="0.04" />
 
     <TextView
-        android:id="@+id/nowSpeed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/speed"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.15"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nowData"
-        app:layout_constraintVertical_bias="0.03" />
-
-    <TextView
-        android:id="@+id/getNowSpeed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.05"
-        app:layout_constraintStart_toEndOf="@id/nowSpeed"
-        app:layout_constraintTop_toBottomOf="@+id/nowData"
-        app:layout_constraintVertical_bias="0.03" />
-
-    <TextView
         android:id="@+id/nowAngle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -182,7 +157,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nowSpeed"
+        app:layout_constraintTop_toBottomOf="@+id/nowData"
         app:layout_constraintVertical_bias="0.02" />
 
     <TextView
@@ -194,7 +169,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.065"
         app:layout_constraintStart_toEndOf="@id/nowAngle"
-        app:layout_constraintTop_toBottomOf="@+id/getNowSpeed"
+        app:layout_constraintTop_toBottomOf="@+id/nowData"
         app:layout_constraintVertical_bias="0.02" />
 
     <TextView
