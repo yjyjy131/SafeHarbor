@@ -339,7 +339,7 @@ function varInitialize(){
 
   } else if (currentBtn == 2){
     cirRadi = [500, 200];
-    numDeltas = [200, 200];
+    numDeltas = [200, 80];
 
     start = [
       {lat: 35.457782, lng: 129.388296},

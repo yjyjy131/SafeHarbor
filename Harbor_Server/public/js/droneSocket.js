@@ -1,3 +1,4 @@
+/*
 //ArOLz3DSTlEph91xotAdXlVeJjjF57wBwxauMk/b8iUwzl0uttsIze0KT66YurXIcJabHGihF3exllih/xxLagoAAABHeyJvcmlnaW4iOiJodHRwOi8vbG9jYWxob3N0OjgwIiwiZmVhdHVyZSI6IlNlcmlhbCIsImV4cGlyeSI6MTYwNTg2NTUwOX0=
 const serialConnect = document.getElementById('serialConnect');
 
@@ -40,9 +41,11 @@ async function clickConnect() {
 }
 
 /////////////////////////////////////////////////////////////////////////
+*/
 var userid = document.getElementById('myDiv').dataset.userid;
 
-var socket = io.connect('http://'+document.location.hostname+':33337/'); 
+var socket = io.connect('http://'+ document.location.hostname+':33337/'); 
+//var socket = io.connect('localhost:8000'); 
 var gearVal = 0;
 var angleVal = 0;
 
@@ -52,7 +55,7 @@ socket.on('news', function (data) {
 
 // userid ??? db or websocket.id?
 socket.emit('client connected', 
-{ clientData : '클라이언트 접속', clientType : 'ctw', userid : userid}); 
+{ clientData : '드론 조종 클라이언트 접속', clientType : 'ctw', userid : userid}); 
 
 socket.on('drone data stream', function (data) {
     $('#userid').text(data.userid);

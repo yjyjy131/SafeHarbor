@@ -1,6 +1,6 @@
 // guestSystem 소켓 통신
 //TODO: 비디오 값 수신
-var socket = io.connect('http://ksyksy12.iptime.org:33337/'); 
+var socket = io.connect('http://'+ document.location.hostname+':33337/');
 var userid = document.getElementById('myDiv').dataset.userid;
 
 socket.on('news', function (data) { 

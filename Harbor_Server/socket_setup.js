@@ -49,7 +49,7 @@ module.exports.attach_event = function(_io){
                     time: data.time
                   });
             }
- 
+
             //서버에서 웹으로 드론정보 전달(조종시)
             io.in('ctw').emit('drone data stream', data);
         });        
@@ -69,6 +69,8 @@ module.exports.attach_event = function(_io){
         //드론에서 서버로 gps정보 전달(관제시)
         // gpsX, gpsY, time, location(front, back, left, right, center)
         socket.on('operator gps stream', function (data) {
+            console.log('operator gps stream \n' + data.userid);
+
             console.log('operator gps stream \n' + data);
             gpsDatas[data.location] = [data.gpsX, data.gpsY];
             var isFull = true;
@@ -83,6 +85,20 @@ module.exports.attach_event = function(_io){
                 gpsDatas[key] = null;
             }
         });
+
+        
+        // 컨트롤러에서 서버로 제어정보 전달
+        socket.on('angleChange', function (data) {
+            console.log("angle: " + data);
+            // 서버에서 드론으로 제어정보 전달
+            io.in('ctd').emit('control stream', data);
+        })
+
+        socket.on('gearChange', function(data) {
+            console.log("gear: " + data);
+            io.in('ctd').emit('control stream', data);
+        })
+
 
         socket.on('disconnect', function (data) {
             console.log("disconnected");
