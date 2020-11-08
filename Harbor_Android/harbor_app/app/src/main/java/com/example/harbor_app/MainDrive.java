@@ -67,7 +67,6 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
     String gear;
     String getAngle;
     //시리얼통신
-    /*
     private UsbService usbService;
     private MyHandler mHandler;
     EditText editText;
@@ -85,8 +84,6 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
             usbService = null;
         }
     };
-*/
-/*
     //시리얼 권한 체크
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         @Override
@@ -110,7 +107,7 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
             }
         }
     };
- */
+
     //gps센서
     LocationManager locationManager;
     String gpsX;
@@ -150,12 +147,12 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
         idView=(TextView)findViewById(R.id.userId);
         idView.setText(userId);
         //시리얼통신
-        /*
+
         mHandler = new MyHandler(this);
         Button sendButton = (Button) findViewById(R.id.buttonSend);
         editText= (EditText)findViewById(R.id.editText1);
         sendButton.setOnClickListener(click);
-         */
+
         //가속도센서 on
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -363,8 +360,8 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
         mSensorManager.registerListener(this, mMagnetometer, SensorManager.SENSOR_DELAY_GAME);
 //시리얼코드//
-        //setFilters();  // Start listening notifications from UsbService
-        //startService(UsbService.class, usbConnection, null); // Start UsbService(if it was not started before) and Bind it
+        setFilters();  // Start listening notifications from UsbService
+        startService(UsbService.class, usbConnection, null); // Start UsbService(if it was not started before) and Bind it
     }
 
 //위치 리스너
@@ -448,7 +445,7 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
     }
-/*
+
     //시리얼 메소드/클래스
     private void setFilters() {
         IntentFilter filter = new IntentFilter();
@@ -511,5 +508,4 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
             }
         }
     };
- */
 }
