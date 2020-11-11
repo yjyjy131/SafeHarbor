@@ -49,6 +49,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -66,7 +67,9 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
     TextView idView;
     String gear;
     String getAngle;
+    TextView serial;
     //시리얼통신
+
     private UsbService usbService;
     private MyHandler mHandler;
     EditText editText;
@@ -75,8 +78,6 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
         public void onServiceConnected(ComponentName arg0, IBinder arg1) {
             usbService = ((UsbService.UsbBinder) arg1).getService();
             usbService.setHandler(mHandler);
-            //TextView serial=(TextView)findViewById(R.id.serial);
-           // serial.setText(Boolean.toString(usbService.isOpen()));
         }
 
         @Override
@@ -107,7 +108,6 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
             }
         }
     };
-
     //gps센서
     LocationManager locationManager;
     String gpsX;
@@ -140,19 +140,18 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
         Intent intent = getIntent();
         String url = intent.getStringExtra("url");
         userId = intent.getStringExtra("userId");
+        serial=(TextView)findViewById(R.id.serial);
         urladdress = findViewById(R.id.urladdress);
         urladdress.setText(url);
         stpBtn = (Button) findViewById(R.id.stopBtn);
         connect = findViewById(R.id.connect);
-        idView=(TextView)findViewById(R.id.userId);
+        idView = (TextView) findViewById(R.id.userId);
         idView.setText(userId);
         //시리얼통신
-
         mHandler = new MyHandler(this);
         Button sendButton = (Button) findViewById(R.id.buttonSend);
-        editText= (EditText)findViewById(R.id.editText1);
+        editText = (EditText) findViewById(R.id.editText1);
         sendButton.setOnClickListener(click);
-
         //가속도센서 on
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -187,6 +186,9 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
         if (listProviders.get(0).equals(LocationManager.GPS_PROVIDER)) {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 100, this);
         }
+        if (listProviders.get(1).equals(LocationManager.NETWORK_PROVIDER)) {
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 100, this);
+        }
         //소켓 connect
         try {
             socket = IO.socket(url);
@@ -209,7 +211,6 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
                         Message msg = cHandler.obtainMessage();
                         cHandler.sendMessage(msg);
                     }
-
                 }
             };
             final Timer timer = new Timer();
@@ -276,23 +277,26 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
             // 시리얼 통신 -> 라즈베리파이로 speed, angle 전송
             String send;
             try {
-                Gson gson=new Gson();
-                String data=gson.toJson(args);
-                JSONArray dataArray=new JSONArray(data);
-                JSONObject tempObject=dataArray.getJSONObject(0);
-                JSONObject receivedData=tempObject.getJSONObject("nameValuePairs");
-                gear=receivedData.getString("gear");
-                getAngle=receivedData.getString("angle");
-                Log.d("Drone", "데이터받음, gear:" + gear + ", angle:" + getAngle);
+                Gson gson = new Gson();
+                String data = gson.toJson(args);
+                JSONArray dataArray = new JSONArray(data);
+                JSONObject tempObject = dataArray.getJSONObject(0);
+                JSONObject receivedData = tempObject.getJSONObject("nameValuePairs");
+                gear = receivedData.getString("gear");
+                getAngle = receivedData.getString("angle");
                 Message msg = saHandler.obtainMessage();
                 saHandler.sendMessage(msg);
-                /*
-                send = receivedData.getString("speed");
+                send = getAngle;
                 send = send.concat(",");
-                send = send.concat(receivedData.getString("angle"));
-                send = send.concat(".");
-                 */
-                //usbService.write(send.getBytes());
+                send = send.concat(gear);
+                Log.w("수신", send);
+                if (usbService != null)
+                    {
+                    usbService.write(send.getBytes());
+                    serial.setText(Arrays.toString(send.getBytes()));
+                    Log.w("송신", Arrays.toString(send.getBytes()));
+                }
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -345,8 +349,8 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
         mSensorManager.unregisterListener(this, mAccelerometer);
         mSensorManager.unregisterListener(this, mMagnetometer);
 //시리얼코드//
-        //unregisterReceiver(mUsbReceiver);
-        //unbindService(usbConnection);
+        unregisterReceiver(mUsbReceiver);
+        unbindService(usbConnection);
     }
 
     @SuppressLint("SetTextI18n")
@@ -357,6 +361,7 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
         mSensorManager.registerListener(this, mMagnetometer, SensorManager.SENSOR_DELAY_GAME);
 //시리얼코드//
@@ -382,16 +387,16 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
             Message msg = lHandler.obtainMessage();
             lHandler.sendMessage(msg);
             if (socket.connected()) {
-                Message oMsg=oHandler.obtainMessage();
+                Message oMsg = oHandler.obtainMessage();
                 oHandler.sendMessage(oMsg);
             } else {
-                Message cMsg=cHandler.obtainMessage();
+                Message cMsg = cHandler.obtainMessage();
                 cHandler.sendMessage(cMsg);
             }
         }
     }
 
-    Handler lHandler = new Handler(new Handler.Callback() {
+            Handler lHandler = new Handler(new Handler.Callback() {
         @SuppressLint("SetTextI18n")
         @Override
         public boolean handleMessage(Message msg) {
@@ -424,13 +429,13 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
     }
 
     public void onProviderEnabled(String provider) {
-        /*
+/*
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 100, this);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 100, this);
         locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, this);
-         */
+*/
     }
 
     @Override
@@ -496,12 +501,12 @@ public class MainDrive extends AppCompatActivity implements LocationListener, Se
         }
     }
 
-    View.OnClickListener click= new View.OnClickListener() {
+    View.OnClickListener click = new View.OnClickListener() {
         @Override
-        public void onClick(View v){
+        public void onClick(View v) {
             if (!editText.getText().toString().equals("")) {
                 String data = editText.getText().toString();
-                Log.d("Serial",data);
+                Log.d("Serial", data);
                 if (usbService != null) { // if UsbService was correctly binded, Send data
                     usbService.write(data.getBytes());
                 }

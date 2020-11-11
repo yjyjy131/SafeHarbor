@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         writeText = (TextView) findViewById(R.id.textView2);
         mHandler = new MyHandler(this);
         editText = (EditText) findViewById(R.id.editText1);
-
+        /*
         Button sendButton = (Button) findViewById(R.id.buttonSend);
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+         */
         ////////////////////////////////////////////////////
 
         url = findViewById(R.id.address);

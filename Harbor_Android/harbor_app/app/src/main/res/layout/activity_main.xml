@@ -10,7 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.5"
+        android:layout_weight="0.4"
         tools:ignore="UselessLeaf">
 
     </LinearLayout>
@@ -75,12 +75,14 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:hint="input url" />
+
     <EditText
         android:id="@+id/editText1"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         tools:ignore="MissingConstraints"
         android:hint="input id"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -89,8 +91,6 @@
         android:textSize="20sp"
         android:id="@+id/textView2"
         />
-
-
 
 
     <Button
@@ -104,6 +104,5 @@
         android:text="Send"
         android:layout_weight="0.5"
         tools:ignore="MissingConstraints" />
-
 
 </LinearLayout>
