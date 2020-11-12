@@ -69,21 +69,20 @@ module.exports.attach_event = function(_io){
         //드론에서 서버로 gps정보 전달(관제시)
         // gpsX, gpsY, time, location(front, back, left, right, center)
         socket.on('operator gps stream', function (data) {
-            console.log('operator gps stream \n' + data.userid);
+            console.log('operator gps stream \n' + data.userid + " " + data.gpsX);
+            io.in('opw').emit("operator gps stream", data);           
 
-            console.log('operator gps stream \n' + data);
-            gpsDatas[data.location] = [data.gpsX, data.gpsY];
-            var isFull = true;
-            for(key in gpsDatas){
-                if(gpsDatas[key] == null)
-                isFull = false;
-            }
+            // var isFull = true;
+            // for(key in gpsDatas){
+            //     if(gpsDatas[key] == null)
+            //     isFull = false;
+            // }
 
-            //서버에서 웹으로 gps정보 전달(관제시)
-            io.in('opw').emit("operator gps stream", gpsDatas);
-            for(key in gpsDatas){
-                gpsDatas[key] = null;
-            }
+            // //서버에서 웹으로 gps정보 전달(관제시)
+            // io.in('opw').emit("operator gps stream", gpsDatas);
+            // for(key in gpsDatas){
+            //     gpsDatas[key] = null;
+            // }
         });
 
         

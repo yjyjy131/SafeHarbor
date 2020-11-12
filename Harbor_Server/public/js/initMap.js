@@ -1,6 +1,6 @@
 var map;
-var dronelat = 35.497021;
-var dronelng = 129.391589;
+var dronelat = 37.512881;
+var dronelng = 127.058583;
 var bounds = 0;
 var userid = document.getElementById('main').dataset.userid;
 var cirRadius = [400, 400];
@@ -8,18 +8,18 @@ var cirRadius = [400, 400];
 //var socket = io.connect('localhost:8000');
 var socket = io.connect('http://'+ document.location.hostname+':33337/');
 
-socket.emit('operator gps stream', 
+socket.emit('client connected', 
   { clientData : '드론 관제 접속', clientType : 'opw', userid : userid }
 ); 
 
-var aa= 35.4881010;
-var bb = 129.391585;
-
-var droneCenter = [];
+var droneCenter = [37.512881, 127.058583];
 socket.on('operator gps stream', function (data) {
+  $('#centerlat').text(data.gpsX);
+  $('#centerlong').text(data.gpsY);
+
   console.log("드론 정보 수신 성공");
-  dronelng = data.center[0];
-  dronelat = data.center[1];
+  dronelng = data.gpsX;
+  dronelat = data.gpsY;
   console.log("드론아이디 : " + data.userid + "/ 위치 : " + dronelng + " " + dronelat);
   droneCenter =  new google.maps.LatLng(dronelat, dronelng);
   if (droneCenter.length == 0){
@@ -27,8 +27,8 @@ socket.on('operator gps stream', function (data) {
   } else {
     droneCenter[1] = data.userid;
   }
-
 })
+
 
 // 실제 드론 gps 값 
 function initMap() {
