@@ -234,3 +234,14 @@ table {
     #opSys {
         margin-left: 1em;
     }
+
+#shipSizeInput {
+    margin-left: 1em;
+    margin-top: 0.6em;
+}
+
+#shipSizeBtn {
+    background-color: #e9ce06;
+    border-radius: 0.3em;
+    font-weight: bold;
+}
