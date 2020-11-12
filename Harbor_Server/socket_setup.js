@@ -12,8 +12,6 @@ module.exports.attach_event = function(_io){
     io.on('connection', function (socket) {  
         io.emit('news', { serverData : "서버 작동" });
         console.log("socket connected");
-        //socket.emit('news', { serverData : "서버 작동" });
-
         
         //연결될 경우. 웹쪽은 data.userid 정보를 넣어서 같이 전달해야함
         socket.on('client connected', function (data) {
@@ -22,7 +20,6 @@ module.exports.attach_event = function(_io){
             onClientConnected(socket);
             console.log(data);
         });
-
 
         //웹에서 서버로 조종정보 전달(조종시)
         //speed, angle, time
@@ -69,7 +66,7 @@ module.exports.attach_event = function(_io){
         //드론에서 서버로 gps정보 전달(관제시)
         // gpsX, gpsY, time, location(front, back, left, right, center)
         socket.on('operator gps stream', function (data) {
-            console.log('operator gps stream \n' + data.userid + " " + data.gpsX);
+            console.log('서버 관제 소켓 확인 \n' + data.userid + " " + data.gpsX + " " + data.gpsY);
             io.in('opw').emit("operator gps stream", data);           
 
             // var isFull = true;
