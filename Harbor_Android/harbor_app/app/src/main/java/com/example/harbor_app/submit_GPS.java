@@ -44,7 +44,6 @@ import java.util.TimerTask;
 
 public class submit_GPS extends AppCompatActivity implements LocationListener, SensorEventListener {
     String userId;
-    private Socket mSocket;
     Button btn;
     Intent intent;
     TextView dateNow;
@@ -53,9 +52,8 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
     TextView urladdress;
     TextView connect;
     TextView idText;
-    //gps센서
-
     LocationManager locationManager;
+    //gps센서
     String gpsX;
     String gpsY;
     List<String> listProviders;
@@ -65,14 +63,63 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
     SensorManager mSensorManager;
     Sensor mAccelerometer;
     Sensor mMagnetometer;
+    float mCurrentDegree = 0f;
+    String rotate;
+    Handler lHandler = new Handler(new Handler.Callback() {
+        @SuppressLint("SetTextI18n")
+        @Override
+        public boolean handleMessage(Message msg) {
+            // todo
+            gpsLatitude.setText(gpsX);
+            gpsLongitude.setText(gpsY);
+            return true;
+        }
+    });
+    Handler oHandler = new Handler(new Handler.Callback() {
+        @SuppressLint("SetTextI18n")
+        @Override
+        public boolean handleMessage(Message msg) {
+            // todo
+            connect.setText("Socket is open");
+            return true;
+        }
+    });
+    Handler cHandler = new Handler(new Handler.Callback() {
+        @SuppressLint("SetTextI18n")
+        @Override
+        public boolean handleMessage(Message msg) {
+            // todo
+            connect.setText("Socket is close");
+            return true;
+        }
+    });
+    private Socket mSocket;
     private float[] mLastAccelerometer = new float[3];
     private float[] mLastMagnetometer = new float[3];
     private boolean mLastAccelerometerSet = false;
     private boolean mLastMagnetometerSet = false;
     private float[] mR = new float[9];
     private float[] mOrientation = new float[3];
-    float mCurrentDegree = 0f;
-    String rotate;
+
+    /////////////////////////////////////////////////////gps함수/////////////////////////////////////
+    //gps권한체크용~~//
+
+    //~~gps권한체크용
+    // Socket connect 되자마자 발생하는 이벤트
+    private Emitter.Listener onConnect = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("clientType", "opd");
+                jsonObject.put("userid", userId);
+                Log.d("소켓", mSocket.id());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            mSocket.emit("client connected", jsonObject);
+        }
+    };
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -83,14 +130,14 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
         intent = getIntent();
         url = intent.getStringExtra("url");
         dir_phone = intent.getIntExtra("dir_phone", 0);
-        userId=intent.getStringExtra("userId");
+        userId = intent.getStringExtra("userId");
         dateNow = findViewById(R.id.dateNow);
         gpsLatitude = findViewById(R.id.gpsLa);
         gpsLongitude = findViewById(R.id.gpsLo);
         urladdress = findViewById(R.id.urladdress);
         urladdress.setText(url);
         connect = findViewById(R.id.connect);
-        idText=findViewById(R.id.userId);
+        idText = findViewById(R.id.userId);
         idText.setText(userId);
 
         //가속도센서 on
@@ -113,10 +160,23 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
 
             gpsX = String.valueOf(lat);
             gpsY = String.valueOf(lng);
+        } else {
+            lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            if (lastKnownLocation != null) {
+                double lng = lastKnownLocation.getLongitude();
+                double lat = lastKnownLocation.getLatitude();
+
+                gpsX = String.valueOf(lat);
+                gpsY = String.valueOf(lng);
+            }
         }
         listProviders = locationManager.getAllProviders();
-        if (listProviders.get(0).equals(LocationManager.GPS_PROVIDER)) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 100, this);
+        for (int i = 0; i < listProviders.size(); i++) {
+            if (listProviders.get(i).equals(LocationManager.GPS_PROVIDER)) {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+            } else if (listProviders.get(i).equals(LocationManager.NETWORK_PROVIDER)) {
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+            }
         }
         try {
             mSocket = IO.socket(url);
@@ -128,13 +188,13 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
                 @Override
                 public void run() {
                     if (mSocket.connected()) {
-                        Message oMsg=oHandler.obtainMessage();
+                        Message oMsg = oHandler.obtainMessage();
                         oHandler.sendMessage(oMsg);
                     } else {
-                        Message cMsg=cHandler.obtainMessage();
+                        Message cMsg = cHandler.obtainMessage();
                         cHandler.sendMessage(cMsg);
                     }
-                    Message msg=lHandler.obtainMessage();
+                    Message msg = lHandler.obtainMessage();
                     lHandler.sendMessage(msg);
                     String loc;
                     Date date = new Date();
@@ -172,7 +232,7 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
                         jsonObject.put("gpsY", gpsY);
                         jsonObject.put("location", loc);
                         jsonObject.put("time", date);
-                        if(mSocket.connected()) {
+                        if (mSocket.connected()) {
                             Log.d("전송값", jsonObject.toString());
                         }
                     } catch (JSONException e) {
@@ -200,34 +260,13 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
         }
     }
 
-    // Socket connect 되자마자 발생하는 이벤트
-    private Emitter.Listener onConnect = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("clientType", "opd");
-                jsonObject.put("userid", userId);
-                Log.d("소켓", mSocket.id());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            mSocket.emit("client connected", jsonObject);
-        }
-    };
-
     @Override
     public void onDestroy() {
         super.onDestroy();
 
         mSocket.disconnect();
     }
-
-    /////////////////////////////////////////////////////gps함수/////////////////////////////////////
-    //gps권한체크용~~//
-
-    //~~gps권한체크용
-
+    //gps리스너
 
     protected void onStart() {
         super.onStart();
@@ -254,11 +293,10 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
         mSensorManager.registerListener(this, mMagnetometer, SensorManager.SENSOR_DELAY_GAME);
-
     }
-    //gps리스너
 
     @SuppressLint("TextI18n")
     public void onLocationChanged(Location location) {
@@ -272,51 +310,42 @@ public class submit_GPS extends AppCompatActivity implements LocationListener, S
             gpsX = String.valueOf(latitude);
             gpsY = String.valueOf(longitude);
 
-            Message msg=lHandler.obtainMessage();
+            Message msg = lHandler.obtainMessage();
             lHandler.sendMessage(msg);
             if (mSocket.connected()) {
-                Message oMsg=oHandler.obtainMessage();
+                Message oMsg = oHandler.obtainMessage();
                 oHandler.sendMessage(oMsg);
             } else {
-                Message cMsg=cHandler.obtainMessage();
+                Message cMsg = cHandler.obtainMessage();
                 cHandler.sendMessage(cMsg);
+                Log.w("LocationProvider" + " GPS : ", Double.toString(latitude) + '/' + Double.toString(longitude));
+            }
+        } else {
+            if (location.getProvider().equals(LocationManager.NETWORK_PROVIDER)) {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+                gpsX = String.valueOf(latitude);
+                gpsY = String.valueOf(longitude);
+
+                Message msg = lHandler.obtainMessage();
+                lHandler.sendMessage(msg);
+                if (mSocket.connected()) {
+                    Message oMsg = oHandler.obtainMessage();
+                    oHandler.sendMessage(oMsg);
+                } else {
+                    Message cMsg = cHandler.obtainMessage();
+                    cHandler.sendMessage(cMsg);
+                }
+                Log.w("LocationProvider" + " NETWORK : ", Double.toString(latitude) + '/' + Double.toString(longitude));
             }
         }
     }
-    Handler lHandler = new Handler(new Handler.Callback() {
-        @SuppressLint("SetTextI18n")
-        @Override
-        public boolean handleMessage(Message msg) {
-            // todo
-            gpsLatitude.setText(gpsX);
-            gpsLongitude.setText(gpsY);;
-            return true;
-        }
-    });
-    Handler oHandler = new Handler(new Handler.Callback() {
-        @SuppressLint("SetTextI18n")
-        @Override
-        public boolean handleMessage(Message msg) {
-            // todo
-            connect.setText("Socket is open");
-            return true;
-        }
-    });
-    Handler cHandler = new Handler(new Handler.Callback() {
-        @SuppressLint("SetTextI18n")
-        @Override
-        public boolean handleMessage(Message msg) {
-            // todo
-            connect.setText("Socket is close");
-            return true;
-        }
-    });
+
     public void onProviderEnabled(String provider) {
-        /*if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
         }
-        //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 100, this);
-        //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
-        //locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, this);*/
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
     }
 
 

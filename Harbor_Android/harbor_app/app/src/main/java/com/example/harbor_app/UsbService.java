@@ -126,7 +126,9 @@ public class UsbService extends Service {
             }
         }
     };
-
+    public boolean isNull() {
+        return device == null;
+    }
     /*
      * onCreate will be executed when service is started. It configures an IntentFilter to listen for
      * incoming Intents (USB ATTACHED, USB DETACHED...) and it tries to open a serial port.

@@ -94,28 +94,22 @@ public class MainActivity extends AppCompatActivity {
         writeText = (TextView) findViewById(R.id.textView2);
         mHandler = new MyHandler(this);
         editText = (EditText) findViewById(R.id.editText1);
-        /*
-        Button sendButton = (Button) findViewById(R.id.buttonSend);
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!editText.getText().toString().equals("")) {
-                    String data = editText.getText().toString();
-                    if (usbService != null) { // if UsbService was correctly binded, Send data
-                        usbService.write(data.getBytes());
-                        writeText.setText(data);
-                    }
-                }
-            }
-        });
-         */
-        ////////////////////////////////////////////////////
 
         url = findViewById(R.id.address);
         drive = (Button) findViewById(R.id.run);
         gps = (Button) findViewById(R.id.gps);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        // 카메라 권한 체크
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1234);
+            return;
+        }
+        // 파일 쓰기 권한 체크
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1234);
+            return;
+        }
 
         if (!checkLocationServicesStatus()) {
 

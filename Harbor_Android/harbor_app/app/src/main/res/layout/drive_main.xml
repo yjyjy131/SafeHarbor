@@ -250,7 +250,7 @@
         app:layout_constraintVertical_bias="0.050000012"
         tools:ignore="MissingConstraints" />
 
-    <EditText
+    <TextView
         android:id="@+id/serial"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
