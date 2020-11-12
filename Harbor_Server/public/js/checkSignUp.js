@@ -1,5 +1,5 @@
 
-function allChecked() {
+function allChecked() { /////
     var form = document.loginForm;
 
     if (! checkUserid(form.userid.value))
