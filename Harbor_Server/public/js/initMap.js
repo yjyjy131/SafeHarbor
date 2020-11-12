@@ -18,8 +18,8 @@ var cirRadius = [400, 400];
 //     });
 //   });
 
-var socket = io.connect('localhost:8000');
-//var socket = io.connect('http://'+ document.location.hostname+':33337/');
+//var socket = io.connect('localhost:8000');
+var socket = io.connect('http://'+ document.location.hostname+':33337/');
 
 socket.emit('client connected', 
   { clientData : '드론 관제 접속', clientType : 'opw', userid : userid }
@@ -188,7 +188,6 @@ function changeGps (index, circleOption ,recOption){
   recOption.bounds = computingOffset(droneCenter[index], cirRadius[index]);
   rectangles[index].setOptions(recOption);
 
-  ;
   collisionCheck();
 }
    
