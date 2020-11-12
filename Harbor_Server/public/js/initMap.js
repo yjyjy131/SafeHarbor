@@ -5,14 +5,29 @@ var bounds = 0;
 var userid = document.getElementById('main').dataset.userid;
 var cirRadius = [400, 400];
 
-//var socket = io.connect('localhost:8000');
+// var aa= 35.4881010;
+// var bb = 129.391585;
+// var a1 = 35.4781030;
+// var b1 = 129.391545;
+// var testCenter =  [ new google.maps.LatLng(aa, bb), new google.maps.LatLng(a1, b1) ];
+// var testRadius = 400;
+//   $(document).ready(function(){
+//     $('#shipSizeBtn').click(function(){
+//     testRadius = $('#shipSize').val();
+//     console.log(testRadius);
+//     });
+//   });
+
+// var socket = io.connect('localhost:8000');
 var socket = io.connect('http://'+ document.location.hostname+':33337/');
 
 socket.emit('client connected', 
   { clientData : '드론 관제 접속', clientType : 'opw', userid : userid }
 ); 
 
+
 var droneCenter = [37.512881, 127.058583];
+
 socket.on('operator gps stream', function (data) {
   $('#centerlat').text(data.gpsX);
   $('#centerlong').text(data.gpsY);
@@ -33,14 +48,15 @@ socket.on('operator gps stream', function (data) {
 // 실제 드론 gps 값 
 function initMap() {
   map = new google.maps.Map(
-    document.getElementById('googleMap'), { zoom: 13, center: droneCenter }
+    document.getElementById('googleMap'), { zoom: 13, center: droneCenter[0] }
     );
 
   google.maps.event.addListenerOnce(map, 'tilesloaded', function(){ 
-       createArea(map, droneCenter[0]);
-       createArea(map, droneCenter[1]);
-       collisionCheck();
-       //createArea2(map);
+    // createArea(map, testCenter[0], testRadius);
+    // createArea(map, testCenter[1], testRadius);
+    createArea(map, droneCenter[0]);
+    createArea(map, droneCenter[1]);
+    collisionCheck();
   });
 }
 
@@ -50,7 +66,7 @@ function createArea(map, droneCenter) {
         fillColor: '#3878c7',
         fillOpacity: 0.6,
         map: map,
-        radius: 400, 
+        radius: 30, 
         strokeColor: '#3878c7',
         storkeOpacity: 1,
         strokeWeight: 0.5

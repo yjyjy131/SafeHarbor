@@ -8,16 +8,17 @@
 }
 
 #drnSide {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-	width: 100%;
-	height: 100%;
+    width: 170%;
+    height: 100%;
+    margin-left: 17em;
 }
 
 #video-canvas{ 
-    width:250em;
-    margin-right: 1.2em;
+    width: 80em;
+    /* margin: 5em 10em 0em 80em; */
+    margin-top: 1em;
+    margin-left: 10em;
+    margin-right: 80em;
 }
 
 #drnMajor {
