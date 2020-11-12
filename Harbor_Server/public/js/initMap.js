@@ -32,7 +32,11 @@ var userId = []
 socket.on('operator gps stream', function (data) {
   $('#centerlat').text(data.gpsX);
   $('#centerlong').text(data.gpsY);
-  console.log("id : " + data.userid + "/ 위치 : " + dronelng + " " + dronelat);
+
+  console.log("드론 정보 수신 성공");
+  dronelng = data.gpsX;
+  dronelat = data.gpsY;
+  console.log("드론아이디 : " + data.userid + "/ 위치 : " + dronelng + " " + dronelat);
 
   if (userId.length == 0){
     userId[0] = data.userid;
@@ -41,7 +45,7 @@ socket.on('operator gps stream', function (data) {
     userId[1] = data.userid;
     console.log('drone1의 userid : ' + userId[1]);
   } else if (userId.length == 2 ){
-    if (data.userid == userId[0]){
+    if (data.userid === userId[0]){
       droneCenter[0] =  new google.maps.LatLng(data.gpsX, data.gpsY);
       console.log('drone0의 GPS : ' + droneCenter[0]);
     } else {
