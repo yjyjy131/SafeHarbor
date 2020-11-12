@@ -18,8 +18,8 @@ var cirRadius = [400, 400];
 //     });
 //   });
 
-var socket = io.connect('localhost:8000');
-//var socket = io.connect('http://'+ document.location.hostname+':33337/');
+//var socket = io.connect('localhost:8000');
+var socket = io.connect('http://'+ document.location.hostname+':33337/');
 
 socket.emit('client connected', 
   { clientData : '드론 관제 접속', clientType : 'opw', userid : userid }
@@ -28,7 +28,7 @@ socket.emit('client connected',
 // 드론 중앙 초기값
 var droneCenter = [ new google.maps.LatLng(37.512881, 127.058583), new google.maps.LatLng(37.512891, 127.058593) ];
 
-var userId = ['user1', 'user2']
+var userId = []
 socket.on('operator gps stream', function (data) {
   $('#centerlat').text(data.gpsX);
   $('#centerlong').text(data.gpsY);
@@ -38,18 +38,18 @@ socket.on('operator gps stream', function (data) {
   dronelat = data.gpsY;
   console.log("드론아이디 : " + data.userid + "/ 위치 : " + dronelng + " " + dronelat);
 
-  if (droneCenter.length == 0){
+  if (userId.length == 0){
     userId[0] = data.userid;
     console.log('drone0의 uesrid : ' + userId[0]);
-  } else if (droneCenter.length == 1) {
+  } else if (userId.length == 1) {
     userId[1] = data.userid;
     console.log('drone1의 userid : ' + userId[1]);
-  } else if (droneCenter.length == 2 ){
-    if (data.userid == userId[0]){
-      droneCenter[0] =  new google.maps.LatLng(dronelat, dronelng);
+  } else if (userId.length == 2 ){
+    if (data.userid === userId[0]){
+      droneCenter[0] =  new google.maps.LatLng(data.gpsX, data.gpsY);
       console.log('drone0의 GPS : ' + droneCenter[0]);
     } else {
-      droneCenter[1] =  new google.maps.LatLng(dronelat, dronelng);
+      droneCenter[1] =  new google.maps.LatLng(data.gpsX, data.gpsY);
       console.log('drone1의 GPS : ' + droneCenter[1]);
     }
   }
@@ -188,7 +188,6 @@ function changeGps (index, circleOption ,recOption){
   recOption.bounds = computingOffset(droneCenter[index], cirRadius[index]);
   rectangles[index].setOptions(recOption);
 
-  ;
   collisionCheck();
 }
    
