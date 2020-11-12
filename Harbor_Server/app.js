@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const fs = require('fs');
 
 var indexRouter = require('./routes/index');
 var userRouter = require('./routes/user');
@@ -28,6 +29,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 //------------------------------------http서버생성-----------------------------------------
 var debug = require('debug')('harbor-server:server');
 var http = require('http');
+const https = require('https');
+const options = {
+	key: fs.readFileSync('./keys/private.pem'),
+	cert: fs.readFileSync('./keys/public.pem')
+};
 
 /**
  * Get port from environment and store in Express.
@@ -38,8 +44,9 @@ app.set('port', port);
 /**
  * Create HTTP server.
  */
-var server = http.createServer(app);
 
+//var server = http.createServer(app);
+var server = https.createServer(options, app);
 /**
  * Listen on provided port, on all network interfaces.
  */
@@ -84,8 +91,7 @@ models.sequelize.sync().then( () => {
 // node websocket-relay yoursecret 8081 8082
 // ffmpeg -i <some input> -f mpegts http://localhost:8081/yoursecret
 
-var fs = require('fs'),
-	http = require('http'),
+var http = require('http'),
 	WebSocket = require('ws');
 
 var STREAM_SECRET = 'secret',
