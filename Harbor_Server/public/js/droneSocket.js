@@ -1,4 +1,6 @@
 // //ArOLz3DSTlEph91xotAdXlVeJjjF57wBwxauMk/b8iUwzl0uttsIze0KT66YurXIcJabHGihF3exllih/xxLagoAAABHeyJvcmlnaW4iOiJodHRwOi8vbG9jYWxob3N0OjgwIiwiZmVhdHVyZSI6IlNlcmlhbCIsImV4cGlyeSI6MTYwNTg2NTUwOX0=
+// //const butConnect = document.getElementById('serialConnect');
+// //const serialConnect = document.getElementById('serialConnect');
 // const serialConnect = document.getElementById('serialConnect');
 
 // document.addEventListener('DOMContentLoaded', () => {
@@ -9,22 +11,6 @@
 //     // 직렬 포트 열기
 //     port = await navigator.serial.requestPort();
 //     await port.open({ baudrate: 9600 });
-
-//     function onDeviceFound(devices) {
-//         this.devices=devices;
-//         if (devices) {
-//           if (devices.length > 0) {
-//             console.log("Device(s) found: "+devices.length);
-//           } else {
-//             console.log("Device could not be found");
-//           }
-//         } else {
-//           console.log("Permission denied.");
-//         }
-//       }
-      
-//       chrome.usb.getDevices({"vendorId": vendorId, "productId": productId}, onDeviceFound);
-    
 
 //     // 장치 연결 후 데이터 읽을 수 있도록 입력스트림/디코더 설정
 //     let decoder = new TextDecoderStream();
@@ -51,9 +37,10 @@
 //   }
 // }
 
-// function clickConnect() {
-//    connect(); 
+// async function clickConnect() {
+//     await connect(); 
 // }
+
 
 
 var userid = document.getElementById('myDiv').dataset.userid;
@@ -162,4 +149,3 @@ function translate(preGear, moveGear) {
     console.log(preGear+ '에서 ' + moveGear +'로 ' + movepx+'만큼 움직');
     $('#control_gear').css({ WebkitTransform: 'translate(' + movepx + 'px, 0px)'});
 }
-

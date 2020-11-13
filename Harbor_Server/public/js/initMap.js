@@ -4,6 +4,7 @@ var dronelng = 127.058583;
 var bounds = 0;
 var userid = document.getElementById('main').dataset.userid;
 var cirRadius = [400, 400];
+var audio = new Audio('/sound/beep-24.mp3');
 
 // var aa= 35.4881010;
 // var bb = 129.391585;
@@ -60,17 +61,20 @@ var rectangles = [];
 var mapCenter =  new google.maps.LatLng(37.512881, 127.058583)
 // 실제 드론 gps 값 
 function initMap() {
-  map = new google.maps.Map(
-    document.getElementById('googleMap'), { zoom: 17, center: mapCenter }
-    );
 
-  google.maps.event.addListenerOnce(map, 'tilesloaded', function(){ 
-    // createArea(map, testCenter[0], testRadius);
-    // createArea(map, testCenter[1], testRadius);
-    createArea(map, droneCenter[0], 0);
-    createArea(map, droneCenter[1], 1);
-    collisionCheck();
-  });
+  if (userId.length == 2){   
+   map = new google.maps.Map(
+     document.getElementById('googleMap'), { zoom: 17, center: droneCenter[0] }
+     );
+
+   google.maps.event.addListenerOnce(map, 'tilesloaded', function(){ 
+     // createArea(map, testCenter[0], testRadius);
+     // createArea(map, testCenter[1], testRadius);
+     createArea(map, droneCenter[0], 0);
+     createArea(map, droneCenter[1], 1);
+     collisionCheck();
+   });
+  }
 }
 
 function createArea(map, droneCenter, index) {
@@ -105,7 +109,16 @@ function createArea(map, droneCenter, index) {
     rectangles[index].setOptions(recOption);
 
     setInterval (
-      function() { changeGps(index, circleOption ,recOption)}, 100); 
+      function() { 
+        changeGps(index, circleOption ,recOption);
+        console.log('gps 체크');
+      }, 100); 
+      
+    setInterval (
+      function() { 
+        collisionCheck();
+        console.log('충돌체크');
+      }, 100);
 }
 
 google.maps.event.addDomListener(window, 'load', initMap);
@@ -145,7 +158,7 @@ function collisionCheck(){
         colCheck = true;
         //alert('충돌');
         $("#danger").text('충돌');
-        $("#danger").css("color", "#FFFF00");
+        $("#danger").css("color", "#DF0101");
         $("#danger").css("font-weight", "bold");
         $('#colliInfo').fadeIn(500);
         $('#lat').text(bounds.south);
@@ -154,10 +167,12 @@ function collisionCheck(){
         //$('#colliInfo').show();
       }
     } else if ( distance <= totalRadi * 1.2){
+      audio.play();
       $("#danger").text('매우 위험');
       $("#danger").css("color", "#DF0101");
       $("#danger").css("font-weight", "bold");
     } else if ( distance <= totalRadi * 1.8){
+      audio.play();
       $("#danger").text('위험');
       $("#danger").css("color", "#FFFF00");
       $("#danger").css("font-weight", "bold");
