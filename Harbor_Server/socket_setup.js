@@ -12,8 +12,6 @@ module.exports.attach_event = function(_io){
     io.on('connection', function (socket) {  
         io.emit('news', { serverData : "서버 작동" });
         console.log("socket connected");
-        //socket.emit('news', { serverData : "서버 작동" });
-
         
         //연결될 경우. 웹쪽은 data.userid 정보를 넣어서 같이 전달해야함
         socket.on('client connected', function (data) {
@@ -22,7 +20,6 @@ module.exports.attach_event = function(_io){
             onClientConnected(socket);
             console.log(data);
         });
-
 
         //웹에서 서버로 조종정보 전달(조종시)
         //speed, angle, time
@@ -49,7 +46,7 @@ module.exports.attach_event = function(_io){
                     time: data.time
                   });
             }
- 
+
             //서버에서 웹으로 드론정보 전달(조종시)
             io.in('ctw').emit('drone data stream', data);
         });        
@@ -69,19 +66,35 @@ module.exports.attach_event = function(_io){
         //드론에서 서버로 gps정보 전달(관제시)
         // gpsX, gpsY, time, location(front, back, left, right, center)
         socket.on('operator gps stream', function (data) {
-            console.log('operator gps stream \n' + data);
-            gpsDatas[data.location] = [data.gpsX, data.gpsY];
-            var isFull = true;
-            for(key in gpsDatas){
-                if(gpsDatas[key] == null)
-                isFull = false;
-            }
-                //서버에서 웹으로 gps정보 전달(관제시)
-            io.in('opw').emit("operator gps stream", gpsDatas);
-            for(key in gpsDatas){
-                gpsDatas[key] = null;
-            }
+            console.log('서버 관제 소켓 확인 \n' + data.userid + " " + data.gpsX + " " + data.gpsY);
+            io.in('opw').emit("operator gps stream", data);           
+
+            // var isFull = true;
+            // for(key in gpsDatas){
+            //     if(gpsDatas[key] == null)
+            //     isFull = false;
+            // }
+
+            // //서버에서 웹으로 gps정보 전달(관제시)
+            // io.in('opw').emit("operator gps stream", gpsDatas);
+            // for(key in gpsDatas){
+            //     gpsDatas[key] = null;
+            // }
         });
+
+        
+        // 컨트롤러에서 서버로 제어정보 전달
+        socket.on('angleChange', function (data) {
+            console.log("angle: " + data);
+            // 서버에서 드론으로 제어정보 전달
+            io.in('ctd').emit('control stream', data);
+        })
+
+        socket.on('gearChange', function(data) {
+            console.log("gear: " + data);
+            io.in('ctd').emit('control stream', data);
+        })
+
 
         socket.on('disconnect', function (data) {
             console.log("disconnected");

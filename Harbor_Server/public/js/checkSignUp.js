@@ -1,5 +1,5 @@
 
-function allChecked() {
+function allChecked() { /////
     var form = document.loginForm;
 
     if (! checkUserid(form.userid.value))
@@ -45,6 +45,7 @@ function idDoubleChk(userid) {
             dataType: "json",
             data: {"userid" : form.userid.value},
             success: function(result){
+                console.log('결과는' + result)
                 if (result){
                  $('#idChkInfo').text('아이디 생성 가능');
                  $('#idChkInfo').css("color", "#ffffff");

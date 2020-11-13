@@ -50,7 +50,7 @@ function logTableCreate() {
 
 function successFunc(result){
     console.log(result);
-                console.log(result[1].userid);
+                //console.log(result[1].userid);
                 var html='';
                 for (key in result){
                     html += '<tr>';

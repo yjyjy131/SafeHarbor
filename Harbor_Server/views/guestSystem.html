@@ -50,24 +50,24 @@
                                     <tbody>
                                         <!-- DB 연동 동적 테이블 생성 -->
                                         <tr>
-                                            <td>userName</td>
-                                            <td id="userid">19.99</td>
+                                            <td>userId</td>
+                                            <td id="userid" >null</td>
                                         </tr>
                                         <tr>
                                             <td>latitude</td>
-                                            <td id="gpsX">29.99</td>
+                                            <td id="gpsX">null</td>
                                         </tr>
                                         <tr>
                                             <td>logitude</td>
-                                            <td id="gpsY">19.99</td>
+                                            <td id="gpsY">null</td>
                                         </tr>
                                         <tr>
                                             <td>angle</td>
-                                            <td id="angle">29.99</td>
+                                            <td id="angle">null</td>
                                         </tr>
                                         <tr>
                                             <td>controller-gear</td>
-                                            <td id="gear">null 단</td>
+                                            <td id="gear">null</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -85,17 +85,18 @@
 						    </ul>
 						</div>
 					</footer>
-			</div>
+            </div>
+            <div id="myDiv" data-userid=<%= session.userid %>></div>
 			<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 			<script src="/js/jquery.func.min.js"></script>
 			<script src="/js/util.js"></script>
             <script src="/js/main.js"></script>
             <script src="socket.io/socket.io.js"></script> 
-            <script src="/js/guestSocekt.js"></script>
+            <script src="/js/guestSocket.js"></script>
             <script type="text/javascript" src="/js/jsmpeg.min.js"></script>
 	        <script type="text/javascript">
 		        var canvas = document.getElementById('video-canvas');
-		        var url = 'ws://'+document.location.hostname+':8082/';
+		        var url = 'ws://'+document.location.hostname+':33402/';
 		        var player = new JSMpeg.Player(url, {canvas: canvas});
 	        </script>
     </body>

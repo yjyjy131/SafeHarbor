@@ -1,128 +1,97 @@
-var numDeltas = [100, 100];
 var map;
-// var infowindow = null;
-var circleTimer = [];
-var reset = false;
+var dronelat = 37.512881;
+var dronelng = 127.058583;
+var bounds = 0;
+var userid = document.getElementById('main').dataset.userid;
+var cirRadius = [400, 400];
+var audio = new Audio('/sound/beep-24.mp3');
 
-var start = [
-  {lat: 35.514020, lng: 129.391979},
-  {lat: 35.469623, lng: 129.393169}
-];
+// var aa= 35.4881010;
+// var bb = 129.391585;
+// var a1 = 35.4781030;
+// var b1 = 129.391545;
+// var testCenter =  [ new google.maps.LatLng(aa, bb), new google.maps.LatLng(a1, b1) ];
+// var testRadius = 400;
+//   $(document).ready(function(){
+//     $('#shipSizeBtn').click(function(){
+//     testRadius = $('#shipSize').val();
+//     console.log(testRadius);
+//     });
+//   });
 
-var destination =[
-  {lat: 35.469623, lng: 129.393169},
-  {lat: 35.514020, lng: 129.391979}
-];
+//var socket = io.connect('localhost:8000');
+var socket = io.connect('http://'+ document.location.hostname+':33337/');
 
-var deltaLat = [];
-var deltaLng = [];
+socket.emit('client connected', 
+  { clientData : '드론 관제 접속', clientType : 'opw', userid : userid }
+); 
 
-var cirRadius = [];
-var circles = [];
+// 드론 중앙 초기값
+var droneCenter = [ new google.maps.LatLng(37.512881, 127.058583), new google.maps.LatLng(37.512891, 127.058593) ];
 
-var contentString = '<b>Null message</b><br>';
+socket.on('operator gps stream', function (data) {
+  $('#centerlat').text(data.gpsX);
+  $('#centerlong').text(data.gpsY);
 
-var toggle = [false, false];
-/*
-var alertwindow = new google.maps.Infowindw({
-  size: new google.maps.Size(150,50)
-})*/
+  console.log("드론 정보 수신 성공");
+  dronelng = data.gpsX;
+  dronelat = data.gpsY;
+  console.log("드론아이디 : " + data.userid + "/ 위치 : " + dronelng + " " + dronelat);
 
-var cirRadi = [500, 500];
-var currentBtn = 1;
-
-var ulsan = [ {lat: 35.497021, lng: 129.391589},
-  {lat:35.463198, lng:129.388737},
-  {lat:35.493938, lng:129.398428}
-];
-
-var header = [];
-var body = [];
-var keys = [];
-var index = 0;
-
-$('#mapBtn1').on('click', function(){
-  currentBtn = 1;
-  map.panTo(ulsan[0]);
-  varInitialize();
-})
-
-$('#mapBtn2').on('click', function(){
-  currentBtn = 2;
-  map.panTo(ulsan[1]);
-  varInitialize();
-})
-
-$('#mapBtn3').on('click', function(){
-  currentBtn = 3;
-  map.panTo(ulsan[2]);
-  varInitialize();
-})
-
-google.maps.event.addDomListener(window, 'load', initMap);
-
-// 실제 드론 gps 값 
-
-
-
-
-
-function initMap() {
-
- /*
-  infowindow = new google.maps.InfoWindow(
-    { 
-      size: new google.maps.Size(150,50),
-      content: contentString
-    });
-  */
-
-  map = new google.maps.Map(
-    document.getElementById('googleMap'), {zoom: 13, center: ulsan[0]});
-    google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
-        deltaLat = [];
-        deltaLng = [];
-
-        $('#play').on('click', function(){
-          if (circles[0] == null){ 
-            for (var i=0; i<start.length; i++){
-              createArea(start[i], destination[i], map, i, cirRadi[i], numDeltas[i]);
-            }
-          }
-        });
+  if (userId.length == 0){
+    userId[0] = data.userid;
+    console.log('drone0의 uesrid : ' + userId[0]);
+  } else if (userId.length == 1) {
+    userId[1] = data.userid;
+    console.log('drone1의 userid : ' + userId[1]);
+  } else if (userId.length == 2 ){
+    if (data.userid === userId[0]){
+      droneCenter[0] =  new google.maps.LatLng(data.gpsX, data.gpsY);
+      console.log('drone0의 GPS : ' + droneCenter[0]);
+    } else {
+      droneCenter[1] =  new google.maps.LatLng(data.gpsX, data.gpsY);
+      console.log('drone1의 GPS : ' + droneCenter[1]);
     }
-  );
+  }
+
+})
+
+var circles = [];
+var rectangles = [];
+var mapCenter =  new google.maps.LatLng(37.512881, 127.058583)
+// 실제 드론 gps 값 
+if (userId.length == 2){
+  function initMap() {   
+    map = new google.maps.Map(
+      document.getElementById('googleMap'), { zoom: 17, center: droneCenter[0] }
+      );
+ 
+    google.maps.event.addListenerOnce(map, 'tilesloaded', function(){ 
+      // createArea(map, testCenter[0], testRadius);
+      // createArea(map, testCenter[1], testRadius);
+      createArea(map, droneCenter[0], 0);
+      createArea(map, droneCenter[1], 1);
+      collisionCheck();
+    });
+   
+ }
 }
 
-//$('#mapBtn1').on('click', function(){
-//  initMap();
-//});
-
-function createArea(start, end, map, content, cirRadi, numDeltaVal) {
+function createArea(map, droneCenter, index) {
     var circleOption = {
-        center : start,
+        center : droneCenter ,
         fillColor: '#3878c7',
         fillOpacity: 0.6,
         map: map,
-        zIndex: 1,
-        radius: cirRadi, 
+        radius: 20, 
         strokeColor: '#3878c7',
         storkeOpacity: 1,
-        strokeWeight: 0.5
+        strokeWeight: 0.5,
+        zIndex: 0
     }
-    var circle = new google.maps.Circle(circleOption);
+    circles[index] = new google.maps.Circle(circleOption);
 
-    var startPos = start;
-    var endPos = end;
-    
-    cirRadius[content] = circle.getRadius();
-
-    deltaLat[Number(content)] = (endPos.lat - startPos.lat)/numDeltaVal;
-    deltaLng[Number(content)] = (endPos.lng - startPos.lng)/numDeltaVal;
-
-    var point = new google.maps.LatLng(startPos.lat, startPos.lng);
-    bounds = computingOffset(point, content);
-  
+    bounds = computingOffset(droneCenter, circleOption.radius);
     var recOption = {
       strokeColor: "#FF0000",
       strokeOpacity: 0.8,
@@ -130,100 +99,34 @@ function createArea(start, end, map, content, cirRadi, numDeltaVal) {
       fillColor: "#FF0000",
       fillOpacity: 0.35,
       map: map,
-      zIndex: 0, 
+      zIndex: 1, 
       bounds: bounds
     }
-
-    if (currentBtn == 3 && content == 1){
-      circleOption.fillOpacity = 0;
-      circleOption.strokeOpacity = 0;
-      recOption.fillOpacity = 0;
-      recOption.strokeOpacity = 0;
-    }
-
-    /*
-    var infoOption = {
-      size: new google.maps.Size(10,10),
-      position: {lat: 35.497021, lng: 129.391589}
-    }
-    */
-
-    var rectangle = new google.maps.Rectangle(recOption);
+    rectangles[index] = new google.maps.Rectangle(recOption);
    
-    $('#play').on('click', function(){
-      if(!reset){
-        if(toggle[0]){
-          toggle[0] = false;
-          circleTimer[content] = setInterval ( function() {createCirTimer(circle, rectangle, startPos, circleOption, recOption, content) }, 20); 
-        } else if (toggle[1]){
-          toggle[1] = false;
-          circleTimer[content] = setInterval ( function() {createCirTimer(circle, rectangle, startPos, circleOption, recOption, content) }, 20); 
-        }
-      }
-    });
+    //rectangles[index].setOptions(recOption);
+    circles[index].setOptions(circleOption);
+    rectangles[index].setOptions(recOption);
 
-    $('#replay').on('click', function(){
-        if(!toggle[1]){
-          clearInterval(circleTimer[0]);
-          clearInterval(circleTimer[1]); 
-          toggle[0] = true;
-          toggle[1] = true;
-        }
-
-        rectangle.setMap(null);
-        circle.setMap(null);
-        
-        varInitialize();
-        reset = true;
-      //varInitialize();
-      //circleTimer[0] = setInterval ( function() {createCirTimer(circle, rectangle, startPos, circleOption, recOption, content) }, 20); 
-      //circleTimer[1] = setInterval ( function() {createCirTimer(circle, rectangle, startPos, circleOption, recOption, content) }, 20); 
-
-    })
-
-   // setInterval Anonymous func
-   circleTimer[content] = setInterval ( function() {createCirTimer(circle, rectangle, startPos, circleOption, recOption, content) }, 20); 
-
+    setInterval (
+      function() { 
+        changeGps(index, circleOption ,recOption);
+        console.log('gps 체크');
+      }, 100); 
+      
+    setInterval (
+      function() { 
+        collisionCheck();
+        console.log('충돌체크');
+      }, 100);
 }
 
-function createCirTimer(circle, rectangle,  startPos, circleOption, recOption, content){
-    startPos.lat += deltaLat[content];
-    startPos.lng += deltaLng[content];
-    
-    var latlng = new google.maps.LatLng(startPos.lat,startPos.lng);
-    circleOption.center = latlng; 
-    circle.setOptions(circleOption);
+google.maps.event.addDomListener(window, 'load', initMap);
 
-    //point = latlng;
-    recOption.bounds = computingOffset(latlng, content);
-    rectangle.setOptions(recOption);
-
-    circles[content] = latlng;
-    collisionCheck(content);
-    /*
-    infowindow.setPosition(circles[content]);
-
-   google.maps.event.addListener(circle, 'click', function(event) {
-       infowindow.setContent('<div style="color:black"> MMSI : ' 
-       + content + '<br> IMO: ' + content + '<br> 속도 : 100 ' );
-       infowindow.open(map,circle);
-  });
-  */
-}
-
-// stop playing button
-$('#stop').on('click', function(){
-  clearInterval(circleTimer[0]);
-  clearInterval(circleTimer[1]);
-
-  toggle[0] = true;
-  toggle[1] = true;
-});
-
-function computingOffset(center, content){
+function computingOffset(center, cirRadius){
   var spherical = google.maps.geometry.spherical; 
-  var areaRadi = cirRadius[content] * 0.8; 
-  var areaRadi2 = cirRadius[content] * 0.5;
+  var areaRadi = cirRadius * 0.07; 
+  var areaRadi2 = cirRadius * 0.05;
     var north = spherical.computeOffset(center, areaRadi, 10); // 0
     var west  = spherical.computeOffset(center, areaRadi2, -80); // -90
     var south = spherical.computeOffset(center, areaRadi, 200); // 180
@@ -239,38 +142,37 @@ function computingOffset(center, content){
     return bounds;
 }
 
-// collision infowindow
-
 var colCheck = false;
-function collisionCheck(circleNum){
-    var distance = google.maps.geometry.spherical.computeDistanceBetween (circles[0], circles[1]);
+function collisionCheck(){
+    // 2번째 객체 생성 전 error handling
+    try {
+      var distance = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[1]);
+     }
+     catch(e) {
+        console.log('초기값 설정 중');
+     }
+
     var totalRadi = cirRadius[0] + cirRadius[1];
     if ( distance <= totalRadi * 0.8){
       if (!colCheck){
         colCheck = true;
+        //alert('충돌');
         $("#danger").text('충돌');
+        $("#danger").css("color", "#DF0101");
+        $("#danger").css("font-weight", "bold");
         $('#colliInfo').fadeIn(500);
         $('#lat').text(bounds.south);
         $('#lng').text(bounds.east);
 
-        var currentdate = new Date(); 
-        var datetime = currentdate.getFullYear() + "/"
-                + (currentdate.getMonth()+1) + "/" 
-                + currentdate.getDate() + " "
-                + currentdate.getHours() + ":"  
-                + currentdate.getMinutes() + ":" 
-                + currentdate.getSeconds();
-        $('#when').text(datetime);
-        
-        body.push({'index': index, 'mmsi(1)':$('#mmsi1').text(), 'mmsi(2)':$('#mmsi2').text(), 'lat':bounds.south, 'long':bounds.east, 'Timestamp':datetime})
-        index ++;
         //$('#colliInfo').show();
       }
     } else if ( distance <= totalRadi * 1.2){
+      audio.play();
       $("#danger").text('매우 위험');
       $("#danger").css("color", "#DF0101");
       $("#danger").css("font-weight", "bold");
     } else if ( distance <= totalRadi * 1.8){
+      audio.play();
       $("#danger").text('위험');
       $("#danger").css("color", "#FFFF00");
       $("#danger").css("font-weight", "bold");
@@ -280,116 +182,28 @@ function collisionCheck(circleNum){
 }
 
 $('#colliBtn').on('click', function(){
-  // $('#colliInfo').hide();
   $('#colliInfo').fadeOut(500);
 })
 
-function varInitialize(){
-  //infowindow = null;
-  circleTimer = [];
-
-  if (currentBtn == 1){
-    cirRadi = [500, 500];
-    numDeltas = [100, 100];
-    start = [
-      {lat: 35.514020, lng: 129.391979},
-      {lat: 35.469623, lng: 129.393169}
-    ];
-    
-      destination =[
-      {lat: 35.469623, lng: 129.393169},
-      {lat: 35.514020, lng: 129.391979}
-    ];
-
-    $('#mmsi1').text('12345678');
-    $('#mmsi2').text('87654321');  
-  } else if (currentBtn == 2){
-    cirRadi = [500, 200];
-    numDeltas = [200, 80];
-    start = [
-      {lat: 35.457782, lng: 129.388296},
-      {lat: 35.453227, lng: 129.380651}
-    ];
-    destination =[
-      {lat: 35.489482, lng: 129.396625},
-      {lat: 35.467445, lng: 129.388097}
-    ];
-    
-    $('#mmsi1').text('12345678');
-    $('#mmsi2').text('87654321');  
-
-  } else if (currentBtn == 3){
-    cirRadi = [500, 500];
-    numDeltas = [200, 0.5];
-    start = [
-      {lat: 35.486726, lng: 129.397937},
-      {lat:35.504331, lng: 129.399319}
-    ];
-    destination =[
-      {lat:  35.500341, lng:129.398696},
-      {lat:35.504331, lng: 129.399319}
-    ];
-    
-    $('#mmsi1').text('12345678');
-    $('#mmsi2').text('87654321');  
-  }
-
-  deltaLat = [];
-  deltaLng = [];
-
-  cirRadius = [];
-  circles = [];
-  toggle = [false, false];
-  colCheck = false;
-}
+// page reload
+$('#mapBtn1').on('click', function(){
+  map.panTo(droneCenter);
+})
 
 $('.tabBtn').on('click', function(){
   $('.tabBtn').removeClass('on');
   $(this).addClass('on');
 })
 
+function changeGps (index, circleOption ,recOption){
+  //console.log(index + ":  " + droneCenter[0] + " " + userId[index]);
+  circleOption.center = droneCenter[index];
+  circles[index].setOptions(circleOption);
 
-function exportDataToCSVFile(header, keys, body) {
-  var csv = '';
-  csv = csv.replace(/\s+/, "");
-  csv = header.join(',');
-  csv+='\n';
+  recOption.bounds = computingOffset(droneCenter[index], cirRadius[index]);
+  rectangles[index].setOptions(recOption);
 
-  $.each(body, function(index, rows){
-    if(rows){
-      var tmp = [];
-      $.each(keys, function(index, key){
-        key && tmp.push(rows[key])
-      })
-      csv+=tmp.join(',');
-      csv+='\n';
-    }
-  })
-
-  var BOM = '%EF%BB%BF'; // 한글깨짐
-  var csvData = 'data:application/csv;charset=utf-8,'+BOM+',' + encodeURIComponent(csv);
-  $(this)
-    .attr({
-    'download': 'temp.csv',
-    'href': csvData,
-    'target': '_blank'
-  });
+  map.setCenter(droneCenter[0]);
+  collisionCheck();
 }
-
-
-$('#excelDownload').on('click', function(event){
-  header.push('mmsi(1)');
-  header.push('mmsi(2)');
-  header.push('lat');
-  header.push('long');
-  header.push('Timestamp');
-
-  keys.push('index');
-  keys.push('mmsi(1)');
-  keys.push('mmsi(2)');
-  keys.push('lat');
-  keys.push('long');
-  keys.push('Timestamp');
-  exportDataToCSVFile.apply(this, [ header, keys, body ])
-})
-
+   
