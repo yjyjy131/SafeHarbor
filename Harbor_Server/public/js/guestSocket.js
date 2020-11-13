@@ -8,8 +8,8 @@ socket.on('news', function (data) {
 });
 
 // userid ??? db or websocket.id?
-socket.emit('client connected', 
-{ clientData : '클라이언트 접속', clientType : 'ctw', userid : userid }); 
+// socket.emit('client connected', 
+// { clientData : '클라이언트 접속', clientType : 'ctw', userid : userid }); 
 
 socket.on('drone data stream', function (data) {
     $('#userid').text(data.userid);
