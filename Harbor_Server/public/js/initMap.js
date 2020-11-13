@@ -132,8 +132,9 @@ function initMap() {
           // 현재 유저의 index 값 
           var currentIndex = 0;
           for (var iterable of userId) {
-            if (userIdChk[iterable] === data.userid){ 
-                break; 
+            if (iterable === data.userid){ 
+               console.log("현재 유저 index 값 " + currentIndex);
+               break; 
             }
             currentIndex ++;
           }
@@ -141,6 +142,7 @@ function initMap() {
             // 해당 유저에 맞는 droneCenter 생성 
           droneCenter[currentIndex] =  new google.maps.LatLng(data.gpsX, data.gpsY);
           
+          console.log("userExist" + userExist);
             // 처음 들어온 user면 area 생성
           if (!userExist){
              console.log(data.userid + "의 새로운 area 생성");
