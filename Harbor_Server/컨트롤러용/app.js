@@ -1,4 +1,5 @@
-var socket = require('socket.io-client')('ws://ksyksy12.iptime.org:33337');
+console.log(process.argv[2]);
+var socket = require('socket.io-client')(process.argv[2]);
 //var socket = notSocket.socket;
 //var socket = io.connect("http://ksyksy12.iptime.org:33337"); 
 
@@ -47,4 +48,5 @@ sp.open(function() {
     socket.emit('control stream', { gear: split[0] , angle : split[1], controlTime: controlTimeVal });
   });
 });
+
 //module.exports = app;
