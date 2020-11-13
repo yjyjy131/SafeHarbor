@@ -83,7 +83,7 @@
                             </div>
                         </div>
 						<div class="tab_wrap">
-							<ul class="tabBtn_container" style="margin-top: 22em;">
+							<ul class="tabBtn_container" >
 								<li>
 									<button id="mapBtn1" class="tabBtn gMap on" type="button"> Drone </button>
                                 </li>
@@ -96,38 +96,7 @@
                                     </a>
                                 </li>
 
-                                <div class = "tab_content_container">
-                                    <div id="colliInfo" style="display: none;">
-                                        <a id="colliBtn"></a>
-                                        <div id="colliTitle">
-                                            Collision Info 
-                                        </div>
-                                        <table id="colliTable">
-                                            <tr>
-                                                <td>현재 mmsi</td>
-                                                <td id="mmsi1">null</td>
-                                            </tr>
-                                            <tr>
-                                                <td>충돌 mmsi</td>
-                                                <td id="mmsi2">null</td>
-                                            </tr>
-                                            <tr>
-                                                <td>위도</td>
-                                                <td id="lat">null</td>
-                                            </tr>
-                                            <tr>
-                                                <td>경도</td>
-                                                <td id="lng">null</td>
-                                            </tr>
-                                            <tr>
-                                                <td>충돌일시</td>
-                                                <td id="when">null</td>
-                                            </tr>   
-                                        </table>
-                                    </div>
-                                    <div id="googleMap" class="tab_Content" style="display: block;">
-                                    </div>
-                                </div>
+                                
                                 <!--
                                 <li>
                                     <div id="shipSizeInput">
@@ -154,10 +123,38 @@
 							</div>
 						</div>
                     </div>		
-                    <iframe src="/sound/silence.mp3" allow="autoplay" id="audio" style="display:none"></iframe>
-                    <audio id="audio" autoplay>
-                    <source src="/sound/beep-24.mp3" type="audio/mp3"/>
-                    </audio>
+                    <div class = "tab_content_container">
+                        <div id="colliInfo" style="display: none;">
+                            <a id="colliBtn"></a>
+                            <div id="colliTitle">
+                                Collision Info 
+                            </div>
+                            <table id="colliTable">
+                                <tr>
+                                    <td>현재 mmsi</td>
+                                    <td id="mmsi1">null</td>
+                                </tr>
+                                <tr>
+                                    <td>충돌 mmsi</td>
+                                    <td id="mmsi2">null</td>
+                                </tr>
+                                <tr>
+                                    <td>위도</td>
+                                    <td id="lat">null</td>
+                                </tr>
+                                <tr>
+                                    <td>경도</td>
+                                    <td id="lng">null</td>
+                                </tr>
+                                <tr>
+                                    <td>충돌일시</td>
+                                    <td id="when">null</td>
+                                </tr>   
+                            </table>
+                        </div>
+                        <div id="googleMap" class="tab_Content" style="display: block;">
+                        </div>
+                    </div>
 					<footer id="footer">
 						<div class="inner">
 							<ul class="copyright">
