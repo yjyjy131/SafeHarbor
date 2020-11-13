@@ -107,13 +107,9 @@ function initMap() {
           var userExist = false;
           var userIdChk = data.userid;
 
-          console.log(data.userid + " 소켓 전송 확인");
-
           for (var iterable of userId) { 
-            console.log("현재 접속된 userid 배열 체크" + iterable); // 10, 20, 30 
             // 유저 존재하면 true로 바뀜
             if(userIdChk === iterable){
-              console.log("유저 존재 확인!");
               userExist = true;
             }
           }
@@ -132,8 +128,9 @@ function initMap() {
           // 현재 유저의 index 값 
           var currentIndex = 0;
           for (var iterable of userId) {
-            if (userIdChk[iterable] === data.userid){ 
-                break; 
+            if (iterable === data.userid){ 
+               console.log("현재 유저 index 값 " + currentIndex);
+               break; 
             }
             currentIndex ++;
           }
@@ -141,6 +138,7 @@ function initMap() {
             // 해당 유저에 맞는 droneCenter 생성 
           droneCenter[currentIndex] =  new google.maps.LatLng(data.gpsX, data.gpsY);
           
+          console.log("userExist" + userExist);
             // 처음 들어온 user면 area 생성
           if (!userExist){
              console.log(data.userid + "의 새로운 area 생성");
