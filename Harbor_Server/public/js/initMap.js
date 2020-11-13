@@ -223,6 +223,18 @@ function collisionCheck(){
         $('#colliInfo').fadeIn(500);
         $('#lat').text(bounds.south);
         $('#lng').text(bounds.east);
+        
+        var currentdate = new Date(); 
+        var datetime = currentdate.getFullYear() + "/"
+                + (currentdate.getMonth()+1) + "/" 
+                + currentdate.getDate() + " "
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
+        $('#when').text(datetime);
+        
+        body.push({'index': index, 'mmsi(1)':$('#mmsi1').text(), 'mmsi(2)':$('#mmsi2').text(), 'lat':bounds.south, 'long':bounds.east, 'Timestamp':datetime})
+        index ++;
 
         //$('#colliInfo').show();
       }
