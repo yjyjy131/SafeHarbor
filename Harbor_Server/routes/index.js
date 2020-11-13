@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 
-
 ////html에 session.userid, session.isGuest, session.isOperator 세가지 변수를 같이 전달함
 /* GET home page. */
 router.get('/', function (req, res, next) {
