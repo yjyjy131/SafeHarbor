@@ -6,21 +6,6 @@ var userid = document.getElementById('main').dataset.userid;
 var cirRadius = [400, 400, 400, 400, 400, 400, 400];
 var audio = new Audio('/sound/beep-24.mp3');
 
-//audio.muted = true;
-
-// var aa= 35.4881010;
-// var bb = 129.391585;
-// var a1 = 35.4781030;
-// var b1 = 129.391545;
-// var testCenter =  [ new google.maps.LatLng(aa, bb), new google.maps.LatLng(a1, b1) ];
-// var testRadius = 400;
-//   $(document).ready(function(){
-//     $('#shipSizeBtn').click(function(){
-//     testRadius = $('#shipSize').val();
-//     console.log(testRadius);
-//     });
-//   });
-
 //var socket = io.connect('localhost:8000');
 var socket = io.connect('http://'+ document.location.hostname+':33337/');
 
@@ -34,16 +19,18 @@ var userId = [];
 
 var circles = [];
 var rectangles = [];
-var mapCenter =  new google.maps.LatLng(35.497021, 129.391589)
+var mapCenter =  new google.maps.LatLng(35.499171, 129.391589)
 // 실제 드론 gps 값 
 
 function initMap() {   
     map = new google.maps.Map(
       document.getElementById('googleMap'), { zoom: 17, center: mapCenter }
       );
-    
-      google.maps.event.addListenerOnce(map, 'tilesloaded', function(){ 
 
+      google.maps.event.addListenerOnce(map, 'tilesloaded', function(){ 
+        createArea(map, droneCenter[0], 0);
+        createArea(map, droneCenter[1], 1);
+        collisionCheck();
         socket.on('operator gps stream', function (data) {
 
           //front, back, left, right, center
@@ -180,60 +167,55 @@ var myDis1, myDis2, myDis3, myDis4, min;
 function collisionCheck(){
     // 2번째 객체 생성 전 error handling
     try {
-      switch(droneCenter.length){
-        case 2:
-          myDis1 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[1]);
-          break;
-
-        case 3:
-          myDis1 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[1]);
-          myDis2 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[2]);
-          min = Math.min(myDis1,myDis2);
-          break;
-
-        case 4:
-          myDis1 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[1]);
-          myDis2 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[2]);
-          myDis3 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[3]);
-          min = Math.min(myDis1,myDis2,myDis3);
-          break;
-        
-        case 5:
-          myDis1 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[1]);
-          myDis2 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[2]);
-          myDis3 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[3]);
-          myDis4 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[4]);
-          min = Math.min(myDis1,myDis2,myDis3,myDis4);
-          break;
+      myDis1 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[1]);
+      for (var iterater in droneCenter) {
+        myDis2 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], iterater);
+        if (myDis1 > myDis2){
+          min = myDis2;
+        } else {
+          min = myDis1;
+        }
       }
-
      }
      catch(e) {
         console.log('초기값 설정 중');
      }
 
     var totalRadi = cirRadius[0] + cirRadius[1];
-    if ( min <= totalRadi * 0.8){
+    if ( myDis1 <= totalRadi * 0.8){
       if (!colCheck){
         colCheck = true;
         //alert('충돌');
+        audio.play();
         $("#danger").text('충돌');
         $("#danger").css("color", "#DF0101");
         $("#danger").css("font-weight", "bold");
         $('#colliInfo').fadeIn(500);
         $('#lat').text(bounds.south);
         $('#lng').text(bounds.east);
+        
+        var currentdate = new Date(); 
+        var datetime = currentdate.getFullYear() + "/"
+                + (currentdate.getMonth()+1) + "/" 
+                + currentdate.getDate() + " "
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
+        $('#when').text(datetime);
+        
+        body.push({'index': index, 'mmsi(1)':$('#mmsi1').text(userId[0]), 'mmsi(2)':$('#mmsi2').text(userId[1]), 'lat':bounds.south, 'long':bounds.east, 'Timestamp':datetime})
+        index ++;
 
         //$('#colliInfo').show();
       }
-    } else if ( min <= totalRadi * 1.2){
+    } else if ( myDis1 <= totalRadi * 1.2){
       audio.volume = 0;
       audio.play();
       $("#danger").text('매우 위험');
       $("#danger").css("color", "#DF0101");
       $("#danger").css("font-weight", "bold");
 
-    } else if ( min <= totalRadi * 1.8){
+    } else if ( myDis1 <= totalRadi * 1.8){
       audio.volume = 0;
       audio.play();
       $("#danger").text('위험');
@@ -251,10 +233,6 @@ $('#colliBtn').on('click', function(){
   $('#colliInfo').fadeOut(500);
 })
 
-// page reload
-$('#mapBtn1').on('click', function(){
-  map.panTo(droneCenter);
-})
 
 $('.tabBtn').on('click', function(){
   $('.tabBtn').removeClass('on');
@@ -273,3 +251,51 @@ function changeGps (index, circleOption ,recOption){
   collisionCheck();
 }
    
+
+var header = [];
+var body = [];
+var keys = [];
+var index = 0;
+
+function exportDataToCSVFile(header, keys, body) {
+  var csv = '';
+  csv = csv.replace(/\s+/, "");
+  csv = header.join(',');
+  csv+='\n';
+
+  $.each(body, function(index, rows){
+    if(rows){
+      var tmp = [];
+      $.each(keys, function(index, key){
+        key && tmp.push(rows[key])
+      })
+      csv+=tmp.join(',');
+      csv+='\n';
+    }
+  })
+
+  var BOM = '%EF%BB%BF'; // 한글깨짐
+  var csvData = 'data:application/csv;charset=utf-8,'+BOM+',' + encodeURIComponent(csv);
+  $(this)
+    .attr({
+    'download': 'temp.csv',
+    'href': csvData,
+    'target': '_blank'
+  });
+}
+
+$('#excelDownload').on('click', function(event){
+  header.push('mmsi(1)');
+  header.push('mmsi(2)');
+  header.push('lat');
+  header.push('long');
+  header.push('Timestamp');
+
+  keys.push('index');
+  keys.push('mmsi(1)');
+  keys.push('mmsi(2)');
+  keys.push('lat');
+  keys.push('long');
+  keys.push('Timestamp');
+  exportDataToCSVFile.apply(this, [ header, keys, body ])
+})
