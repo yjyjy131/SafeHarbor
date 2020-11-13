@@ -28,9 +28,7 @@ function initMap() {
       );
 
       google.maps.event.addListenerOnce(map, 'tilesloaded', function(){ 
-        createArea(map, droneCenter[0], 0);
-        createArea(map, droneCenter[1], 1);
-        collisionCheck();
+
         socket.on('operator gps stream', function (data) {
 
           //front, back, left, right, center
