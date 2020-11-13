@@ -180,33 +180,15 @@ var myDis1, myDis2, myDis3, myDis4, min;
 function collisionCheck(){
     // 2번째 객체 생성 전 error handling
     try {
-      switch(droneCenter.length){
-        case 2:
-          myDis1 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[1]);
-          break;
-
-        case 3:
-          myDis1 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[1]);
-          myDis2 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[2]);
-          min = Math.min(myDis1,myDis2);
-          break;
-
-        case 4:
-          myDis1 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[1]);
-          myDis2 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[2]);
-          myDis3 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[3]);
-          min = Math.min(myDis1,myDis2,myDis3);
-          break;
-        
-        case 5:
-          myDis1 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[1]);
-          myDis2 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[2]);
-          myDis3 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[3]);
-          myDis4 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[4]);
-          min = Math.min(myDis1,myDis2,myDis3,myDis4);
-          break;
+      myDis1 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[1]);
+      for (var iterater in droneCenter) {
+        myDis2 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], iterater);
+        if (myDis1 > myDis2){
+          min = myDis2;
+        } else {
+          min = myDis1;
+        }
       }
-
      }
      catch(e) {
         console.log('초기값 설정 중');
@@ -285,3 +267,47 @@ function changeGps (index, circleOption ,recOption){
   collisionCheck();
 }
    
+
+function exportDataToCSVFile(header, keys, body) {
+  var csv = '';
+  csv = csv.replace(/\s+/, "");
+  csv = header.join(',');
+  csv+='\n';
+
+  $.each(body, function(index, rows){
+    if(rows){
+      var tmp = [];
+      $.each(keys, function(index, key){
+        key && tmp.push(rows[key])
+      })
+      csv+=tmp.join(',');
+      csv+='\n';
+    }
+  })
+
+  var BOM = '%EF%BB%BF'; // 한글깨짐
+  var csvData = 'data:application/csv;charset=utf-8,'+BOM+',' + encodeURIComponent(csv);
+  $(this)
+    .attr({
+    'download': 'temp.csv',
+    'href': csvData,
+    'target': '_blank'
+  });
+}
+
+$('#excelDownload').on('click', function(event){
+  header.push('mmsi(1)');
+  header.push('mmsi(2)');
+  header.push('lat');
+  header.push('long');
+  header.push('Timestamp');
+
+  keys.push('index');
+  keys.push('mmsi(1)');
+  keys.push('mmsi(2)');
+  keys.push('lat');
+  keys.push('long');
+  keys.push('Timestamp');
+  exportDataToCSVFile.apply(this, [ header, keys, body ])
+})
+
