@@ -8,10 +8,11 @@ socket.on('news', function (data) {
 });
 
 // userid ??? db or websocket.id?
-// socket.emit('client connected', 
-// { clientData : '클라이언트 접속', clientType : 'ctw', userid : userid }); 
+socket.emit('client connected', 
+ { clientData : '클라이언트 접속', clientType : 'ctw', userid : userid }); 
 
 socket.on('drone data stream', function (data) {
+    console.log('데이터 받고 있나??' + " " + data.gpsX);
     $('#userid').text(data.userid);
     $('#gpsX').text(data.gpsX);
     $('#gpsY').text(data.gpsY);
