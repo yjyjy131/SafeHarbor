@@ -50,8 +50,8 @@
                                     <tbody>
                                         <!-- DB 연동 동적 테이블 생성 -->
                                         <tr>
-                                            <td>userName</td>
-                                            <td id="userid">null</td>
+                                            <td>userId</td>
+                                            <td id="userid" >null</td>
                                         </tr>
                                         <tr>
                                             <td>latitude</td>
@@ -85,7 +85,8 @@
 						    </ul>
 						</div>
 					</footer>
-			</div>
+            </div>
+            <div id="myDiv" data-userid=<%= session.userid %>></div>
 			<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 			<script src="/js/jquery.func.min.js"></script>
 			<script src="/js/util.js"></script>
