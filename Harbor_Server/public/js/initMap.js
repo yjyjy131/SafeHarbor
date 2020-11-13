@@ -6,21 +6,6 @@ var userid = document.getElementById('main').dataset.userid;
 var cirRadius = [400, 400, 400, 400, 400, 400, 400];
 var audio = new Audio('/sound/beep-24.mp3');
 
-//audio.muted = true;
-
-// var aa= 35.4881010;
-// var bb = 129.391585;
-// var a1 = 35.4781030;
-// var b1 = 129.391545;
-// var testCenter =  [ new google.maps.LatLng(aa, bb), new google.maps.LatLng(a1, b1) ];
-// var testRadius = 400;
-//   $(document).ready(function(){
-//     $('#shipSizeBtn').click(function(){
-//     testRadius = $('#shipSize').val();
-//     console.log(testRadius);
-//     });
-//   });
-
 //var socket = io.connect('localhost:8000');
 var socket = io.connect('http://'+ document.location.hostname+':33337/');
 
@@ -34,16 +19,16 @@ var userId = [];
 
 var circles = [];
 var rectangles = [];
-var mapCenter =  new google.maps.LatLng(35.497021, 129.391589)
+var mapCenter =  new google.maps.LatLng(35.499171, 129.391589)
 // 실제 드론 gps 값 
 
 function initMap() {   
     map = new google.maps.Map(
       document.getElementById('googleMap'), { zoom: 17, center: mapCenter }
       );
-    
-      google.maps.event.addListenerOnce(map, 'tilesloaded', function(){ 
 
+      google.maps.event.addListenerOnce(map, 'tilesloaded', function(){ 
+        
         socket.on('operator gps stream', function (data) {
 
           //front, back, left, right, center
@@ -195,7 +180,7 @@ function collisionCheck(){
      }
 
     var totalRadi = cirRadius[0] + cirRadius[1];
-    if ( min <= totalRadi * 0.8){
+    if ( myDis1 <= totalRadi * 0.8){
       if (!colCheck){
         colCheck = true;
         //alert('충돌');
@@ -220,14 +205,14 @@ function collisionCheck(){
 
         //$('#colliInfo').show();
       }
-    } else if ( min <= totalRadi * 1.2){
+    } else if ( myDis1 <= totalRadi * 1.2){
       audio.volume = 0;
       audio.play();
       $("#danger").text('매우 위험');
       $("#danger").css("color", "#DF0101");
       $("#danger").css("font-weight", "bold");
 
-    } else if ( min <= totalRadi * 1.8){
+    } else if ( myDis1 <= totalRadi * 1.8){
       audio.volume = 0;
       audio.play();
       $("#danger").text('위험');
@@ -267,6 +252,11 @@ function changeGps (index, circleOption ,recOption){
   collisionCheck();
 }
    
+
+var header = [];
+var body = [];
+var keys = [];
+var index = 0;
 
 function exportDataToCSVFile(header, keys, body) {
   var csv = '';
@@ -310,4 +300,3 @@ $('#excelDownload').on('click', function(event){
   keys.push('Timestamp');
   exportDataToCSVFile.apply(this, [ header, keys, body ])
 })
-
