@@ -3,8 +3,9 @@ var dronelat = 37.512881;
 var dronelng = 127.058583;
 var bounds = 0;
 var userid = document.getElementById('main').dataset.userid;
-var cirRadius = [400, 400];
+var cirRadius = [400, 400, 400, 400, 400, 400, 400];
 var audio = new Audio('/sound/beep-24.mp3');
+audio.muted = true;
 
 // var aa= 35.4881010;
 // var bb = 129.391585;
@@ -30,64 +31,6 @@ socket.emit('client connected',
 var droneCenter = [ new google.maps.LatLng(37.512881, 127.058583), new google.maps.LatLng(37.512891, 127.058593) ];
 var userId = [];
 
-// userid 에 값이 추가될때마다 map 생성 
-
-// 전 id 와 현재 id 구분 ?
-// 모든 userid 배열 돌면서 체크 
-// userid 없으면 userid 에 값 추가 
-
-// socket.on('operator gps stream', function (data) {
-//   $('#centerlat').text(data.gpsX);
-//   $('#centerlong').text(data.gpsY);
-
-  //console.log("드론 정보 수신 성공");
-  //console.log("드론아이디 : " + data.userid + "/ 위치 : " + data.gpsX + " " + data.gpsY);
-  // var userExist = false;
-  // var userIdChk = data.userid;
-  
-  // // 배열에 유저 있는지 체크 
-  // for (var userId of iterable) { 
-  //   console.log("현재 userid 배열 체크" + userId); // 10, 20, 30 
-  //   if(userIdChk === userId[iterable]){
-  //     userExist = true;
-  //   }
-  // }
-
-  // if (!userExist)
-  // userId.push(data.userid);
-
-  // // 현재 유저의 index 값 
-  // var currentIndex = 0;
-  // var myUser;
-  // for (var userId of iterable) {
-  //  if (userIdChk[iterable] === data.userid){
-  //     break;
-  //  }
-  //   currentIndex ++;
-  // }
-
-  // // 해당 유저에 맞는 droneCenter 생성 
-  // droneCenter[currentIndex] =  new google.maps.LatLng(data.gpsX, data.gpsY);
-  
-  // createArea(map, droneCenter[0], 0);
-  // if (userId.length == 0){
-  //   userId[0] = data.userid;
-  //   console.log('drone0의 uesrid : ' + userId[0]);
-  // } else if (userId.length == 1) {
-  //   userId[1] = data.userid;
-  //   console.log('drone1의 userid : ' + userId[1]);
-  // } else if (userId.length == 2 ){
-  //   if (data.userid === userId[0]){
-  //     droneCenter[0] =  new google.maps.LatLng(data.gpsX, data.gpsY);
-  //     console.log('drone0의 GPS : ' + droneCenter[0]);
-  //   } else {
-  //     droneCenter[1] =  new google.maps.LatLng(data.gpsX, data.gpsY);
-  //     console.log('drone1의 GPS : ' + droneCenter[1]);
-  //   }
-  // }
-
-//})
-
 var circles = [];
 var rectangles = [];
 var mapCenter =  new google.maps.LatLng(37.512881, 127.058583)
@@ -101,8 +44,24 @@ function initMap() {
       google.maps.event.addListenerOnce(map, 'tilesloaded', function(){ 
 
         socket.on('operator gps stream', function (data) {
-          $('#centerlat').text(data.gpsX);
-          $('#centerlong').text(data.gpsY);
+
+          //front, back, left, right, center
+          if (data.location == 'center'){
+            $('#centerlat').text(data.gpsX);
+            $('#centerlong').text(data.gpsY);
+          } else  if (data.location == 'front'){
+            $('#frontlat').text(data.gpsX);
+            $('#frontlong').text(data.gpsY);
+          } else  if (data.location == 'back'){
+            $('#backlat').text(data.gpsX);
+            $('#backlong').text(data.gpsY);
+          } else  if (data.location == 'left'){
+            $('#leftlat').text(data.gpsX);
+            $('#leftlong').text(data.gpsY);
+          } else  if (data.location == 'right'){
+            $('#rightlat').text(data.gpsX);
+            $('#rightlong').text(data.gpsY);
+          } 
 
           var userExist = false;
           var userIdChk = data.userid;
@@ -134,7 +93,6 @@ function initMap() {
             }
             currentIndex ++;
           }
-
             // 해당 유저에 맞는 droneCenter 생성 
           droneCenter[currentIndex] =  new google.maps.LatLng(data.gpsX, data.gpsY);
           
@@ -150,7 +108,6 @@ function initMap() {
       });
 
 }
-
 
 function createArea(map, droneCenter, index) {
     var circleOption = {
@@ -218,17 +175,44 @@ function computingOffset(center, cirRadius){
 }
 
 var colCheck = false;
+var myDis1, myDis2, myDis3, myDis4, min;
 function collisionCheck(){
     // 2번째 객체 생성 전 error handling
     try {
-      var distance = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[1]);
+      switch(droneCenter.length){
+        case 2:
+          myDis1 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[1]);
+          break;
+
+        case 3:
+          myDis1 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[1]);
+          myDis2 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[2]);
+          min = Math.min(myDis1,myDis2);
+          break;
+
+        case 4:
+          myDis1 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[1]);
+          myDis2 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[2]);
+          myDis3 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[3]);
+          min = Math.min(myDis1,myDis2,myDis3);
+          break;
+        
+        case 5:
+          myDis1 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[1]);
+          myDis2 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[2]);
+          myDis3 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[3]);
+          myDis4 = google.maps.geometry.spherical.computeDistanceBetween (droneCenter[0], droneCenter[4]);
+          min = Math.min(myDis1,myDis2,myDis3,myDis4);
+          break;
+      }
+
      }
      catch(e) {
         console.log('초기값 설정 중');
      }
 
     var totalRadi = cirRadius[0] + cirRadius[1];
-    if ( distance <= totalRadi * 0.8){
+    if ( min <= totalRadi * 0.8){
       if (!colCheck){
         colCheck = true;
         //alert('충돌');
@@ -241,18 +225,21 @@ function collisionCheck(){
 
         //$('#colliInfo').show();
       }
-    } else if ( distance <= totalRadi * 1.2){
+    } else if ( min <= totalRadi * 1.2){
       audio.play();
       $("#danger").text('매우 위험');
       $("#danger").css("color", "#DF0101");
       $("#danger").css("font-weight", "bold");
-    } else if ( distance <= totalRadi * 1.8){
+
+    } else if ( min <= totalRadi * 1.8){
       audio.play();
       $("#danger").text('위험');
       $("#danger").css("color", "#FFFF00");
       $("#danger").css("font-weight", "bold");
+      
     } else {
-        $("#danger").text('보통');
+      $("#danger").css("color", "#FFFFFF");
+      $("#danger").text('보통');
     }
 }
 
