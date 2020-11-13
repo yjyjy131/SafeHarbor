@@ -230,10 +230,6 @@ $('#colliBtn').on('click', function(){
   $('#colliInfo').fadeOut(500);
 })
 
-// page reload
-$('#mapBtn1').on('click', function(){
-  map.panTo(droneCenter);
-})
 
 $('.tabBtn').on('click', function(){
   $('.tabBtn').removeClass('on');

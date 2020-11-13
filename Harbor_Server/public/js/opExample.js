@@ -310,8 +310,8 @@ function collisionCheck(){
       $("#danger").css("color", "#FFFF00");
       $("#danger").css("font-weight", "bold");
     } else {
+      $("#danger").css("color", "#FFFFFF");
         $("#danger").text('보통');
-        $("#danger").css("color", "#FFD400");
     }
 }
 
