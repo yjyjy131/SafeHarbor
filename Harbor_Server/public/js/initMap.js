@@ -29,7 +29,6 @@ socket.emit('client connected',
 // 드론 중앙 초기값
 var droneCenter = [ new google.maps.LatLng(37.512881, 127.058583), new google.maps.LatLng(37.512891, 127.058593) ];
 
-var userId = []
 socket.on('operator gps stream', function (data) {
   $('#centerlat').text(data.gpsX);
   $('#centerlong').text(data.gpsY);
@@ -38,9 +37,6 @@ socket.on('operator gps stream', function (data) {
   dronelng = data.gpsX;
   dronelat = data.gpsY;
   console.log("드론아이디 : " + data.userid + "/ 위치 : " + dronelng + " " + dronelat);
-
-  
-  userId.push(data.userid);
 
   if (userId.length == 0){
     userId[0] = data.userid;
