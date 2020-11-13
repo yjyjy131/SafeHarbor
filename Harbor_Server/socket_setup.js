@@ -110,7 +110,7 @@ function onClientConnected(socket){
         return;
     }
 
-    if(socket.clientType == "ctd" ||socket.clientType == "ctw" ){
+    if(socket.clientType == "ctd"){
         if(io.in(socket.clientType).clients.length != 0){
             console.log("이미 연결이 있습니다. 기존연결을 지웁니다. " + socket.clientType);   
             io.in(socket.clientType).clients((error, socketIds) => {
