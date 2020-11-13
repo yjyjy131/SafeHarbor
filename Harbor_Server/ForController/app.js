@@ -19,7 +19,7 @@ socket.on('news', function (data) {
 socket.emit('client connected', 
 { clientData : '드론 컨트롤러 접속', clientType : 'ctw', userid : 'test'}); 
 
-socket.emit('control stream', { gear: 1 , angle : 1, controlTime: 1 });
+//socket.emit('control stream', { gear: 1 , angle : 1, controlTime: 1 });
 
 const SerialPort = require('serialport');
 const Readline = require('@serialport/parser-readline');
