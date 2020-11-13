@@ -13,7 +13,7 @@ router.get('/', function (req, res, next) {
       });
     }
     else { //로그인페이지로 다시이동
-      res.render('opSystem.html', { 
+      res.render('index.html', { 
         session: req.session
       });
     }
