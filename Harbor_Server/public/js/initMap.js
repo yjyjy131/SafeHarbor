@@ -28,7 +28,9 @@ function initMap() {
       );
 
       google.maps.event.addListenerOnce(map, 'tilesloaded', function(){ 
-        
+        createArea(map, droneCenter[0], 0);
+        createArea(map, droneCenter[1], 1);
+        collisionCheck();
         socket.on('operator gps stream', function (data) {
 
           //front, back, left, right, center
@@ -184,6 +186,7 @@ function collisionCheck(){
       if (!colCheck){
         colCheck = true;
         //alert('충돌');
+        audio.play();
         $("#danger").text('충돌');
         $("#danger").css("color", "#DF0101");
         $("#danger").css("font-weight", "bold");
@@ -200,7 +203,7 @@ function collisionCheck(){
                 + currentdate.getSeconds();
         $('#when').text(datetime);
         
-        body.push({'index': index, 'mmsi(1)':$('#mmsi1').text(), 'mmsi(2)':$('#mmsi2').text(), 'lat':bounds.south, 'long':bounds.east, 'Timestamp':datetime})
+        body.push({'index': index, 'mmsi(1)':$('#mmsi1').text(userId[0]), 'mmsi(2)':$('#mmsi2').text(userId[1]), 'lat':bounds.south, 'long':bounds.east, 'Timestamp':datetime})
         index ++;
 
         //$('#colliInfo').show();
