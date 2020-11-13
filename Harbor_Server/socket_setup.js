@@ -41,8 +41,8 @@ module.exports.attach_event = function(_io){
                     userid: _userid,
                     speed: data.speed,
                     angle: data.angle,
-                    gpsX: 110,
-                    gpsY: 34,
+                    gpsX: data.gpsX,
+                    gpsY: data.gpsY,
                     time: data.time
                   });
             }
