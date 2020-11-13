@@ -14,7 +14,7 @@ socket.emit('client connected',
 ); 
 
 // 드론 중앙 초기값
-var droneCenter = [ new google.maps.LatLng(37.512881, 127.058583), new google.maps.LatLng(37.512891, 127.058593) ];
+var droneCenter = [ new google.maps.LatLng(33.512881, 127.058583), new google.maps.LatLng(33.512891, 127.058593) ];
 var userId = [];
 
 var circles = [];
