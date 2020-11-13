@@ -36,40 +36,40 @@ var userId = [];
 // 모든 userid 배열 돌면서 체크 
 // userid 없으면 userid 에 값 추가 
 
-socket.on('operator gps stream', function (data) {
-  $('#centerlat').text(data.gpsX);
-  $('#centerlong').text(data.gpsY);
+// socket.on('operator gps stream', function (data) {
+//   $('#centerlat').text(data.gpsX);
+//   $('#centerlong').text(data.gpsY);
 
   //console.log("드론 정보 수신 성공");
   //console.log("드론아이디 : " + data.userid + "/ 위치 : " + data.gpsX + " " + data.gpsY);
-  var userExist = false;
-  var userIdChk = data.userid;
+  // var userExist = false;
+  // var userIdChk = data.userid;
   
-  // 배열에 유저 있는지 체크 
-  for (var userId of iterable) { 
-    console.log("현재 userid 배열 체크" + userId); // 10, 20, 30 
-    if(userIdChk === userId[iterable]){
-      userExist = true;
-    }
-  }
+  // // 배열에 유저 있는지 체크 
+  // for (var userId of iterable) { 
+  //   console.log("현재 userid 배열 체크" + userId); // 10, 20, 30 
+  //   if(userIdChk === userId[iterable]){
+  //     userExist = true;
+  //   }
+  // }
 
-  if (!userExist)
-  userId.push(data.userid);
+  // if (!userExist)
+  // userId.push(data.userid);
 
-  // 현재 유저의 index 값 
-  var currentIndex = 0;
-  var myUser;
-  for (var userId of iterable) {
-   if (userIdChk[iterable] === data.userid){
-      break;
-   }
-    currentIndex ++;
-  }
+  // // 현재 유저의 index 값 
+  // var currentIndex = 0;
+  // var myUser;
+  // for (var userId of iterable) {
+  //  if (userIdChk[iterable] === data.userid){
+  //     break;
+  //  }
+  //   currentIndex ++;
+  // }
 
-  // 해당 유저에 맞는 droneCenter 생성 
-  droneCenter[currentIndex] =  new google.maps.LatLng(data.gpsX, data.gpsY);
+  // // 해당 유저에 맞는 droneCenter 생성 
+  // droneCenter[currentIndex] =  new google.maps.LatLng(data.gpsX, data.gpsY);
   
-  createArea(map, droneCenter[0], 0);
+  // createArea(map, droneCenter[0], 0);
   // if (userId.length == 0){
   //   userId[0] = data.userid;
   //   console.log('drone0의 uesrid : ' + userId[0]);
@@ -86,7 +86,7 @@ socket.on('operator gps stream', function (data) {
   //   }
   // }
 
-})
+//})
 
 var circles = [];
 var rectangles = [];
@@ -109,10 +109,11 @@ function initMap() {
 
           console.log(data.userid + " 소켓 전송 확인");
 
-          for (var userId of iterable) { 
-            console.log("현재 접속된 userid 배열 체크" + userId); // 10, 20, 30 
+          for (var iterable of userId) { 
+            console.log("현재 접속된 userid 배열 체크" + iterable); // 10, 20, 30 
             // 유저 존재하면 true로 바뀜
-            if(userIdChk === userId[iterable]){
+            if(userIdChk === iterable){
+              console.log("유저 존재 확인!");
               userExist = true;
             }
           }
@@ -124,13 +125,13 @@ function initMap() {
             }
 
           // 푸시된 userId확인 
-          for (var userId of iterable) {    
+          for (var iterable of userId) {    
               console.log("유저 배열 확인 " + iterable);
             }
 
           // 현재 유저의 index 값 
           var currentIndex = 0;
-          for (var userId of iterable) {
+          for (var iterable of userId) {
             if (userIdChk[iterable] === data.userid){ 
                 break; 
             }
@@ -188,13 +189,13 @@ function createArea(map, droneCenter, index) {
       function() { 
         changeGps(index, circleOption ,recOption);
         console.log('gps 체크');
-      }, 100); 
+      }, 1000); 
       
     setInterval (
       function() { 
         collisionCheck();
         console.log('충돌체크');
-      }, 100);
+      }, 1000);
 }
 
 google.maps.event.addDomListener(window, 'load', initMap);
