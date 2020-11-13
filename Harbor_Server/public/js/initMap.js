@@ -5,7 +5,8 @@ var bounds = 0;
 var userid = document.getElementById('main').dataset.userid;
 var cirRadius = [400, 400, 400, 400, 400, 400, 400];
 var audio = new Audio('/sound/beep-24.mp3');
-audio.muted = true;
+
+//audio.muted = true;
 
 // var aa= 35.4881010;
 // var bb = 129.391585;
@@ -33,7 +34,7 @@ var userId = [];
 
 var circles = [];
 var rectangles = [];
-var mapCenter =  new google.maps.LatLng(37.512881, 127.058583)
+var mapCenter =  new google.maps.LatLng(35.497021, 129.391589)
 // 실제 드론 gps 값 
 
 function initMap() {   
@@ -226,18 +227,21 @@ function collisionCheck(){
         //$('#colliInfo').show();
       }
     } else if ( min <= totalRadi * 1.2){
+      audio.volume = 0;
       audio.play();
       $("#danger").text('매우 위험');
       $("#danger").css("color", "#DF0101");
       $("#danger").css("font-weight", "bold");
 
     } else if ( min <= totalRadi * 1.8){
+      audio.volume = 0;
       audio.play();
       $("#danger").text('위험');
       $("#danger").css("color", "#FFFF00");
       $("#danger").css("font-weight", "bold");
       
     } else {
+      audio.volume = 0;
       $("#danger").css("color", "#FFFFFF");
       $("#danger").text('보통');
     }
