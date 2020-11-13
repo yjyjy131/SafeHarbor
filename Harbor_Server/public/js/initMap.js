@@ -22,6 +22,7 @@ var rectangles = [];
 var mapCenter =  new google.maps.LatLng(35.499171, 129.391589)
 // 실제 드론 gps 값 
 
+var userIndex = 0;
 function initMap() {   
     map = new google.maps.Map(
       document.getElementById('googleMap'), { zoom: 17, center: mapCenter }
@@ -61,13 +62,16 @@ function initMap() {
 
           // 존재하지 않으면 유저배열에 푸시
           if (!userExist){
-            console.log(data.userid + "유저 존재x , 배열에 푸시합니다");
             userId.push(data.userid);
             }
 
           // 푸시된 userId확인 
+          var inde = 0;
           for (var iterable of userId) {    
-              console.log("유저 배열 확인 " + iterable);
+              if(userid === iterable){
+                userIndex = inde;
+              }
+              inde ++;
             }
 
           // 현재 유저의 index 값 
@@ -86,7 +90,7 @@ function initMap() {
             // 처음 들어온 user면 area 생성
           if (!userExist){
              console.log(data.userid + "의 새로운 area 생성");
-             createArea(map, droneCenter[currentIndex], currentIndex);
+             createArea(map, droneCenter[userIndex], currentIndex);
           }
 
         });
@@ -245,7 +249,7 @@ function changeGps (index, circleOption ,recOption){
   recOption.bounds = computingOffset(droneCenter[index], cirRadius[index]);
   rectangles[index].setOptions(recOption);
 
-  map.setCenter(droneCenter[0]);
+  map.setCenter(droneCenter[userIndex]);
   collisionCheck();
 }
    
