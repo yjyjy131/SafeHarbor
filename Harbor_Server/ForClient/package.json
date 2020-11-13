@@ -1,7 +1,8 @@
 {
   "name": "forclient",
-  "version": "0.0.0",
-  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
   "scripts": {
     "start": "nodemon app",
     "pmstart": "pm2-dev start app.js",
@@ -9,7 +10,9 @@
   },
   "dependencies": {
     "serialport": "^9.0.2",
-    "socket.io": "^3.0.1",
-    "socket.io-client": "^3.0.1"
-  }
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0"
+  },
+  "author": "",
+  "license": "ISC"
 }
