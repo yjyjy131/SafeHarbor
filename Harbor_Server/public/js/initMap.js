@@ -39,6 +39,9 @@ socket.on('operator gps stream', function (data) {
   dronelat = data.gpsY;
   console.log("드론아이디 : " + data.userid + "/ 위치 : " + dronelng + " " + dronelat);
 
+  
+  userId.push(data.userid);
+
   if (userId.length == 0){
     userId[0] = data.userid;
     console.log('drone0의 uesrid : ' + userId[0]);
@@ -54,6 +57,7 @@ socket.on('operator gps stream', function (data) {
       console.log('drone1의 GPS : ' + droneCenter[1]);
     }
   }
+
 })
 
 var circles = [];
