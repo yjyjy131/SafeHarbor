@@ -1,1 +1,1 @@
-npm start mallangcau.ddns.net:33337
+npm start http://mallangcau.ddns.net:33337
