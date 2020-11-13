@@ -60,9 +60,7 @@ var circles = [];
 var rectangles = [];
 var mapCenter =  new google.maps.LatLng(37.512881, 127.058583)
 // 실제 드론 gps 값 
-function initMap() {
-
-  if (userId.length == 2){   
+function initMap() {   
    map = new google.maps.Map(
      document.getElementById('googleMap'), { zoom: 17, center: droneCenter[0] }
      );
@@ -74,7 +72,7 @@ function initMap() {
      createArea(map, droneCenter[1], 1);
      collisionCheck();
    });
-  }
+  
 }
 
 function createArea(map, droneCenter, index) {
@@ -203,6 +201,7 @@ function changeGps (index, circleOption ,recOption){
   recOption.bounds = computingOffset(droneCenter[index], cirRadius[index]);
   rectangles[index].setOptions(recOption);
 
+  map.setCenter(droneCenter[0]);
   collisionCheck();
 }
    
