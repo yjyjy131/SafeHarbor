@@ -195,7 +195,7 @@ function collisionCheck(){
      }
 
     var totalRadi = cirRadius[0] + cirRadius[1];
-    if ( min <= totalRadi * 0.8){
+    if ( myDis1 <= totalRadi * 0.8){
       if (!colCheck){
         colCheck = true;
         //alert('충돌');
@@ -220,14 +220,14 @@ function collisionCheck(){
 
         //$('#colliInfo').show();
       }
-    } else if ( min <= totalRadi * 1.2){
+    } else if ( myDis1 <= totalRadi * 1.2){
       audio.volume = 0;
       audio.play();
       $("#danger").text('매우 위험');
       $("#danger").css("color", "#DF0101");
       $("#danger").css("font-weight", "bold");
 
-    } else if ( min <= totalRadi * 1.8){
+    } else if ( myDis1 <= totalRadi * 1.8){
       audio.volume = 0;
       audio.play();
       $("#danger").text('위험');
@@ -267,6 +267,11 @@ function changeGps (index, circleOption ,recOption){
   collisionCheck();
 }
    
+
+var header = [];
+var body = [];
+var keys = [];
+var index = 0;
 
 function exportDataToCSVFile(header, keys, body) {
   var csv = '';
